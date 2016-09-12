@@ -1,4 +1,4 @@
-package com.liangmayong.android_newbox;
+package com.liangmayong.netbox;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;

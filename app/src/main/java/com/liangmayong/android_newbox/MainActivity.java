@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         NetboxConfig.getInstance(Action.class).putHeader("header1", "111111111111").putHeader("header2", "111111111111").putHeader("header3", "111111111111").putHeader("header4", "111111111111");
-        Netbox.generateAction(Action.class).path("url").param("username", "sss").exec(this, new OnDefualtNetboxListener<String>() {
+        Netbox.action(Action.class).path("url").param("username", "sss").exec(this, new OnDefualtNetboxListener<String>() {
             @Override
             public void handleResponseSuccess(String data) {
                 Toast.makeText(MainActivity.this, data, Toast.LENGTH_SHORT).show();
@@ -42,9 +42,9 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
-        NetboxConfig.getInstance(Action.class).putHeader("header5","2")
-                .putHeader("header6","11");
-        Netbox.generateAction(Action.class).path("url").param("username", "sss").exec(this, new OnDefualtNetboxListener<String>() {
+        NetboxConfig.getInstance(Action.class).putHeader("header5", "2")
+                .putHeader("header6", "11");
+        Netbox.action(Action.class).path("url").param("username", "sss").exec(this, new OnDefualtNetboxListener<String>() {
             @Override
             public void handleResponseSuccess(String data) {
                 Toast.makeText(MainActivity.this, data, Toast.LENGTH_SHORT).show();
@@ -53,12 +53,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void handleResponseError(String code, String message) {
                 Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onResponse(Response response) {
-                super.onResponse(response);
-                Toast.makeText(MainActivity.this, response.getBody(), Toast.LENGTH_SHORT).show();
             }
 
             @Override

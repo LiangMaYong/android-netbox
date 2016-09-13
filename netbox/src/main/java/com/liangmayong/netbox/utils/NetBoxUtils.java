@@ -12,6 +12,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Map;
 
 /**
  * Created by liangmayong on 2016/9/12.
@@ -21,7 +22,7 @@ public class NetboxUtils {
     private static WeakReference<Application> application = null;
 
     // application
-    private static String TAG = "";
+    private static String TAG = "Netbox-DEBUG";
 
     /**
      * parseUrl
@@ -153,6 +154,24 @@ public class NetboxUtils {
                 Log.d(TAG, message, throwable);
             }
         }
+    }
+
+    /**
+     * generateCacheKey
+     *
+     * @return key
+     */
+    public static String generateCacheKey(String url, Map<String, String> params, Map<String, String> headers) {
+        if (url == null)
+            url = "";
+        StringBuilder builder = new StringBuilder("@" + url);
+        if (params != null) {
+            builder.append(params.toString());
+        }
+        if (headers != null) {
+            builder.append(headers.toString());
+        }
+        return builder.toString();
     }
 
     /**

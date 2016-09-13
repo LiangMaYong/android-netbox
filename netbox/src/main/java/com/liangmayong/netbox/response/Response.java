@@ -27,10 +27,13 @@ public class Response implements INetboxResponse {
     // headers
     private final Map<String, String> mHeaders = new HashMap<String, String>();
 
-    public Response(Class<? extends NetboxConverter> converterType) {
-        if (converterType != null) {
-            this.mConverterType = converterType;
-        }
+    public Response(String url, Map<String, String> params, Map<String, String> headers) {
+        setUrl(url);
+        setParams(params);
+        setHeaders(headers);
+    }
+
+    public Response() {
     }
 
     /**

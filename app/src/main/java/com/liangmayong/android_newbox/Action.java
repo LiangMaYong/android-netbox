@@ -2,6 +2,7 @@ package com.liangmayong.android_newbox;
 
 import com.liangmayong.netbox.NetboxAction;
 import com.liangmayong.netbox.annotations.BaseURL;
+import com.liangmayong.netbox.annotations.Cache;
 import com.liangmayong.netbox.interfaces.NetboxConverter;
 import com.liangmayong.netbox.interfaces.NetboxInterceptor;
 
@@ -9,6 +10,7 @@ import com.liangmayong.netbox.interfaces.NetboxInterceptor;
  * Created by liangmayong on 2016/9/13.
  */
 @BaseURL("http://192.168.158.151/")
+@Cache(ActionCache.class)
 public class Action extends NetboxAction {
 
     @Override

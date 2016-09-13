@@ -1,10 +1,13 @@
 package com.liangmayong.netbox;
 
 import com.liangmayong.netbox.annotations.BaseURL;
+import com.liangmayong.netbox.annotations.Cache;
 import com.liangmayong.netbox.annotations.Converter;
 import com.liangmayong.netbox.annotations.Interceptor;
+import com.liangmayong.netbox.defualts.DefualtNetboxCache;
 import com.liangmayong.netbox.defualts.DefualtNetboxConverter;
 import com.liangmayong.netbox.defualts.DefualtNetboxInterceptor;
+import com.liangmayong.netbox.interfaces.NetboxCache;
 import com.liangmayong.netbox.interfaces.NetboxConverter;
 import com.liangmayong.netbox.interfaces.NetboxInterceptor;
 import com.liangmayong.netbox.response.Response;
@@ -21,8 +24,10 @@ public class NetboxAction {
     private String baseURL = "";
     // interceptorType
     private Class<? extends NetboxInterceptor> interceptorType = DefualtNetboxInterceptor.class;
-    // converterTypes
+    // converterType
     private Class<? extends NetboxConverter> converterType = DefualtNetboxConverter.class;
+    // cacheType
+    private Class<? extends NetboxCache> cacheType = DefualtNetboxCache.class;
 
     // generateAction
     protected final void generateAction() {
@@ -41,6 +46,14 @@ public class NetboxAction {
                 converterType = DefualtNetboxConverter.class;
             }
             this.converterType = converterType;
+        }
+        Cache cache = getClass().getAnnotation(Cache.class);
+        if (cache != null) {
+            Class<? extends NetboxCache> cacheType = cache.value();
+            if (cacheType == NetboxCache.class) {
+                cacheType = DefualtNetboxCache.class;
+            }
+            this.cacheType = cacheType;
         }
         BaseURL url = getClass().getAnnotation(BaseURL.class);
         if (url != null) {
@@ -86,6 +99,18 @@ public class NetboxAction {
     }
 
     /**
+     * generateCacheType
+     *
+     * @return cacheType
+     */
+    protected Class<? extends NetboxCache> generateCacheType() {
+        if (cacheType == null) {
+            return DefualtNetboxCache.class;
+        }
+        return cacheType;
+    }
+
+    /**
      * path
      *
      * @param path path
@@ -119,10 +144,10 @@ public class NetboxAction {
 
 
     public void handleResponse(Response response) {
-        NetboxUtils.debugLog("Netbox response body:" + response.getBody(), null);
+        NetboxUtils.debugLog("onResponse url:" + response.getUrl() + "\n" + "body:" + response.getBody(), null);
     }
 
     public void handleFailure(NetboxError error) {
-        NetboxUtils.debugLog("Netbox response failure:", error);
+        NetboxUtils.debugLog("onFailure:", error);
     }
 }

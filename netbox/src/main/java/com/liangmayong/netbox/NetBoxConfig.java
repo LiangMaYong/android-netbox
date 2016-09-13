@@ -8,7 +8,7 @@ import java.util.Map;
  */
 public class NetboxConfig {
 
-    // stringNetBoxConverterMap
+    // NET_BOX_CONFIG_MAP
     private static final Map<String, NetboxConfig> NET_BOX_CONFIG_MAP = new HashMap<String, NetboxConfig>();
 
     /**

@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * Created by liangmayong on 2016/9/12.
  */
-public interface NetboxInterceptor<T extends Response> {
+public interface NetboxInterceptor {
 
     /**
      * destroy
@@ -20,9 +20,8 @@ public interface NetboxInterceptor<T extends Response> {
      */
     void destroy(Context context);
 
-    void execRequest(Context context, Class<? extends NetboxConverter> converterType, Method method, String url, Map<String, String> params, Map<String, String> headers, OnNetboxListener<T> listener);
+    void execRequest(Context context, Method method, String url, Map<String, String> params, Map<String, String> headers, OnNetboxListener listener);
 
-    T execSyncRequest(Context context, Class<? extends NetboxConverter> converterType, Method method, String url, Map<String, String> params, Map<String, String> headers) throws NetboxError;
+    Response syncRequest(Context context, Method method, String url, Map<String, String> params, Map<String, String> headers) throws NetboxError;
 
-    T execCacheRequest(Context context, Class<? extends NetboxConverter> converterType, Method method, String url, Map<String, String> params, Map<String, String> headers) throws NetboxError;
 }

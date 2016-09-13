@@ -6,14 +6,14 @@ import com.liangmayong.netbox.throwables.NetboxError;
 /**
  * Created by liangmayong on 2016/9/12.
  */
-public interface OnNetboxListener<T extends Response> {
+public interface OnNetboxListener{
 
     /**
      * onResponse
      *
      * @param response response
      */
-    void onResponse(T response);
+    void onResponse(Response response);
 
     /**
      * onFailure

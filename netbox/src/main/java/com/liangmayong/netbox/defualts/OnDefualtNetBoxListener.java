@@ -8,7 +8,7 @@ import com.liangmayong.netbox.utils.NetboxUtils;
 /**
  * Created by LiangMaYong on 2016/9/13.
  */
-public abstract class OnDefualtNetboxListener<T> implements OnNetboxListener<Response> {
+public abstract class OnDefualtNetboxListener<T> implements OnNetboxListener {
 
     /**
      * handleResponseSuccess

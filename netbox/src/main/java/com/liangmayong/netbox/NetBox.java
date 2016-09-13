@@ -1,5 +1,6 @@
 package com.liangmayong.netbox;
 
+import com.liangmayong.netbox.interfaces.NetboxCache;
 import com.liangmayong.netbox.interfaces.NetboxConverter;
 import com.liangmayong.netbox.interfaces.NetboxInterceptor;
 
@@ -20,12 +21,14 @@ public class Netbox {
     private static final String GENERATE_ACTION_METHOD_NAME = "generateAction";
     // generate action method
     private static volatile Method GENERATE_ACTION_METHOD = null;
-    // stringNetBoxActionMap
-    private static final Map<String, NetboxAction> stringNetBoxActionMap = new HashMap<String, NetboxAction>();
-    // stringNetBoxConverterMap
-    private static final Map<String, NetboxConverter> stringNetBoxConverterMap = new HashMap<String, NetboxConverter>();
-    // stringNetBoxInterceptorMap
-    private static final Map<String, NetboxInterceptor> stringNetBoxInterceptorMap = new HashMap<String, NetboxInterceptor>();
+    // STRING_NETBOX_ACTION_MAP
+    private static final Map<String, NetboxAction> STRING_NETBOX_ACTION_MAP = new HashMap<String, NetboxAction>();
+    // STRING_NETBOX_CONVERTER_MAP
+    private static final Map<String, NetboxConverter> STRING_NETBOX_CONVERTER_MAP = new HashMap<String, NetboxConverter>();
+    // STRING_NETBOX_CACHE_MAP
+    private static final Map<String, NetboxCache> STRING_NETBOX_CACHE_MAP = new HashMap<String, NetboxCache>();
+    // STRING_NETBOX_INTERCEPTOR_MAP
+    private static final Map<String, NetboxInterceptor> STRING_NETBOX_INTERCEPTOR_MAP = new HashMap<String, NetboxInterceptor>();
 
     /**
      * getActionInstance
@@ -34,19 +37,16 @@ public class Netbox {
      * @param <T>   action type
      * @return newbox action
      */
-    public static final <T extends NetboxAction> T generateAction(Class<T> clazz) {
+    public static final <T extends NetboxAction> T action(Class<T> clazz) {
         if (clazz == null) {
             throw new IllegalArgumentException("The action class must not null");
         }
         String key = clazz.getName();
-        if (stringNetBoxActionMap.containsKey(key)) {
-            return (T) stringNetBoxActionMap.get(key);
+        if (STRING_NETBOX_ACTION_MAP.containsKey(key)) {
+            return (T) STRING_NETBOX_ACTION_MAP.get(key);
         }
         try {
             Constructor<T> constructor = clazz.getDeclaredConstructor();
-            if (constructor.getParameterTypes().length > 0) {
-                throw new IllegalArgumentException("The " + clazz.getClass().getName() + " constructor method must be empty parameters");
-            }
             constructor.setAccessible(true);
             T action = constructor.newInstance();
             try {
@@ -57,7 +57,7 @@ public class Netbox {
                 GENERATE_ACTION_METHOD.invoke(action);
             } catch (Exception e) {
             }
-            stringNetBoxActionMap.put(key, action);
+            STRING_NETBOX_ACTION_MAP.put(key, action);
             return action;
         } catch (Exception e) {
             throw new IllegalArgumentException("The action generation failure:" + clazz.getName(), e);
@@ -76,17 +76,14 @@ public class Netbox {
             throw new IllegalArgumentException("The converter class must not null");
         }
         String key = clazz.getName();
-        if (stringNetBoxConverterMap.containsKey(key)) {
-            return (T) stringNetBoxConverterMap.get(key);
+        if (STRING_NETBOX_CONVERTER_MAP.containsKey(key)) {
+            return (T) STRING_NETBOX_CONVERTER_MAP.get(key);
         }
         try {
             Constructor<T> constructor = clazz.getDeclaredConstructor();
-            if (constructor.getParameterTypes().length > 0) {
-                throw new IllegalArgumentException("The " + clazz.getClass().getName() + " constructor method must be empty parameters");
-            }
             constructor.setAccessible(true);
             T converter = constructor.newInstance();
-            stringNetBoxConverterMap.put(key, converter);
+            STRING_NETBOX_CONVERTER_MAP.put(key, converter);
             return converter;
         } catch (Exception e) {
             throw new IllegalArgumentException("The converter generation failure:" + clazz.getName(), e);
@@ -105,20 +102,43 @@ public class Netbox {
             throw new IllegalArgumentException("The interceptor class must not null");
         }
         String key = clazz.getName();
-        if (stringNetBoxInterceptorMap.containsKey(key)) {
-            return (T) stringNetBoxInterceptorMap.get(key);
+        if (STRING_NETBOX_INTERCEPTOR_MAP.containsKey(key)) {
+            return (T) STRING_NETBOX_INTERCEPTOR_MAP.get(key);
         }
         try {
             Constructor<T> constructor = clazz.getDeclaredConstructor();
-            if (constructor.getParameterTypes().length > 0) {
-                throw new IllegalArgumentException("The " + clazz.getClass().getName() + " constructor method must be empty parameters");
-            }
             constructor.setAccessible(true);
             T interceptor = constructor.newInstance();
-            stringNetBoxInterceptorMap.put(key, interceptor);
+            STRING_NETBOX_INTERCEPTOR_MAP.put(key, interceptor);
             return interceptor;
         } catch (Exception e) {
             throw new IllegalArgumentException("The interceptor generation failure:" + clazz.getName(), e);
+        }
+    }
+
+    /**
+     * generateCache
+     *
+     * @param clazz clazz
+     * @param <T>   action type
+     * @return newbox interceptor
+     */
+    public static final <T extends NetboxCache> T generateCache(Class<T> clazz) {
+        if (clazz == null) {
+            throw new IllegalArgumentException("The cache class must not null");
+        }
+        String key = clazz.getName();
+        if (STRING_NETBOX_CACHE_MAP.containsKey(key)) {
+            return (T) STRING_NETBOX_CACHE_MAP.get(key);
+        }
+        try {
+            Constructor<T> constructor = clazz.getDeclaredConstructor();
+            constructor.setAccessible(true);
+            T cache = constructor.newInstance();
+            STRING_NETBOX_CACHE_MAP.put(key, cache);
+            return cache;
+        } catch (Exception e) {
+            throw new IllegalArgumentException("The cache generation failure:" + clazz.getName(), e);
         }
     }
 }

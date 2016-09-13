@@ -2,10 +2,10 @@ package com.liangmayong.netbox.interfaces;
 
 import android.content.Context;
 
+import com.liangmayong.netbox.concretes.Method;
 import com.liangmayong.netbox.response.Response;
 import com.liangmayong.netbox.throwables.NetBoxError;
 
-import java.lang.reflect.Method;
 import java.util.Map;
 
 /**

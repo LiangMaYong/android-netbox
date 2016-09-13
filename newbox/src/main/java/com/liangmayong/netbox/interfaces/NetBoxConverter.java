@@ -18,7 +18,7 @@ public interface NetBoxConverter {
     boolean isSuccess(Response response);
 
     /**
-     * parseErrorMessage
+     * converterErrorMessage
      *
      * @param response response
      * @return error message
@@ -26,7 +26,7 @@ public interface NetBoxConverter {
     String converterErrorMessage(Response response);
 
     /**
-     * parseErrorCode
+     * converterErrorCode
      *
      * @param response response
      * @return error code
@@ -34,9 +34,9 @@ public interface NetBoxConverter {
     String converterErrorCode(Response response);
 
     /**
-     * generateDefualtKey
+     * converterDefualtKey
      *
-     * @return
+     * @return defualt key
      */
     String converterDefualtKey();
 

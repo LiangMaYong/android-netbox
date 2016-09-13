@@ -4,6 +4,7 @@ import com.liangmayong.netbox.interfaces.NetBoxConverter;
 import com.liangmayong.netbox.interfaces.NetBoxInterceptor;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,10 +16,9 @@ public class NetBox {
     private NetBox() {
     }
 
+    private static volatile Method createAction = null;
     // stringNetBoxActionMap
     private static final Map<String, NetBoxAction> stringNetBoxActionMap = new HashMap<String, NetBoxAction>();
-    // stringNetBoxModuleMap
-    private static final Map<String, NetBoxModule> stringNetBoxModuleMap = new HashMap<String, NetBoxModule>();
     // stringNetBoxConverterMap
     private static final Map<String, NetBoxConverter> stringNetBoxConverterMap = new HashMap<String, NetBoxConverter>();
     // stringNetBoxInterceptorMap
@@ -46,9 +46,18 @@ public class NetBox {
         try {
             Constructor<T> constructor = clazz.getDeclaredConstructor();
             constructor.setAccessible(true);
-            return (T) constructor.newInstance();
+            T action = constructor.newInstance();
+            try {
+                if (createAction == null) {
+                    createAction = NetBoxAction.class.getDeclaredMethod("create");
+                }
+                createAction.invoke(action);
+            } catch (Exception e) {
+            }
+            return action;
         } catch (Exception e) {
-            throw new IllegalArgumentException("the " + clazz.getClass().getName() + " constructor method must be empty parameters");
+            e.printStackTrace();
+            throw new IllegalArgumentException("the " + clazz.getName() + " constructor method must be empty parameters");
         }
     }
 
@@ -70,7 +79,8 @@ public class NetBox {
         try {
             Constructor<T> constructor = clazz.getDeclaredConstructor();
             constructor.setAccessible(true);
-            return (T) constructor.newInstance();
+            T converter = constructor.newInstance();
+            return converter;
         } catch (Exception e) {
             throw new IllegalArgumentException("the " + clazz.getClass().getName() + " constructor method must be empty parameters");
         }
@@ -90,30 +100,6 @@ public class NetBox {
         String key = clazz.getName();
         if (stringNetBoxInterceptorMap.containsKey(key)) {
             return (T) stringNetBoxInterceptorMap.get(key);
-        }
-        try {
-            Constructor<T> constructor = clazz.getDeclaredConstructor();
-            constructor.setAccessible(true);
-            return (T) constructor.newInstance();
-        } catch (Exception e) {
-            throw new IllegalArgumentException("the " + clazz.getClass().getName() + " constructor method must be empty parameters");
-        }
-    }
-
-    /**
-     * getModuleInstance
-     *
-     * @param clazz clazz
-     * @param <T>   action type
-     * @return newbox action
-     */
-    public static final <T extends NetBoxModule> T getModuleInstance(Class<T> clazz) {
-        if (clazz == null) {
-            throw new IllegalArgumentException("the module class must not null");
-        }
-        String key = clazz.getName();
-        if (stringNetBoxModuleMap.containsKey(key)) {
-            return (T) stringNetBoxModuleMap.get(key);
         }
         try {
             Constructor<T> constructor = clazz.getDeclaredConstructor();

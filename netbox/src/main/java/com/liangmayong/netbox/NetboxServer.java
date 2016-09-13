@@ -12,9 +12,6 @@ import com.liangmayong.netbox.defualts.DefualtNetboxInterceptor;
 import com.liangmayong.netbox.interfaces.NetboxCache;
 import com.liangmayong.netbox.interfaces.NetboxConverter;
 import com.liangmayong.netbox.interfaces.NetboxInterceptor;
-import com.liangmayong.netbox.response.Response;
-import com.liangmayong.netbox.throwables.NetboxError;
-import com.liangmayong.netbox.utils.NetboxUtils;
 
 /**
  * Created by liangmayong on 2016/9/12.
@@ -143,7 +140,7 @@ public class NetboxServer {
      *
      * @return config
      */
-    public NetboxConfig config() {
+    public final NetboxConfig config() {
         return NetboxConfig.getInstance(getClass());
     }
 
@@ -152,27 +149,8 @@ public class NetboxServer {
      *
      * @param context context
      */
-    public void destroy(Context context) {
+    public final void destroy(Context context) {
         Netbox.generateInterceptor(generateInterceptorType()).destroyRequest(context);
     }
 
-    /**
-     * handleResponse
-     *
-     * @param response response
-     */
-    protected void handleResponse(Response response) {
-        if (NetboxUtils.isDebugable())
-            NetboxUtils.debugLog("onResponse url:" + response.getUrl() + "\n" + "body:" + response.getBody(), null);
-    }
-
-    /**
-     * handleFailure
-     *
-     * @param error error
-     */
-    protected void handleFailure(NetboxError error) {
-        if (NetboxUtils.isDebugable())
-            NetboxUtils.debugLog("onFailure:", error);
-    }
 }

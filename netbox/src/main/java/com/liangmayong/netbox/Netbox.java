@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * Created by liangmayong on 2016/9/12.
  */
-public class Netbox {
+public final class Netbox {
 
     private Netbox() {
     }

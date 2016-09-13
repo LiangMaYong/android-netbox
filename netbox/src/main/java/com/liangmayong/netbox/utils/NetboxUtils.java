@@ -18,7 +18,7 @@ import java.util.Map;
 /**
  * Created by liangmayong on 2016/9/12.
  */
-public class NetboxUtils {
+public final class NetboxUtils {
     // application
     private static WeakReference<Application> application = null;
 

@@ -106,13 +106,13 @@ public final class NetboxPath {
                 response.setConverter(Netbox.server(mServerType).generateConverterType());
                 String cacheKey = NetboxUtils.generateCacheKey(response.getUrl(), response.getParams(), response.getHeaders());
                 Netbox.generateCache(Netbox.server(mServerType).generateCacheType()).saveCache(cacheKey, response.getBody());
-                Netbox.server(mServerType).handleResponse(response);
+                handleResponse(response);
                 listener.onResponse(response);
             }
 
             @Override
             public void onFailure(NetboxError error) {
-                Netbox.server(mServerType).handleFailure(error);
+                handleFailure(error);
                 listener.onFailure(error);
             }
         });
@@ -133,10 +133,10 @@ public final class NetboxPath {
             Response response = Netbox.generateInterceptor(Netbox.server(mServerType).generateInterceptorType()).syncRequest(context, mMethod, requestUrl, mParams, mHeaders);
             String cacheKey = NetboxUtils.generateCacheKey(response.getUrl(), response.getParams(), response.getHeaders());
             Netbox.generateCache(Netbox.server(mServerType).generateCacheType()).saveCache(cacheKey, response.getBody());
-            Netbox.server(mServerType).handleResponse(response);
+            handleResponse(response);
             return response;
         } catch (NetboxError error) {
-            Netbox.server(mServerType).handleFailure(error);
+            handleFailure(error);
             throw error;
         }
     }
@@ -160,5 +160,26 @@ public final class NetboxPath {
             return response;
         }
         return null;
+    }
+
+
+    /**
+     * handleResponse
+     *
+     * @param response response
+     */
+    private void handleResponse(Response response) {
+        if (NetboxUtils.isDebugable())
+            NetboxUtils.debugLog("onResponse url:" + response.getUrl() + "\n" + "body:" + response.getBody(), null);
+    }
+
+    /**
+     * handleFailure
+     *
+     * @param error error
+     */
+    private void handleFailure(NetboxError error) {
+        if (NetboxUtils.isDebugable())
+            NetboxUtils.debugLog("onFailure:", error);
     }
 }

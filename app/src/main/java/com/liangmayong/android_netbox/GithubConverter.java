@@ -11,7 +11,7 @@ import java.util.List;
 public class GithubConverter extends DefualtNetboxConverter {
     @Override
     public boolean isSuccess(Response response) {
-        return false;
+        return true;
     }
 
     @Override

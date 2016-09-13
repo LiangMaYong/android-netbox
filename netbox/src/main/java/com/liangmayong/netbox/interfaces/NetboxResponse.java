@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * Created by liangmayong on 2016/9/13.
  */
-public interface INetboxResponse {
+public interface NetboxResponse {
 
     /**
      * isSuccess

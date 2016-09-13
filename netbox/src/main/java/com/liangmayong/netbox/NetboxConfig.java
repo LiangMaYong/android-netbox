@@ -6,7 +6,7 @@ import java.util.Map;
 /**
  * Created by LiangMaYong on 2016/9/13.
  */
-public class NetboxConfig {
+public final class NetboxConfig {
 
     private NetboxConfig() {
     }

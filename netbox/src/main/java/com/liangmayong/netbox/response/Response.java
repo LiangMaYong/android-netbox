@@ -2,7 +2,7 @@ package com.liangmayong.netbox.response;
 
 import com.liangmayong.netbox.Netbox;
 import com.liangmayong.netbox.defualts.DefualtNetboxConverter;
-import com.liangmayong.netbox.interfaces.INetboxResponse;
+import com.liangmayong.netbox.interfaces.NetboxResponse;
 import com.liangmayong.netbox.interfaces.NetboxConverter;
 
 import java.util.HashMap;
@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * Created by liangmayong on 2016/9/12.
  */
-public class Response implements INetboxResponse {
+public final class Response implements NetboxResponse {
 
     // body
     private String mBody = "";

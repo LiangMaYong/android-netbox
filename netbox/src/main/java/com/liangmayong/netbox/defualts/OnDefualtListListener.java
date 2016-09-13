@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Created by LiangMaYong on 2016/9/13.
  */
-public abstract class OnDefualtListNetboxListener<T> implements OnNetboxListener {
+public abstract class OnDefualtListListener<T> implements OnNetboxListener {
 
     /**
      * handleResponseSuccess

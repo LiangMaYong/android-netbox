@@ -17,8 +17,8 @@ import java.util.Map;
  */
 public class NetboxPath {
 
-    // action type
-    private Class<? extends NetboxAction> mActionType = null;
+    // server type
+    private Class<? extends NetboxServer> mServerType = null;
     // method
     private Method mMethod = Method.GET;
     // path
@@ -28,8 +28,8 @@ public class NetboxPath {
     // headers
     private final Map<String, String> mHeaders;
 
-    public NetboxPath(Class<? extends NetboxAction> actionType, String path) {
-        this.mActionType = actionType;
+    public NetboxPath(Class<? extends NetboxServer> actionType, String path) {
+        this.mServerType = actionType;
         NetboxConfig boxConfig = NetboxConfig.getInstance(actionType);
         this.mParams = boxConfig.getCommonParams();
         this.mHeaders = boxConfig.getCommonHeaders();
@@ -93,20 +93,20 @@ public class NetboxPath {
         if (context == null) {
             throw new IllegalArgumentException("The calling method exec must have context parameters,and context not null");
         }
-        String requestUrl = NetboxUtils.parseUrl(Netbox.action(mActionType).generateBaseUrl(), mPath);
-        Netbox.generateInterceptor(Netbox.action(mActionType).generateInterceptorType()).execRequest(context, mMethod, requestUrl, mParams, mHeaders, new OnNetboxListener() {
+        String requestUrl = NetboxUtils.parseUrl(Netbox.server(mServerType).generateBaseUrl(), mPath);
+        Netbox.generateInterceptor(Netbox.server(mServerType).generateInterceptorType()).execRequest(context, mMethod, requestUrl, mParams, mHeaders, new OnNetboxListener() {
             @Override
             public void onResponse(Response response) {
-                response.setConverter(Netbox.action(mActionType).generateConverterType());
+                response.setConverter(Netbox.server(mServerType).generateConverterType());
                 String cacheKey = NetboxUtils.generateCacheKey(response.getUrl(), response.getParams(), response.getHeaders());
-                Netbox.generateCache(Netbox.action(mActionType).generateCacheType()).saveCache(cacheKey, response.getBody());
-                Netbox.action(mActionType).handleResponse(response);
+                Netbox.generateCache(Netbox.server(mServerType).generateCacheType()).saveCache(cacheKey, response.getBody());
+                Netbox.server(mServerType).handleResponse(response);
                 listener.onResponse(response);
             }
 
             @Override
             public void onFailure(NetboxError error) {
-                Netbox.action(mActionType).handleFailure(error);
+                Netbox.server(mServerType).handleFailure(error);
                 listener.onFailure(error);
             }
         });
@@ -123,14 +123,14 @@ public class NetboxPath {
             throw new IllegalArgumentException("The calling method exec must have context parameters,and context not null");
         }
         try {
-            String requestUrl = NetboxUtils.parseUrl(Netbox.action(mActionType).generateBaseUrl(), mPath);
-            Response response = Netbox.generateInterceptor(Netbox.action(mActionType).generateInterceptorType()).syncRequest(context, mMethod, requestUrl, mParams, mHeaders);
-            Netbox.action(mActionType).handleResponse(response);
+            String requestUrl = NetboxUtils.parseUrl(Netbox.server(mServerType).generateBaseUrl(), mPath);
+            Response response = Netbox.generateInterceptor(Netbox.server(mServerType).generateInterceptorType()).syncRequest(context, mMethod, requestUrl, mParams, mHeaders);
+            Netbox.server(mServerType).handleResponse(response);
             String cacheKey = NetboxUtils.generateCacheKey(response.getUrl(), response.getParams(), response.getHeaders());
-            Netbox.generateCache(Netbox.action(mActionType).generateCacheType()).saveCache(cacheKey, response.getBody());
+            Netbox.generateCache(Netbox.server(mServerType).generateCacheType()).saveCache(cacheKey, response.getBody());
             return response;
         } catch (NetboxError error) {
-            Netbox.action(mActionType).handleFailure(error);
+            Netbox.server(mServerType).handleFailure(error);
             throw error;
         }
     }
@@ -141,14 +141,14 @@ public class NetboxPath {
      * @return response
      */
     public Response cache() {
-        String requestUrl = NetboxUtils.parseUrl(Netbox.action(mActionType).generateBaseUrl(), mPath);
+        String requestUrl = NetboxUtils.parseUrl(Netbox.server(mServerType).generateBaseUrl(), mPath);
         String cacheKey = NetboxUtils.generateCacheKey(requestUrl, mParams, mHeaders);
-        NetboxCache cache = Netbox.generateCache(Netbox.action(mActionType).generateCacheType());
+        NetboxCache cache = Netbox.generateCache(Netbox.server(mServerType).generateCacheType());
         String body = cache.getCache(cacheKey);
         if (body != null && !"".equals(body)) {
             Response response = new Response();
             response.setUrl(requestUrl);
-            response.setConverter(Netbox.action(mActionType).generateConverterType());
+            response.setConverter(Netbox.server(mServerType).generateConverterType());
             response.setParams(new HashMap<String, String>(mParams));
             response.setHeaders(new HashMap<String, String>(mHeaders));
             return response;

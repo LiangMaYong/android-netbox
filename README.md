@@ -1,6 +1,12 @@
 ﻿# android-netbox
 this is android netbox
 
+
+download jar : [android-netbox-src.jar](https://raw.githubusercontent.com/LiangMaYong/android-netbox/master/jar/android-netbox-src.jar)
+## use
+```
+Netbox.server(GithubService.class).path("/url").param("key", "param").exec(...)
+```
 ##License
 ```
 Copyright 2016 LiangMaYong

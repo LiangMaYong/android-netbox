@@ -18,7 +18,7 @@ import com.liangmayong.netbox.utils.NetboxUtils;
  * Created by liangmayong on 2016/9/12.
  */
 
-public class NetboxAction {
+public class NetboxServer {
 
     // baseURL
     private String baseURL = "";
@@ -144,10 +144,12 @@ public class NetboxAction {
 
 
     public void handleResponse(Response response) {
-        NetboxUtils.debugLog("onResponse url:" + response.getUrl() + "\n" + "body:" + response.getBody(), null);
+        if (NetboxUtils.isDebugable())
+            NetboxUtils.debugLog("onResponse url:" + response.getUrl() + "\n" + "body:" + response.getBody(), null);
     }
 
     public void handleFailure(NetboxError error) {
-        NetboxUtils.debugLog("onFailure:", error);
+        if (NetboxUtils.isDebugable())
+            NetboxUtils.debugLog("onFailure:", error);
     }
 }

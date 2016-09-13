@@ -14,11 +14,11 @@ public class NetboxConfig {
     /**
      * getInstance
      *
-     * @param actionType actionType
+     * @param serverType serverType
      * @return config
      */
-    public static NetboxConfig getInstance(Class<? extends NetboxAction> actionType) {
-        String key = actionType.getName();
+    public static NetboxConfig getInstance(Class<? extends NetboxServer> serverType) {
+        String key = serverType.getName();
         if (NET_BOX_CONFIG_MAP.containsKey(key)) {
             return NET_BOX_CONFIG_MAP.get(key);
         }

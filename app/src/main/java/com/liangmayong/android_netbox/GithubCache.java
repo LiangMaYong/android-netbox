@@ -7,7 +7,7 @@ import com.liangmayong.netbox.interfaces.NetboxCache;
 /**
  * Created by LiangMaYong on 2016/9/13.
  */
-public class ActionCache implements NetboxCache {
+public class GithubCache implements NetboxCache {
 
     @Override
     public void saveCache(String key, String body) {

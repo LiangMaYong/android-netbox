@@ -1,7 +1,6 @@
 package com.liangmayong.netbox.annotations;
 
 import com.liangmayong.netbox.interfaces.NetboxCache;
-import com.liangmayong.netbox.interfaces.NetboxInterceptor;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Created by LiangMaYong on 2016/9/13.
  */
-public class ActionCon extends DefualtNetboxConverter {
+public class GithubConverter extends DefualtNetboxConverter {
     @Override
     public boolean isSuccess(Response response) {
         return false;

@@ -26,6 +26,8 @@ public class Response implements INetboxResponse {
     private final Map<String, String> mParams = new HashMap<String, String>();
     // headers
     private final Map<String, String> mHeaders = new HashMap<String, String>();
+    // Object
+    private Object extraObject = null;
 
     public Response(String url, Map<String, String> params, Map<String, String> headers) {
         setUrl(url);
@@ -70,6 +72,24 @@ public class Response implements INetboxResponse {
      */
     public String getUrl() {
         return mUrl;
+    }
+
+    /**
+     * getExtraObject
+     *
+     * @return extraObject
+     */
+    public Object getExtraObject() {
+        return extraObject;
+    }
+
+    /**
+     * setExtraObject
+     *
+     * @param extraObject extraObject
+     */
+    public void setExtraObject(Object extraObject) {
+        this.extraObject = extraObject;
     }
 
     /**

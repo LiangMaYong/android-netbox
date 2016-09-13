@@ -35,6 +35,7 @@ public abstract class OnDefualtNetboxListener<T> implements OnNetboxListener {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void onResponse(Response response) {
         if (response.isSuccess()) {
             Class<T> clazz = null;

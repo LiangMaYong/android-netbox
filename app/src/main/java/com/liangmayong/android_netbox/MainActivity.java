@@ -4,12 +4,10 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
-import com.liangmayong.netbox.Netbox;
-import com.liangmayong.netbox.NetboxConfig;
-import com.liangmayong.netbox.defualts.OnDefualtNetboxListener;
-import com.liangmayong.netbox.interfaces.OnNetboxListener;
-import com.liangmayong.netbox.response.Response;
-import com.liangmayong.netbox.throwables.NetboxError;
+import com.liangmayong.netbox2.Netbox;
+import com.liangmayong.netbox2.interfaces.OnNetboxListener;
+import com.liangmayong.netbox2.response.Response;
+import com.liangmayong.netbox2.throwables.NetboxError;
 
 public class MainActivity extends AppCompatActivity {
 

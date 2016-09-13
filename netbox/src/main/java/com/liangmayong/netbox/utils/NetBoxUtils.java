@@ -166,11 +166,25 @@ public class NetboxUtils {
         if (url == null)
             url = "";
         StringBuilder builder = new StringBuilder("@" + url);
-        if (params != null) {
-            builder.append(params.toString());
+        if (params != null && !params.isEmpty()) {
+            builder.append("@");
+            for (Map.Entry<String, String> entry : params.entrySet()) {
+                builder.append(entry.getKey());
+                builder.append("=");
+                builder.append(entry.getValue());
+                builder.append(",");
+            }
+            builder.deleteCharAt(builder.length() - 1);
         }
-        if (headers != null) {
-            builder.append(headers.toString());
+        if (headers != null && !headers.isEmpty()) {
+            builder.append("@");
+            for (Map.Entry<String, String> entry : headers.entrySet()) {
+                builder.append(entry.getKey());
+                builder.append("=");
+                builder.append(entry.getValue());
+                builder.append(",");
+            }
+            builder.deleteCharAt(builder.length() - 1);
         }
         return md5(builder.toString());
     }

@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Netbox.server(GithubService.class).path("/list").param("key", "parames").exec(this, new OnNetboxListener() {
+        Netbox.server(GithubService.class).path("/list").param("key", "param").exec(this, new OnNetboxListener() {
             @Override
             public void onResponse(Response response) {
                 Toast.makeText(MainActivity.this, response.getBody(), Toast.LENGTH_SHORT).show();

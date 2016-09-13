@@ -2,12 +2,11 @@ package com.liangmayong.android_netbox;
 
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.liangmayong.netbox.defualts.DefualtNetboxConverter;
 import com.liangmayong.netbox.response.Response;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by LiangMaYong on 2016/9/13.
@@ -30,24 +29,26 @@ public class GithubConverter extends DefualtNetboxConverter {
 
     @Override
     public String converterDefualtKey() {
-        return "string-data";
+        return null;
     }
 
     @Override
-    public <T> T converter(String key, Type type, Response response) {
-        if (type == String.class) {
-            return (T) (key + ":000000000000000000000");
-        } else if ("java.util.List<java.lang.String>".equals(type.toString())) {
-            List<String> list = new ArrayList<String>();
-            list.add("22222222222");
-            list.add("22222222222");
-            return (T) list;
+    public <T> T converterData(String data, Type type) {
+        Log.d("TAG",data);
+        Log.d("TAG",type+"");
+        try {
+            Gson gson = new Gson();
+            T dataT = gson.fromJson(data, type);
+            return dataT;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return super.converter(key, type, response);
+        return super.converterData(data, type);
     }
 
     @Override
-    public <T> List<T> converterList(String key, Type type, Response response) {
-        return super.converterList(key, type, response);
+    public String converterKey(String key, Response response) {
+        Log.d("TAG",key);
+        return null;
     }
 }

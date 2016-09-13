@@ -86,13 +86,13 @@ public final class NetboxUtils {
     public static Type getGenericType(Object target, int index) {
         if (target == null)
             return null;
-        Type clazz = null;
-        Type t = target.getClass().getGenericSuperclass();
-        if (t instanceof ParameterizedType) {
-            Type[] types = ((ParameterizedType) t).getActualTypeArguments();
-            clazz = types[index];
+        Type type = null;
+        Type superType = target.getClass().getGenericSuperclass();
+        if (superType instanceof ParameterizedType) {
+            Type[] types = ((ParameterizedType) superType).getActualTypeArguments();
+            type = types[index];
         }
-        return clazz;
+        return type;
     }
 
     /**

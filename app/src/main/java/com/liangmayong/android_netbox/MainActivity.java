@@ -4,9 +4,13 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
+import com.google.gson.reflect.TypeToken;
 import com.liangmayong.netbox.Netbox;
 import com.liangmayong.netbox.callbacks.NetboxCallback;
+import com.liangmayong.netbox.interfaces.OnNetboxListener;
+import com.liangmayong.netbox.response.Response;
 import com.liangmayong.netbox.throwables.NetboxError;
+import com.liangmayong.netbox.types.NetboxTypeToken;
 
 import java.util.List;
 
@@ -18,9 +22,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Netbox.server(GithubService.class).path("/list").param("key", "param").exec(this, new NetboxCallback<List<String>>() {
+        Netbox.server(GithubService.class).path("/list").param("key", "param").exec(this, new NetboxCallback<List<UserBean>>() {
             @Override
-            public void handleResponseSuccess(List<String> data) {
+            public void handleResponseSuccess(List<UserBean> data) {
                 Toast.makeText(MainActivity.this, data + "", Toast.LENGTH_SHORT).show();
             }
 
@@ -32,6 +36,18 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFailure(NetboxError error) {
                 Toast.makeText(MainActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        Netbox.server(GithubService.class).path("/list").param("key", "param").exec(this, new OnNetboxListener() {
+            @Override
+            public void onResponse(Response response) {
+                Toast.makeText(MainActivity.this, response.getData((new NetboxTypeToken<List<UserBean>>()).getType()) + "", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(NetboxError error) {
+
             }
         });
 //        Netbox.server(GithubService.class).path("/list").param("key", "param").exec(this, new OnNetboxListener() {

@@ -4,7 +4,6 @@ import com.liangmayong.netbox.interfaces.NetboxConverter;
 import com.liangmayong.netbox.response.Response;
 
 import java.lang.reflect.Type;
-import java.util.List;
 
 /**
  * Created by liangmayong on 2016/9/12.
@@ -32,12 +31,13 @@ public class DefualtNetboxConverter implements NetboxConverter {
     }
 
     @Override
-    public <T> T converter(String key, Type type, Response response) {
+    public <T> T converterData(String data, Type type) {
         return null;
     }
 
     @Override
-    public <T> List<T> converterList(String key, Type type, Response response) {
+    public String converterKey(String key, Response response) {
         return null;
     }
+
 }

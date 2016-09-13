@@ -1,13 +1,14 @@
 package com.liangmayong.netbox.response;
 
+import android.util.Log;
+
 import com.liangmayong.netbox.Netbox;
 import com.liangmayong.netbox.defualts.DefualtNetboxConverter;
-import com.liangmayong.netbox.interfaces.NetboxResponse;
 import com.liangmayong.netbox.interfaces.NetboxConverter;
+import com.liangmayong.netbox.interfaces.NetboxResponse;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -190,21 +191,25 @@ public final class Response implements NetboxResponse {
 
     @Override
     public <T> T getData(Type type) {
-        return getConverter().converter(getDefualtKey(), type, this);
+        Log.d("TAG", "type:" + type);
+        String defualtKey = getDefualtKey();
+        if (defualtKey == null || "".equals(defualtKey)) {
+            return getConverter().converterData(getBody(), type);
+        }
+        return getConverter().converterData(getData(getDefualtKey()), type);
+    }
+
+    @Override
+    public String getData(String key) {
+        if (key == null || "".equals(key)) {
+            return getBody();
+        }
+        return getConverter().converterKey(key, this);
     }
 
     @Override
     public <T> T getData(String key, Type type) {
-        return getConverter().converter(key, type, this);
+        return getConverter().converterData(getData(key), type);
     }
 
-    @Override
-    public <T> List<T> getList(Type type) {
-        return getConverter().converterList(getDefualtKey(), type, this);
-    }
-
-    @Override
-    public <T> List<T> getList(String key, Type type) {
-        return getConverter().converterList(key, type, this);
-    }
 }

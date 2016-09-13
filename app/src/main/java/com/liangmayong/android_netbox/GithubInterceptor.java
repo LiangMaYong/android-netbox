@@ -18,7 +18,7 @@ public class GithubInterceptor extends DefualtNetboxInterceptor {
     @Override
     public void execRequest(Context context, Method method, String url, Map<String, String> params, Map<String, String> headers, OnNetboxListener listener) {
         Response response = new Response(url, params, headers);
-        response.setBody("this is test interceptor");
+        response.setBody("[{\"user\":\"lmy\",\"age\":23}]");
         listener.onResponse(response);
     }
 

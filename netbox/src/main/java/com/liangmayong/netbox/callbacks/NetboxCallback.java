@@ -5,8 +5,6 @@ import com.liangmayong.netbox.response.Response;
 import com.liangmayong.netbox.throwables.NetboxError;
 import com.liangmayong.netbox.utils.NetboxUtils;
 
-import java.lang.reflect.Type;
-
 /**
  * Created by LiangMaYong on 2016/9/13.
  */
@@ -40,12 +38,11 @@ public abstract class NetboxCallback<T> implements OnNetboxListener {
     @SuppressWarnings("unchecked")
     public void onResponse(Response response) {
         if (response.isSuccess()) {
-            Type type = null;
             T data = null;
             try {
-                type = NetboxUtils.getGenericType(this, 0);
-                data = response.getData(generateDefualtKey(response), type);
+                data = response.getData(NetboxUtils.getGenericType(this, 0));
             } catch (Exception e) {
+                e.printStackTrace();
             }
             handleResponseSuccess(data);
         } else {

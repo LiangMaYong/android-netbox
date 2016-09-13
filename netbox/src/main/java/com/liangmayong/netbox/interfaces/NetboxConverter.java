@@ -3,7 +3,6 @@ package com.liangmayong.netbox.interfaces;
 import com.liangmayong.netbox.response.Response;
 
 import java.lang.reflect.Type;
-import java.util.List;
 
 /**
  * Created by liangmayong on 2016/9/12.
@@ -42,24 +41,21 @@ public interface NetboxConverter {
     String converterDefualtKey();
 
     /**
-     * converter
+     * converterData
      *
-     * @param key      key
-     * @param type     type
-     * @param response response
-     * @param <T>      t
+     * @param data
+     * @param type type
+     * @param <T>  t
      * @return t
      */
-    <T> T converter(String key, Type type, Response response);
+    <T> T converterData(String data, Type type);
 
     /**
-     * converterList
+     * converterKey
      *
      * @param key      key
-     * @param type     type
      * @param response response
-     * @param <T>      t
-     * @return list
+     * @return t
      */
-    <T> List<T> converterList(String key, Type type, Response response);
+    String converterKey(String key, Response response);
 }

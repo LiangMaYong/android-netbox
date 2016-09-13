@@ -6,7 +6,7 @@ package com.liangmayong.netbox.throwables;
  * @author LiangMaYong
  * @version 1.0
  */
-public class ServerError extends NetBoxError {
+public class ServerError extends NetboxError {
 
     private static final long serialVersionUID = 1L;
 

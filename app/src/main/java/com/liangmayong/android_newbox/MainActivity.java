@@ -4,10 +4,11 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
-import com.liangmayong.netbox.NetBox;
-import com.liangmayong.netbox.defualts.OnDefualtNetBoxListener;
+import com.liangmayong.netbox.Netbox;
+import com.liangmayong.netbox.NetboxConfig;
+import com.liangmayong.netbox.defualts.OnDefualtNetboxListener;
 import com.liangmayong.netbox.response.Response;
-import com.liangmayong.netbox.throwables.NetBoxError;
+import com.liangmayong.netbox.throwables.NetboxError;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -18,11 +19,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-        NetBox.generateCommonHeaders().put("header1", "111111111111");
-        NetBox.generateCommonHeaders().put("header2", "111111111111");
-        NetBox.generateCommonHeaders().put("header3", "111111111111");
-        NetBox.generateCommonHeaders().put("header4", "111111111111");
-        NetBox.generateAction(Action.class).path("url").param("username", "sss").exec(this, new OnDefualtNetBoxListener<String>() {
+        NetboxConfig.getInstance(Action.class).putHeader("header1", "111111111111").putHeader("header2", "111111111111").putHeader("header3", "111111111111").putHeader("header4", "111111111111");
+        Netbox.generateAction(Action.class).path("url").param("username", "sss").exec(this, new OnDefualtNetboxListener<String>() {
             @Override
             public void handleResponseSuccess(String data) {
                 Toast.makeText(MainActivity.this, data, Toast.LENGTH_SHORT).show();
@@ -40,12 +38,13 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(NetBoxError error) {
+            public void onFailure(NetboxError error) {
                 Toast.makeText(MainActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
-        NetBox.generateCommonHeaders().put("header5", "111111111111");
-        NetBox.generateAction(Action.class).path("url").param("username", "sss").exec(this, new OnDefualtNetBoxListener<String>() {
+        NetboxConfig.getInstance(Action.class).putHeader("header5","2")
+                .putHeader("header6","11");
+        Netbox.generateAction(Action.class).path("url").param("username", "sss").exec(this, new OnDefualtNetboxListener<String>() {
             @Override
             public void handleResponseSuccess(String data) {
                 Toast.makeText(MainActivity.this, data, Toast.LENGTH_SHORT).show();
@@ -63,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(NetBoxError error) {
+            public void onFailure(NetboxError error) {
                 Toast.makeText(MainActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });

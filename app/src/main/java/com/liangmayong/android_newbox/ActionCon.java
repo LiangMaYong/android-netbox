@@ -1,6 +1,6 @@
 package com.liangmayong.android_newbox;
 
-import com.liangmayong.netbox.defualts.DefualtNetBoxConverter;
+import com.liangmayong.netbox.defualts.DefualtNetboxConverter;
 import com.liangmayong.netbox.response.Response;
 
 import java.util.List;
@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Created by LiangMaYong on 2016/9/13.
  */
-public class ActionCon extends DefualtNetBoxConverter {
+public class ActionCon extends DefualtNetboxConverter {
     @Override
     public boolean isSuccess(Response response) {
         return false;

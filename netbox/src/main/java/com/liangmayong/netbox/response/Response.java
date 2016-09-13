@@ -1,9 +1,9 @@
 package com.liangmayong.netbox.response;
 
-import com.liangmayong.netbox.NetBox;
-import com.liangmayong.netbox.defualts.DefualtNetBoxConverter;
-import com.liangmayong.netbox.interfaces.INetBoxResponse;
-import com.liangmayong.netbox.interfaces.NetBoxConverter;
+import com.liangmayong.netbox.Netbox;
+import com.liangmayong.netbox.defualts.DefualtNetboxConverter;
+import com.liangmayong.netbox.interfaces.INetboxResponse;
+import com.liangmayong.netbox.interfaces.NetboxConverter;
 
 import java.util.HashMap;
 import java.util.List;
@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * Created by liangmayong on 2016/9/12.
  */
-public class Response implements INetBoxResponse {
+public class Response implements INetboxResponse {
 
     // body
     private String mBody = "";
@@ -21,13 +21,13 @@ public class Response implements INetBoxResponse {
     // defualtKey
     private String mDefualtKey = null;
     // converterTypes
-    private Class<? extends NetBoxConverter> mConverterType = DefualtNetBoxConverter.class;
+    private Class<? extends NetboxConverter> mConverterType = DefualtNetboxConverter.class;
     // params
     private final Map<String, String> mParams = new HashMap<String, String>();
     // headers
     private final Map<String, String> mHeaders = new HashMap<String, String>();
 
-    public Response(Class<? extends NetBoxConverter> converterType) {
+    public Response(Class<? extends NetboxConverter> converterType) {
         if (converterType != null) {
             this.mConverterType = converterType;
         }
@@ -133,8 +133,8 @@ public class Response implements INetBoxResponse {
      *
      * @return converter
      */
-    private final NetBoxConverter getConverter() {
-        return NetBox.generateConverter(mConverterType);
+    private final NetboxConverter getConverter() {
+        return Netbox.generateConverter(mConverterType);
     }
 
     /**
@@ -142,9 +142,9 @@ public class Response implements INetBoxResponse {
      *
      * @param converterType converterType
      */
-    public final void setConverter(Class<? extends NetBoxConverter> converterType) {
+    public final void setConverter(Class<? extends NetboxConverter> converterType) {
         if (converterType == null) {
-            converterType = DefualtNetBoxConverter.class;
+            converterType = DefualtNetboxConverter.class;
         }
         this.mConverterType = converterType;
     }

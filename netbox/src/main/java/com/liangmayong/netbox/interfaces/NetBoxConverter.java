@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Created by liangmayong on 2016/9/12.
  */
-public interface NetBoxConverter {
+public interface NetboxConverter {
 
     /**
      * is success

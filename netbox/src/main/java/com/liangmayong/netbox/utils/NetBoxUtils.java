@@ -1,6 +1,10 @@
 package com.liangmayong.netbox.utils;
 
+import android.annotation.TargetApi;
 import android.app.Application;
+import android.content.pm.ApplicationInfo;
+import android.os.Build;
+import android.util.Log;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
@@ -12,11 +16,12 @@ import java.net.URL;
 /**
  * Created by liangmayong on 2016/9/12.
  */
-public class NetBoxUtils {
-
-
+public class NetboxUtils {
     // application
     private static WeakReference<Application> application = null;
+
+    // application
+    private static String TAG = "";
 
     /**
      * parseUrl
@@ -95,7 +100,7 @@ public class NetBoxUtils {
      */
     public static Application getApplication() {
         if (application == null || application.get() == null) {
-            synchronized (NetBoxUtils.class) {
+            synchronized (NetboxUtils.class) {
                 if (application == null) {
                     try {
                         Class<?> clazz = Class.forName("android.app.ActivityThread");
@@ -118,7 +123,48 @@ public class NetBoxUtils {
     }
 
 
-    private NetBoxUtils() {
+    /**
+     * isDebugable
+     *
+     * @return true or false
+     */
+    @TargetApi(Build.VERSION_CODES.DONUT)
+    public static boolean isDebugable() {
+        try {
+            ApplicationInfo info = NetboxUtils.getApplication().getApplicationInfo();
+            boolean debugable = (info.flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
+            return debugable;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /**
+     * debugLog
+     *
+     * @param message   message
+     * @param throwable throwable
+     */
+    public static void debugLog(String message, Throwable throwable) {
+        if (isDebugable()) {
+            if (throwable == null) {
+                Log.d(TAG, message);
+            } else {
+                Log.d(TAG, message, throwable);
+            }
+        }
+    }
+
+    /**
+     * setDebugTAG
+     *
+     * @param tag tag
+     */
+    public static void setDebugTAG(String tag) {
+        NetboxUtils.TAG = tag;
+    }
+
+    private NetboxUtils() {
     }
 
 }

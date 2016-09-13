@@ -2,6 +2,7 @@ package com.liangmayong.netbox.interfaces;
 
 import com.liangmayong.netbox.response.Response;
 
+import java.lang.reflect.Type;
 import java.util.List;
 
 /**
@@ -43,22 +44,22 @@ public interface NetboxConverter {
     /**
      * converter
      *
-     * @param key         key
-     * @param entityClass entityClass
-     * @param response    response
-     * @param <T>         t
+     * @param key      key
+     * @param type     type
+     * @param response response
+     * @param <T>      t
      * @return t
      */
-    <T> T converter(String key, Class<T> entityClass, Response response);
+    <T> T converter(String key, Type type, Response response);
 
     /**
      * converterList
      *
-     * @param key         key
-     * @param entityClass entityClass
-     * @param response    response
-     * @param <T>         t
+     * @param key      key
+     * @param type     type
+     * @param response response
+     * @param <T>      t
      * @return list
      */
-    <T> List<T> converterList(String key, Class<T> entityClass, Response response);
+    <T> List<T> converterList(String key, Type type, Response response);
 }

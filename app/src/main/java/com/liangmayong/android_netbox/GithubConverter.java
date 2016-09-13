@@ -1,8 +1,12 @@
 package com.liangmayong.android_netbox;
 
+import android.util.Log;
+
 import com.liangmayong.netbox.defualts.DefualtNetboxConverter;
 import com.liangmayong.netbox.response.Response;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,15 +34,20 @@ public class GithubConverter extends DefualtNetboxConverter {
     }
 
     @Override
-    public <T> T converter(String key, Class<T> entityClass, Response response) {
-        if (entityClass == String.class) {
-            return (T) ( key + ":000000000000000000000");
+    public <T> T converter(String key, Type type, Response response) {
+        if (type == String.class) {
+            return (T) (key + ":000000000000000000000");
+        } else if ("java.util.List<java.lang.String>".equals(type.toString())) {
+            List<String> list = new ArrayList<String>();
+            list.add("22222222222");
+            list.add("22222222222");
+            return (T) list;
         }
-        return super.converter(key, entityClass, response);
+        return super.converter(key, type, response);
     }
 
     @Override
-    public <T> List<T> converterList(String key, Class<T> entityClass, Response response) {
-        return super.converterList(key, entityClass, response);
+    public <T> List<T> converterList(String key, Type type, Response response) {
+        return super.converterList(key, type, response);
     }
 }

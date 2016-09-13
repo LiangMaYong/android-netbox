@@ -1,5 +1,6 @@
 package com.liangmayong.netbox.interfaces;
 
+import java.lang.reflect.Type;
 import java.util.List;
 
 /**
@@ -31,38 +32,38 @@ public interface NetboxResponse {
     /**
      * getData
      *
-     * @param entityClass entityClass
-     * @param <T>         t
+     * @param type type
+     * @param <T>  t
      * @return t
      */
-    <T> T getData(Class<T> entityClass);
+    <T> T getData(Type type);
 
     /**
      * getData
      *
-     * @param key         key
-     * @param entityClass entityClass
-     * @param <T>         t
+     * @param key  key
+     * @param type type
+     * @param <T>  t
      * @return t
      */
-    <T> T getData(String key, Class<T> entityClass);
+    <T> T getData(String key, Type type);
 
     /**
      * getList
      *
-     * @param entityClass entityClass
-     * @param <T>         t
+     * @param type type
+     * @param <T>  t
      * @return list
      */
-    <T> List<T> getList(Class<T> entityClass);
+    <T> List<T> getList(Type type);
 
     /**
      * getList
      *
-     * @param key         key
-     * @param entityClass entityClass
-     * @param <T>         t
+     * @param key  key
+     * @param type type
+     * @param <T>  t
      * @return list
      */
-    <T> List<T> getList(String key, Class<T> entityClass);
+    <T> List<T> getList(String key, Type type);
 }

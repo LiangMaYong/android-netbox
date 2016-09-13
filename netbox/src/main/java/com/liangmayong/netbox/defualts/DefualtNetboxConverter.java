@@ -3,6 +3,7 @@ package com.liangmayong.netbox.defualts;
 import com.liangmayong.netbox.interfaces.NetboxConverter;
 import com.liangmayong.netbox.response.Response;
 
+import java.lang.reflect.Type;
 import java.util.List;
 
 /**
@@ -31,12 +32,12 @@ public class DefualtNetboxConverter implements NetboxConverter {
     }
 
     @Override
-    public <T> T converter(String key, Class<T> entityClass, Response response) {
+    public <T> T converter(String key, Type type, Response response) {
         return null;
     }
 
     @Override
-    public <T> List<T> converterList(String key, Class<T> entityClass, Response response) {
+    public <T> List<T> converterList(String key, Type type, Response response) {
         return null;
     }
 }

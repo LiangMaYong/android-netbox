@@ -1,14 +1,16 @@
-package com.liangmayong.netbox.defualts;
+package com.liangmayong.netbox.callbacks;
 
 import com.liangmayong.netbox.interfaces.OnNetboxListener;
 import com.liangmayong.netbox.response.Response;
 import com.liangmayong.netbox.throwables.NetboxError;
 import com.liangmayong.netbox.utils.NetboxUtils;
 
+import java.lang.reflect.Type;
+
 /**
  * Created by LiangMaYong on 2016/9/13.
  */
-public abstract class OnDefualtObjectListener<T> implements OnNetboxListener {
+public abstract class NetboxCallback<T> implements OnNetboxListener {
 
     /**
      * handleResponseSuccess
@@ -38,11 +40,11 @@ public abstract class OnDefualtObjectListener<T> implements OnNetboxListener {
     @SuppressWarnings("unchecked")
     public void onResponse(Response response) {
         if (response.isSuccess()) {
-            Class<T> clazz = null;
+            Type type = null;
             T data = null;
             try {
-                clazz = (Class<T>) NetboxUtils.getGenericClass(this, 0);
-                data = response.getData(generateDefualtKey(response), clazz);
+                type = NetboxUtils.getGenericType(this, 0);
+                data = response.getData(generateDefualtKey(response), type);
             } catch (Exception e) {
             }
             handleResponseSuccess(data);

@@ -5,6 +5,7 @@ import com.liangmayong.netbox.defualts.DefualtNetboxConverter;
 import com.liangmayong.netbox.interfaces.NetboxResponse;
 import com.liangmayong.netbox.interfaces.NetboxConverter;
 
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -188,22 +189,22 @@ public final class Response implements NetboxResponse {
     }
 
     @Override
-    public <T> T getData(Class<T> entityClass) {
-        return getConverter().converter(getDefualtKey(), entityClass, this);
+    public <T> T getData(Type type) {
+        return getConverter().converter(getDefualtKey(), type, this);
     }
 
     @Override
-    public <T> T getData(String key, Class<T> entityClass) {
-        return getConverter().converter(key, entityClass, this);
+    public <T> T getData(String key, Type type) {
+        return getConverter().converter(key, type, this);
     }
 
     @Override
-    public <T> List<T> getList(Class<T> entityClass) {
-        return getConverter().converterList(getDefualtKey(), entityClass, this);
+    public <T> List<T> getList(Type type) {
+        return getConverter().converterList(getDefualtKey(), type, this);
     }
 
     @Override
-    public <T> List<T> getList(String key, Class<T> entityClass) {
-        return getConverter().converterList(key, entityClass, this);
+    public <T> List<T> getList(String key, Type type) {
+        return getConverter().converterList(key, type, this);
     }
 }

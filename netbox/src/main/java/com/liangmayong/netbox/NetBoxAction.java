@@ -3,41 +3,42 @@ package com.liangmayong.netbox;
 import com.liangmayong.netbox.annotations.BaseURL;
 import com.liangmayong.netbox.annotations.Converter;
 import com.liangmayong.netbox.annotations.Interceptor;
-import com.liangmayong.netbox.defualts.DefualtNetBoxConverter;
-import com.liangmayong.netbox.defualts.DefualtNetBoxInterceptor;
-import com.liangmayong.netbox.interfaces.NetBoxConverter;
-import com.liangmayong.netbox.interfaces.NetBoxInterceptor;
+import com.liangmayong.netbox.defualts.DefualtNetboxConverter;
+import com.liangmayong.netbox.defualts.DefualtNetboxInterceptor;
+import com.liangmayong.netbox.interfaces.NetboxConverter;
+import com.liangmayong.netbox.interfaces.NetboxInterceptor;
 import com.liangmayong.netbox.response.Response;
-import com.liangmayong.netbox.throwables.NetBoxError;
+import com.liangmayong.netbox.throwables.NetboxError;
+import com.liangmayong.netbox.utils.NetboxUtils;
 
 /**
  * Created by liangmayong on 2016/9/12.
  */
 
-public class NetBoxAction {
+public class NetboxAction {
 
     // baseURL
     private String baseURL = "";
     // interceptorType
-    private Class<? extends NetBoxInterceptor> interceptorType = DefualtNetBoxInterceptor.class;
+    private Class<? extends NetboxInterceptor> interceptorType = DefualtNetboxInterceptor.class;
     // converterTypes
-    private Class<? extends NetBoxConverter> converterType = DefualtNetBoxConverter.class;
+    private Class<? extends NetboxConverter> converterType = DefualtNetboxConverter.class;
 
     // generateAction
     protected final void generateAction() {
         Interceptor interceptor = getClass().getAnnotation(Interceptor.class);
         if (interceptor != null) {
-            Class<? extends NetBoxInterceptor> interceptorType = interceptor.value();
-            if (interceptorType == NetBoxInterceptor.class) {
-                interceptorType = DefualtNetBoxInterceptor.class;
+            Class<? extends NetboxInterceptor> interceptorType = interceptor.value();
+            if (interceptorType == NetboxInterceptor.class) {
+                interceptorType = DefualtNetboxInterceptor.class;
             }
             this.interceptorType = interceptorType;
         }
         Converter converter = getClass().getAnnotation(Converter.class);
         if (converter != null) {
-            Class<? extends NetBoxConverter> converterType = converter.value();
-            if (converterType == NetBoxConverter.class) {
-                converterType = DefualtNetBoxConverter.class;
+            Class<? extends NetboxConverter> converterType = converter.value();
+            if (converterType == NetboxConverter.class) {
+                converterType = DefualtNetboxConverter.class;
             }
             this.converterType = converterType;
         }
@@ -65,9 +66,9 @@ public class NetBoxAction {
      *
      * @return converterType
      */
-    protected Class<? extends NetBoxConverter> generateConverterType() {
+    protected Class<? extends NetboxConverter> generateConverterType() {
         if (converterType == null) {
-            return DefualtNetBoxConverter.class;
+            return DefualtNetboxConverter.class;
         }
         return converterType;
     }
@@ -77,9 +78,9 @@ public class NetBoxAction {
      *
      * @return interceptorType
      */
-    protected Class<? extends NetBoxInterceptor> generateInterceptorType() {
+    protected Class<? extends NetboxInterceptor> generateInterceptorType() {
         if (interceptorType == null) {
-            return DefualtNetBoxInterceptor.class;
+            return DefualtNetboxInterceptor.class;
         }
         return interceptorType;
     }
@@ -90,8 +91,8 @@ public class NetBoxAction {
      * @param path path
      * @return action
      */
-    public NetBoxPath path(String path) {
-        return new NetBoxPath(getClass(), path);
+    public NetboxPath path(String path) {
+        return new NetboxPath(getClass(), path);
     }
 
     /**
@@ -100,19 +101,28 @@ public class NetBoxAction {
      * @param path path
      * @return call
      */
-    public NetBoxPath path(StringBuilder path) {
+    public NetboxPath path(StringBuilder path) {
         if (path == null) {
-            return new NetBoxPath(getClass(), "");
+            return new NetboxPath(getClass(), "");
         }
-        return new NetBoxPath(getClass(), path.toString());
+        return new NetboxPath(getClass(), path.toString());
+    }
+
+    /**
+     * config
+     *
+     * @return config
+     */
+    public NetboxConfig config() {
+        return NetboxConfig.getInstance(getClass());
     }
 
 
     public void handleResponse(Response response) {
-
+        NetboxUtils.debugLog("Netbox response body:" + response.getBody(), null);
     }
 
-    public void handleFailure(NetBoxError error) {
-
+    public void handleFailure(NetboxError error) {
+        NetboxUtils.debugLog("Netbox response failure:", error);
     }
 }

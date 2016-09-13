@@ -1,6 +1,6 @@
 package com.liangmayong.netbox.defualts;
 
-import com.liangmayong.netbox.interfaces.NetBoxConverter;
+import com.liangmayong.netbox.interfaces.NetboxConverter;
 import com.liangmayong.netbox.response.Response;
 
 import java.util.List;
@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Created by liangmayong on 2016/9/12.
  */
-public class DefualtNetBoxConverter implements NetBoxConverter {
+public class DefualtNetboxConverter implements NetboxConverter {
 
     @Override
     public boolean isSuccess(Response response) {

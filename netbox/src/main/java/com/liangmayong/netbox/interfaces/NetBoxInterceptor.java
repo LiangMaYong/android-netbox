@@ -4,14 +4,14 @@ import android.content.Context;
 
 import com.liangmayong.netbox.concretes.Method;
 import com.liangmayong.netbox.response.Response;
-import com.liangmayong.netbox.throwables.NetBoxError;
+import com.liangmayong.netbox.throwables.NetboxError;
 
 import java.util.Map;
 
 /**
  * Created by liangmayong on 2016/9/12.
  */
-public interface NetBoxInterceptor<T extends Response> {
+public interface NetboxInterceptor<T extends Response> {
 
     /**
      * destroy
@@ -20,9 +20,9 @@ public interface NetBoxInterceptor<T extends Response> {
      */
     void destroy(Context context);
 
-    void execRequest(Context context, Class<? extends NetBoxConverter> converterType, Method method, String url, Map<String, String> params, Map<String, String> headers, OnNetBoxListener<T> listener);
+    void execRequest(Context context, Class<? extends NetboxConverter> converterType, Method method, String url, Map<String, String> params, Map<String, String> headers, OnNetboxListener<T> listener);
 
-    T execSyncRequest(Context context, Class<? extends NetBoxConverter> converterType, Method method, String url, Map<String, String> params, Map<String, String> headers) throws NetBoxError;
+    T execSyncRequest(Context context, Class<? extends NetboxConverter> converterType, Method method, String url, Map<String, String> params, Map<String, String> headers) throws NetboxError;
 
-    T execCacheRequest(Context context, Class<? extends NetBoxConverter> converterType, Method method, String url, Map<String, String> params, Map<String, String> headers) throws NetBoxError;
+    T execCacheRequest(Context context, Class<? extends NetboxConverter> converterType, Method method, String url, Map<String, String> params, Map<String, String> headers) throws NetboxError;
 }

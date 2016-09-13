@@ -1,12 +1,12 @@
 package com.liangmayong.netbox.throwables;
 
 /**
- * NetBoxError
+ * NetboxError
  *
  * @author LiangMaYong
  * @version 1.0
  */
-public class NetBoxError extends Exception {
+public class NetboxError extends Exception {
 
     private static final long serialVersionUID = 1L;
 
@@ -18,12 +18,12 @@ public class NetBoxError extends Exception {
     private Object data = null;
     private Exception exception = null;
 
-    public NetBoxError(ErrorType errorType, String message) {
+    public NetboxError(ErrorType errorType, String message) {
         super(message);
         this.errorType = errorType;
     }
 
-    public NetBoxError(ErrorType errorType, Exception exception) {
+    public NetboxError(ErrorType errorType, Exception exception) {
         super();
         this.exception = exception;
         this.errorType = errorType;

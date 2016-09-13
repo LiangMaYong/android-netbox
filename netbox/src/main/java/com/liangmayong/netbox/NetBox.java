@@ -1,7 +1,7 @@
 package com.liangmayong.netbox;
 
-import com.liangmayong.netbox.interfaces.NetBoxConverter;
-import com.liangmayong.netbox.interfaces.NetBoxInterceptor;
+import com.liangmayong.netbox.interfaces.NetboxConverter;
+import com.liangmayong.netbox.interfaces.NetboxInterceptor;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -11,9 +11,9 @@ import java.util.Map;
 /**
  * Created by liangmayong on 2016/9/12.
  */
-public class NetBox {
+public class Netbox {
 
-    private NetBox() {
+    private Netbox() {
     }
 
     // generate action method name
@@ -21,15 +21,11 @@ public class NetBox {
     // generate action method
     private static volatile Method GENERATE_ACTION_METHOD = null;
     // stringNetBoxActionMap
-    private static final Map<String, NetBoxAction> stringNetBoxActionMap = new HashMap<String, NetBoxAction>();
+    private static final Map<String, NetboxAction> stringNetBoxActionMap = new HashMap<String, NetboxAction>();
     // stringNetBoxConverterMap
-    private static final Map<String, NetBoxConverter> stringNetBoxConverterMap = new HashMap<String, NetBoxConverter>();
+    private static final Map<String, NetboxConverter> stringNetBoxConverterMap = new HashMap<String, NetboxConverter>();
     // stringNetBoxInterceptorMap
-    private static final Map<String, NetBoxInterceptor> stringNetBoxInterceptorMap = new HashMap<String, NetBoxInterceptor>();
-    // commonParams
-    private static final Map<String, String> commonParams = new HashMap<String, String>();
-    // commonHeaders
-    private static final Map<String, String> commonHeaders = new HashMap<String, String>();
+    private static final Map<String, NetboxInterceptor> stringNetBoxInterceptorMap = new HashMap<String, NetboxInterceptor>();
 
     /**
      * getActionInstance
@@ -38,7 +34,7 @@ public class NetBox {
      * @param <T>   action type
      * @return newbox action
      */
-    public static final <T extends NetBoxAction> T generateAction(Class<T> clazz) {
+    public static final <T extends NetboxAction> T generateAction(Class<T> clazz) {
         if (clazz == null) {
             throw new IllegalArgumentException("The action class must not null");
         }
@@ -55,7 +51,7 @@ public class NetBox {
             T action = constructor.newInstance();
             try {
                 if (GENERATE_ACTION_METHOD == null) {
-                    GENERATE_ACTION_METHOD = NetBoxAction.class.getDeclaredMethod(GENERATE_ACTION_METHOD_NAME);
+                    GENERATE_ACTION_METHOD = NetboxAction.class.getDeclaredMethod(GENERATE_ACTION_METHOD_NAME);
                     GENERATE_ACTION_METHOD.setAccessible(true);
                 }
                 GENERATE_ACTION_METHOD.invoke(action);
@@ -75,7 +71,7 @@ public class NetBox {
      * @param <T>   action type
      * @return newbox converter
      */
-    public static final <T extends NetBoxConverter> T generateConverter(Class<T> clazz) {
+    public static final <T extends NetboxConverter> T generateConverter(Class<T> clazz) {
         if (clazz == null) {
             throw new IllegalArgumentException("The converter class must not null");
         }
@@ -104,7 +100,7 @@ public class NetBox {
      * @param <T>   action type
      * @return newbox interceptor
      */
-    public static final <T extends NetBoxInterceptor> T generateInterceptor(Class<T> clazz) {
+    public static final <T extends NetboxInterceptor> T generateInterceptor(Class<T> clazz) {
         if (clazz == null) {
             throw new IllegalArgumentException("The interceptor class must not null");
         }
@@ -124,23 +120,5 @@ public class NetBox {
         } catch (Exception e) {
             throw new IllegalArgumentException("The interceptor generation failure:" + clazz.getName(), e);
         }
-    }
-
-    /**
-     * getCommonParams
-     *
-     * @return commonParams
-     */
-    public static Map<String, String> generateCommonParams() {
-        return commonParams;
-    }
-
-    /**
-     * getCommonHeaders
-     *
-     * @return commonHeaders
-     */
-    public static Map<String, String> generateCommonHeaders() {
-        return commonHeaders;
     }
 }

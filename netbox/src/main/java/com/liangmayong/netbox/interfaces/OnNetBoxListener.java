@@ -1,12 +1,12 @@
 package com.liangmayong.netbox.interfaces;
 
 import com.liangmayong.netbox.response.Response;
-import com.liangmayong.netbox.throwables.NetBoxError;
+import com.liangmayong.netbox.throwables.NetboxError;
 
 /**
  * Created by liangmayong on 2016/9/12.
  */
-public interface OnNetBoxListener<T extends Response> {
+public interface OnNetboxListener<T extends Response> {
 
     /**
      * onResponse
@@ -20,5 +20,5 @@ public interface OnNetBoxListener<T extends Response> {
      *
      * @param error error
      */
-    void onFailure(NetBoxError error);
+    void onFailure(NetboxError error);
 }

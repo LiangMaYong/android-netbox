@@ -3,32 +3,34 @@ package com.liangmayong.netbox;
 import android.content.Context;
 
 import com.liangmayong.netbox.concretes.Method;
-import com.liangmayong.netbox.interfaces.OnNetBoxListener;
+import com.liangmayong.netbox.interfaces.OnNetboxListener;
 import com.liangmayong.netbox.response.Response;
-import com.liangmayong.netbox.throwables.NetBoxError;
-import com.liangmayong.netbox.utils.NetBoxUtils;
+import com.liangmayong.netbox.throwables.NetboxError;
+import com.liangmayong.netbox.utils.NetboxUtils;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Created by LiangMaYong on 2016/9/13.
  */
-public class NetBoxPath {
+public class NetboxPath {
 
     // action type
-    private Class<? extends NetBoxAction> mActionType = null;
+    private Class<? extends NetboxAction> mActionType = null;
     // method
     private Method mMethod = Method.GET;
     // path
     private String mPath = "";
     // params
-    private final Map<String, String> mParams = new HashMap<String, String>(NetBox.generateCommonParams());
+    private final Map<String, String> mParams;
     // headers
-    private final Map<String, String> mHeaders = new HashMap<String, String>(NetBox.generateCommonHeaders());
+    private final Map<String, String> mHeaders;
 
-    public NetBoxPath(Class<? extends NetBoxAction> actionType, String path) {
+    public NetboxPath(Class<? extends NetboxAction> actionType, String path) {
         this.mActionType = actionType;
+        NetboxConfig boxConfig = NetboxConfig.getInstance(actionType);
+        this.mParams = boxConfig.getCommonParams();
+        this.mHeaders = boxConfig.getCommonHeaders();
     }
 
     /**
@@ -37,7 +39,7 @@ public class NetBoxPath {
      * @param method method
      * @return call
      */
-    public NetBoxPath method(Method method) {
+    public NetboxPath method(Method method) {
         this.mMethod = method;
         return this;
     }
@@ -49,7 +51,7 @@ public class NetBoxPath {
      * @param param param
      * @return call
      */
-    public NetBoxPath param(String key, String param) {
+    public NetboxPath param(String key, String param) {
         if (key != null) {
             if (param != null) {
                 mParams.put(key, param);
@@ -67,7 +69,7 @@ public class NetBoxPath {
      * @param header header
      * @return call
      */
-    public NetBoxPath header(String key, String header) {
+    public NetboxPath header(String key, String header) {
         if (key != null) {
             if (header != null) {
                 mHeaders.put(key, header);
@@ -85,21 +87,21 @@ public class NetBoxPath {
      * @param context  context
      * @param listener listener
      */
-    public void exec(Context context, final OnNetBoxListener<Response> listener) {
+    public void exec(Context context, final OnNetboxListener<Response> listener) {
         if (context == null) {
             throw new IllegalArgumentException("The calling method exec must have context parameters,and context not null");
         }
-        String requestUrl = NetBoxUtils.parseUrl(NetBox.generateAction(mActionType).generateBaseUrl(), mPath);
-        NetBox.generateInterceptor(NetBox.generateAction(mActionType).generateInterceptorType()).execRequest(context, NetBox.generateAction(mActionType).generateConverterType(), mMethod, requestUrl, mParams, mHeaders, new OnNetBoxListener<Response>() {
+        String requestUrl = NetboxUtils.parseUrl(Netbox.generateAction(mActionType).generateBaseUrl(), mPath);
+        Netbox.generateInterceptor(Netbox.generateAction(mActionType).generateInterceptorType()).execRequest(context, Netbox.generateAction(mActionType).generateConverterType(), mMethod, requestUrl, mParams, mHeaders, new OnNetboxListener<Response>() {
             @Override
             public void onResponse(Response response) {
-                NetBox.generateAction(mActionType).handleResponse(response);
+                Netbox.generateAction(mActionType).handleResponse(response);
                 listener.onResponse(response);
             }
 
             @Override
-            public void onFailure(NetBoxError error) {
-                NetBox.generateAction(mActionType).handleFailure(error);
+            public void onFailure(NetboxError error) {
+                Netbox.generateAction(mActionType).handleFailure(error);
                 listener.onFailure(error);
             }
         });
@@ -111,17 +113,17 @@ public class NetBoxPath {
      * @param context context
      * @return response
      */
-    public Response execSync(Context context) throws NetBoxError {
+    public Response execSync(Context context) throws NetboxError {
         if (context == null) {
             throw new IllegalArgumentException("The calling method exec must have context parameters,and context not null");
         }
         try {
-            String requestUrl = NetBoxUtils.parseUrl(NetBox.generateAction(mActionType).generateBaseUrl(), mPath);
-            Response response = NetBox.generateInterceptor(NetBox.generateAction(mActionType).generateInterceptorType()).execSyncRequest(context, NetBox.generateAction(mActionType).generateConverterType(), mMethod, requestUrl, mParams, mHeaders);
-            NetBox.generateAction(mActionType).handleResponse(response);
+            String requestUrl = NetboxUtils.parseUrl(Netbox.generateAction(mActionType).generateBaseUrl(), mPath);
+            Response response = Netbox.generateInterceptor(Netbox.generateAction(mActionType).generateInterceptorType()).execSyncRequest(context, Netbox.generateAction(mActionType).generateConverterType(), mMethod, requestUrl, mParams, mHeaders);
+            Netbox.generateAction(mActionType).handleResponse(response);
             return response;
-        } catch (NetBoxError error) {
-            NetBox.generateAction(mActionType).handleFailure(error);
+        } catch (NetboxError error) {
+            Netbox.generateAction(mActionType).handleFailure(error);
             throw error;
         }
     }
@@ -132,17 +134,17 @@ public class NetBoxPath {
      * @param context context
      * @return response
      */
-    public Response execCache(Context context) throws NetBoxError {
+    public Response execCache(Context context) throws NetboxError {
         if (context == null) {
             throw new IllegalArgumentException("The calling method exec must have context parameters,and context not null");
         }
         try {
-            String requestUrl = NetBoxUtils.parseUrl(NetBox.generateAction(mActionType).generateBaseUrl(), mPath);
-            Response response = NetBox.generateInterceptor(NetBox.generateAction(mActionType).generateInterceptorType()).execCacheRequest(context, NetBox.generateAction(mActionType).generateConverterType(), mMethod, requestUrl, mParams, mHeaders);
-            NetBox.generateAction(mActionType).handleResponse(response);
+            String requestUrl = NetboxUtils.parseUrl(Netbox.generateAction(mActionType).generateBaseUrl(), mPath);
+            Response response = Netbox.generateInterceptor(Netbox.generateAction(mActionType).generateInterceptorType()).execCacheRequest(context, Netbox.generateAction(mActionType).generateConverterType(), mMethod, requestUrl, mParams, mHeaders);
+            Netbox.generateAction(mActionType).handleResponse(response);
             return response;
-        } catch (NetBoxError error) {
-            NetBox.generateAction(mActionType).handleFailure(error);
+        } catch (NetboxError error) {
+            Netbox.generateAction(mActionType).handleFailure(error);
             throw error;
         }
     }

@@ -1,14 +1,14 @@
 package com.liangmayong.netbox.defualts;
 
-import com.liangmayong.netbox.interfaces.OnNetBoxListener;
+import com.liangmayong.netbox.interfaces.OnNetboxListener;
 import com.liangmayong.netbox.response.Response;
-import com.liangmayong.netbox.throwables.NetBoxError;
-import com.liangmayong.netbox.utils.NetBoxUtils;
+import com.liangmayong.netbox.throwables.NetboxError;
+import com.liangmayong.netbox.utils.NetboxUtils;
 
 /**
  * Created by LiangMaYong on 2016/9/13.
  */
-public abstract class OnDefualtNetBoxListener<T> implements OnNetBoxListener<Response> {
+public abstract class OnDefualtNetboxListener<T> implements OnNetboxListener<Response> {
 
     /**
      * handleResponseSuccess
@@ -40,7 +40,7 @@ public abstract class OnDefualtNetBoxListener<T> implements OnNetBoxListener<Res
             Class<T> clazz = null;
             T data = null;
             try {
-                clazz = (Class<T>) NetBoxUtils.getGenericClass(this, 0);
+                clazz = (Class<T>) NetboxUtils.getGenericClass(this, 0);
                 data = response.getData(generateDefualtKey(response), clazz);
             } catch (Exception e) {
             }
@@ -51,5 +51,5 @@ public abstract class OnDefualtNetBoxListener<T> implements OnNetBoxListener<Res
     }
 
     @Override
-    public abstract void onFailure(NetBoxError error);
+    public abstract void onFailure(NetboxError error);
 }

@@ -22,7 +22,7 @@ public class NetboxUtils {
     private static WeakReference<Application> application = null;
 
     // application
-    private static String TAG = "Netbox-DEBUG";
+    private static String TAG = "Netbox";
 
     /**
      * parseUrl

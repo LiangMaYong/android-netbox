@@ -1,4 +1,4 @@
-package com.liangmayong.android_newbox;
+package com.liangmayong.android_netbox;
 
 import com.liangmayong.netbox.NetboxAction;
 import com.liangmayong.netbox.annotations.BaseURL;

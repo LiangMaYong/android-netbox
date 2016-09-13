@@ -1,4 +1,4 @@
-package com.liangmayong.android_newbox;
+package com.liangmayong.android_netbox;
 
 import com.liangmayong.netbox.defualts.DefualtNetboxConverter;
 import com.liangmayong.netbox.response.Response;

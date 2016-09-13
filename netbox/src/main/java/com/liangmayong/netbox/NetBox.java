@@ -16,7 +16,10 @@ public class NetBox {
     private NetBox() {
     }
 
-    private static volatile Method createAction = null;
+    // generate action method name
+    private static final String GENERATE_ACTION_METHOD_NAME = "generateAction";
+    // generate action method
+    private static volatile Method GENERATE_ACTION_METHOD = null;
     // stringNetBoxActionMap
     private static final Map<String, NetBoxAction> stringNetBoxActionMap = new HashMap<String, NetBoxAction>();
     // stringNetBoxConverterMap
@@ -35,9 +38,9 @@ public class NetBox {
      * @param <T>   action type
      * @return newbox action
      */
-    public static final <T extends NetBoxAction> T getActionInstance(Class<T> clazz) {
+    public static final <T extends NetBoxAction> T generateAction(Class<T> clazz) {
         if (clazz == null) {
-            throw new IllegalArgumentException("the action class must not null");
+            throw new IllegalArgumentException("The action class must not null");
         }
         String key = clazz.getName();
         if (stringNetBoxActionMap.containsKey(key)) {
@@ -45,32 +48,36 @@ public class NetBox {
         }
         try {
             Constructor<T> constructor = clazz.getDeclaredConstructor();
+            if (constructor.getParameterTypes().length > 0) {
+                throw new IllegalArgumentException("The " + clazz.getClass().getName() + " constructor method must be empty parameters");
+            }
             constructor.setAccessible(true);
             T action = constructor.newInstance();
             try {
-                if (createAction == null) {
-                    createAction = NetBoxAction.class.getDeclaredMethod("create");
+                if (GENERATE_ACTION_METHOD == null) {
+                    GENERATE_ACTION_METHOD = NetBoxAction.class.getDeclaredMethod(GENERATE_ACTION_METHOD_NAME);
+                    GENERATE_ACTION_METHOD.setAccessible(true);
                 }
-                createAction.invoke(action);
+                GENERATE_ACTION_METHOD.invoke(action);
             } catch (Exception e) {
             }
+            stringNetBoxActionMap.put(key, action);
             return action;
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new IllegalArgumentException("the " + clazz.getName() + " constructor method must be empty parameters");
+            throw new IllegalArgumentException("The action generation failure:" + clazz.getName(), e);
         }
     }
 
     /**
-     * getConverterInstance
+     * generateConverter
      *
      * @param clazz clazz
      * @param <T>   action type
      * @return newbox converter
      */
-    public static final <T extends NetBoxConverter> T getConverterInstance(Class<T> clazz) {
+    public static final <T extends NetBoxConverter> T generateConverter(Class<T> clazz) {
         if (clazz == null) {
-            throw new IllegalArgumentException("the converter class must not null");
+            throw new IllegalArgumentException("The converter class must not null");
         }
         String key = clazz.getName();
         if (stringNetBoxConverterMap.containsKey(key)) {
@@ -78,24 +85,28 @@ public class NetBox {
         }
         try {
             Constructor<T> constructor = clazz.getDeclaredConstructor();
+            if (constructor.getParameterTypes().length > 0) {
+                throw new IllegalArgumentException("The " + clazz.getClass().getName() + " constructor method must be empty parameters");
+            }
             constructor.setAccessible(true);
             T converter = constructor.newInstance();
+            stringNetBoxConverterMap.put(key, converter);
             return converter;
         } catch (Exception e) {
-            throw new IllegalArgumentException("the " + clazz.getClass().getName() + " constructor method must be empty parameters");
+            throw new IllegalArgumentException("The converter generation failure:" + clazz.getName(), e);
         }
     }
 
     /**
-     * getInterceptorInstance
+     * generateInterceptor
      *
      * @param clazz clazz
      * @param <T>   action type
      * @return newbox interceptor
      */
-    public static final <T extends NetBoxInterceptor> T getInterceptorInstance(Class<T> clazz) {
+    public static final <T extends NetBoxInterceptor> T generateInterceptor(Class<T> clazz) {
         if (clazz == null) {
-            throw new IllegalArgumentException("the interceptor class must not null");
+            throw new IllegalArgumentException("The interceptor class must not null");
         }
         String key = clazz.getName();
         if (stringNetBoxInterceptorMap.containsKey(key)) {
@@ -103,10 +114,15 @@ public class NetBox {
         }
         try {
             Constructor<T> constructor = clazz.getDeclaredConstructor();
+            if (constructor.getParameterTypes().length > 0) {
+                throw new IllegalArgumentException("The " + clazz.getClass().getName() + " constructor method must be empty parameters");
+            }
             constructor.setAccessible(true);
-            return (T) constructor.newInstance();
+            T interceptor = constructor.newInstance();
+            stringNetBoxInterceptorMap.put(key, interceptor);
+            return interceptor;
         } catch (Exception e) {
-            throw new IllegalArgumentException("the " + clazz.getClass().getName() + " constructor method must be empty parameters");
+            throw new IllegalArgumentException("The interceptor generation failure:" + clazz.getName(), e);
         }
     }
 
@@ -115,7 +131,7 @@ public class NetBox {
      *
      * @return commonParams
      */
-    public static Map<String, String> getCommonParams() {
+    public static Map<String, String> generateCommonParams() {
         return commonParams;
     }
 
@@ -124,7 +140,7 @@ public class NetBox {
      *
      * @return commonHeaders
      */
-    public static Map<String, String> getCommonHeaders() {
+    public static Map<String, String> generateCommonHeaders() {
         return commonHeaders;
     }
 }

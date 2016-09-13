@@ -15,7 +15,7 @@ public class NetBoxError extends Exception {
     }
 
     private ErrorType errorType = ErrorType.UNKOWN_ERROR;
-    private Object object = null;
+    private Object data = null;
     private Exception exception = null;
 
     public NetBoxError(ErrorType errorType, String message) {
@@ -30,21 +30,21 @@ public class NetBoxError extends Exception {
     }
 
     /**
-     * getObject
+     * getData
      *
-     * @return object
+     * @return data
      */
-    public Object getObject() {
-        return object;
+    public Object getData() {
+        return data;
     }
 
     /**
-     * setObject
+     * setData
      *
-     * @param object object
+     * @param data data
      */
-    public void setObject(Object object) {
-        this.object = object;
+    public void setData(Object data) {
+        this.data = data;
     }
 
     /**

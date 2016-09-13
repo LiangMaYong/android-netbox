@@ -1,5 +1,6 @@
 package com.liangmayong.netbox.annotations;
 
+import com.liangmayong.netbox.interfaces.NetBoxConverter;
 import com.liangmayong.reform.interfaces.ReformConverter;
 
 import java.lang.annotation.ElementType;
@@ -13,5 +14,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Converter {
-    Class<? extends ReformConverter> value();
+    Class<? extends NetBoxConverter> value();
 }

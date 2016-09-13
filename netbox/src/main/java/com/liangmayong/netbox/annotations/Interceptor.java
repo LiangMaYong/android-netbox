@@ -1,5 +1,6 @@
 package com.liangmayong.netbox.annotations;
 
+import com.liangmayong.netbox.interfaces.NetBoxInterceptor;
 import com.liangmayong.reform.interfaces.ReformInterceptor;
 
 import java.lang.annotation.ElementType;
@@ -16,5 +17,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Interceptor {
-    Class<? extends ReformInterceptor> value();
+    Class<? extends NetBoxInterceptor> value();
 }

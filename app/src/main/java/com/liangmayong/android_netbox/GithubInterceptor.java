@@ -15,7 +15,6 @@ import java.util.Map;
  */
 public class GithubInterceptor extends DefualtNetboxInterceptor {
 
-
     @Override
     public void execRequest(Context context, Method method, String url, Map<String, String> params, Map<String, String> headers, OnNetboxListener listener) {
         Response response = new Response(url, params, headers);

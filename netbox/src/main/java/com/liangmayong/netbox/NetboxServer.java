@@ -1,5 +1,7 @@
 package com.liangmayong.netbox;
 
+import android.content.Context;
+
 import com.liangmayong.netbox.annotations.BaseURL;
 import com.liangmayong.netbox.annotations.Cache;
 import com.liangmayong.netbox.annotations.Converter;
@@ -142,6 +144,14 @@ public class NetboxServer {
         return NetboxConfig.getInstance(getClass());
     }
 
+    /**
+     * destroy
+     *
+     * @param context context
+     */
+    public void destroy(Context context) {
+        Netbox.generateInterceptor(generateInterceptorType()).destroyRequest(context);
+    }
 
     public void handleResponse(Response response) {
         if (NetboxUtils.isDebugable())

@@ -17,7 +17,7 @@ import java.util.Map;
 public class DefualtNetboxInterceptor implements NetboxInterceptor {
 
     @Override
-    public void destroy(Context context) {
+    public void destroyRequest(Context context) {
     }
 
     @Override

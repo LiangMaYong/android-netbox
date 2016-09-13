@@ -18,7 +18,7 @@ public interface NetboxInterceptor {
      *
      * @param context context
      */
-    void destroy(Context context);
+    void destroyRequest(Context context);
 
     void execRequest(Context context, Method method, String url, Map<String, String> params, Map<String, String> headers, OnNetboxListener listener);
 

@@ -27,22 +27,18 @@ public abstract class NetboxCallback<T> implements OnNetboxListener {
 
     /**
      * generateDefualtKey
-     *
-     * @param response response
      */
-    public String generateDefualtKey(Response response) {
-        return response.getDefualtKey();
+    public String generateDefualtKey() {
+        return null;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void onResponse(Response response) {
         if (response.isSuccess()) {
             T data = null;
             try {
                 data = response.getData(NetboxUtils.getGenericType(this, 0));
             } catch (Exception e) {
-                e.printStackTrace();
             }
             handleResponseSuccess(data);
         } else {

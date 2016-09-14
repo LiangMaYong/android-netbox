@@ -1,7 +1,5 @@
 package com.liangmayong.netbox.response;
 
-import android.util.Log;
-
 import com.liangmayong.netbox.Netbox;
 import com.liangmayong.netbox.concretes.Method;
 import com.liangmayong.netbox.concretes.Parameter;
@@ -33,7 +31,7 @@ public final class Response implements NetboxResponse {
     // headers
     private final Map<String, String> mHeaders = new HashMap<String, String>();
     // Object
-    private Object extraObject = null;
+    private Object extra = null;
 
     public Response(Method method, String url, Map<String, String> params, Map<String, String> headers) {
         setUrl(url);
@@ -91,12 +89,12 @@ public final class Response implements NetboxResponse {
     }
 
     /**
-     * getExtraObject
+     * getExtra
      *
-     * @return extraObject
+     * @return extra
      */
-    public Object getExtraObject() {
-        return extraObject;
+    public Object getExtra() {
+        return extra;
     }
 
     /**
@@ -104,7 +102,7 @@ public final class Response implements NetboxResponse {
      *
      * @param method method
      */
-    public void setMethod(Method method) {
+    private void setMethod(Method method) {
         this.mMethod = method;
     }
 
@@ -118,12 +116,12 @@ public final class Response implements NetboxResponse {
     }
 
     /**
-     * setExtraObject
+     * setExtra
      *
-     * @param extraObject extraObject
+     * @param extra extra
      */
-    public void setExtraObject(Object extraObject) {
-        this.extraObject = extraObject;
+    public void setExtra(Object extra) {
+        this.extra = extra;
     }
 
     /**
@@ -131,7 +129,7 @@ public final class Response implements NetboxResponse {
      *
      * @param url url
      */
-    public void setUrl(String url) {
+    private void setUrl(String url) {
         this.mUrl = url;
     }
 
@@ -149,7 +147,7 @@ public final class Response implements NetboxResponse {
      *
      * @param headers headers
      */
-    public void setHeaders(Map<String, String> headers) {
+    private void setHeaders(Map<String, String> headers) {
         this.mHeaders.clear();
         this.mHeaders.putAll(headers);
     }
@@ -159,7 +157,7 @@ public final class Response implements NetboxResponse {
      *
      * @param params params
      */
-    public void setParams(Map<String, String> params) {
+    private void setParams(Map<String, String> params) {
         this.mParams.clear();
         this.mParams.putAll(params);
     }
@@ -190,7 +188,7 @@ public final class Response implements NetboxResponse {
      *
      * @return converter
      */
-    private final NetboxConverter getConverter() {
+    private NetboxConverter getConverter() {
         return Netbox.generateConverter(mConverterType);
     }
 
@@ -199,7 +197,7 @@ public final class Response implements NetboxResponse {
      *
      * @param converterType converterType
      */
-    public final void setConverter(Class<? extends NetboxConverter> converterType) {
+    public void setConverter(Class<? extends NetboxConverter> converterType) {
         if (converterType == null) {
             converterType = DefualtNetboxConverter.class;
         }
@@ -223,11 +221,6 @@ public final class Response implements NetboxResponse {
 
     @Override
     public <T> T getData(Type type) {
-        Log.d("TAG", "type:" + type);
-        String defualtKey = getDefualtKey();
-        if (defualtKey == null || "".equals(defualtKey)) {
-            return getConverter().converterData(getBody(), type);
-        }
         return getConverter().converterData(getData(getDefualtKey()), type);
     }
 

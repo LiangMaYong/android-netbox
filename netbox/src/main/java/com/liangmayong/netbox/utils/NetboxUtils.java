@@ -24,6 +24,8 @@ public final class NetboxUtils {
 
     // application
     private static String TAG = "Netbox";
+    public static final String PATH_REGEX = "{path}";
+    public static final String METHOD_REGEX = "{method}";
 
     /**
      * parseUrl
@@ -32,33 +34,54 @@ public final class NetboxUtils {
      * @param path    url
      * @return newUrl
      */
-    public static String parseUrl(String baseUrl, String path) {
+    public static String parseUrl(String baseUrl, String path, com.liangmayong.netbox.concretes.Method method) {
         if (baseUrl == null) {
             baseUrl = "";
         }
         if (path == null) {
             path = "";
         }
-        if (baseUrl.contains("{path}")) {
-            String newUrl = baseUrl.replace("{path}", path);
-            while (newUrl.contains("{path}")) {
-                newUrl = newUrl.replace("{path}", path);
-            }
-            return newUrl;
-        }
         if (path.startsWith("http://") || path.startsWith("https://") || path.startsWith("ftp://")) {
             return path;
-        } else if (path.startsWith("/")) {
-            return parseHostURL(baseUrl) + path;
+        }
+        String reUrl = baseUrl;
+        if (reUrl.contains(METHOD_REGEX)) {
+            reUrl = replaceURL(reUrl, METHOD_REGEX, method.name().toLowerCase());
+        }
+        if (reUrl.contains(PATH_REGEX)) {
+            reUrl = replaceURL(reUrl, PATH_REGEX, path);
+            return reUrl;
+        }
+        if (path.startsWith("/")) {
+            return parseHostURL(reUrl) + path;
         } else if (path.startsWith("./")) {
             int subIndex = 1;
-            if (baseUrl.endsWith("/")) {
+            if (reUrl.endsWith("/")) {
                 subIndex = 2;
             }
-            return baseUrl + path.substring(subIndex);
+            return reUrl + path.substring(subIndex);
         } else {
-            return baseUrl + path;
+            return reUrl + path;
         }
+    }
+
+    /**
+     * replaceURL
+     *
+     * @param string string
+     * @param regex  regex
+     * @param rement rement
+     * @return new
+     */
+    public static String replaceURL(String string, String regex, String rement) {
+        String newUrl = string;
+        if (newUrl.contains(regex)) {
+            newUrl = newUrl.replace(regex, rement);
+            while (newUrl.contains(regex)) {
+                newUrl = newUrl.replace(regex, rement);
+            }
+        }
+        return newUrl;
     }
 
     /**

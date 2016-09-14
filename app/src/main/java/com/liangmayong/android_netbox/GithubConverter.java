@@ -13,7 +13,7 @@ import java.lang.reflect.Type;
 public class GithubConverter extends DefualtNetboxConverter {
     @Override
     public boolean isSuccess(String body) {
-        return false;
+        return true;
     }
 
     @Override
@@ -33,6 +33,9 @@ public class GithubConverter extends DefualtNetboxConverter {
 
     @Override
     public <T> T converterData(String data, Type type) {
+        if (type == String.class) {
+            return (T) data;
+        }
         try {
             Gson gson = new Gson();
             T dataT = gson.fromJson(data, type);

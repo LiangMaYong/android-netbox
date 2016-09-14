@@ -6,6 +6,7 @@ import com.liangmayong.netbox.annotations.BaseURL;
 import com.liangmayong.netbox.annotations.Cache;
 import com.liangmayong.netbox.annotations.Converter;
 import com.liangmayong.netbox.annotations.Interceptor;
+import com.liangmayong.netbox.concretes.Method;
 import com.liangmayong.netbox.defualts.DefualtNetboxCache;
 import com.liangmayong.netbox.defualts.DefualtNetboxConverter;
 import com.liangmayong.netbox.defualts.DefualtNetboxInterceptor;
@@ -32,7 +33,11 @@ public class NetboxServer {
 
     // generateAction
     protected final void generateAction() {
-        Interceptor interceptor = getClass().getAnnotation(Interceptor.class);
+        Class<?> clazz = null;
+        Interceptor interceptor = null;
+        for (clazz = getClass(); clazz != Object.class && interceptor == null; clazz = clazz.getSuperclass()) {
+            interceptor = clazz.getAnnotation(Interceptor.class);
+        }
         if (interceptor != null) {
             Class<? extends NetboxInterceptor> interceptorType = interceptor.value();
             if (interceptorType == NetboxInterceptor.class) {
@@ -40,7 +45,10 @@ public class NetboxServer {
             }
             this.interceptorType = interceptorType;
         }
-        Converter converter = getClass().getAnnotation(Converter.class);
+        Converter converter = null;
+        for (clazz = getClass(); clazz != Object.class && converter == null; clazz = clazz.getSuperclass()) {
+            converter = clazz.getAnnotation(Converter.class);
+        }
         if (converter != null) {
             Class<? extends NetboxConverter> converterType = converter.value();
             if (converterType == NetboxConverter.class) {
@@ -48,7 +56,10 @@ public class NetboxServer {
             }
             this.converterType = converterType;
         }
-        Cache cache = getClass().getAnnotation(Cache.class);
+        Cache cache = null;
+        for (clazz = getClass(); clazz != Object.class && cache == null; clazz = clazz.getSuperclass()) {
+            cache = clazz.getAnnotation(Cache.class);
+        }
         if (cache != null) {
             Class<? extends NetboxCache> cacheType = cache.value();
             if (cacheType == NetboxCache.class) {
@@ -56,7 +67,10 @@ public class NetboxServer {
             }
             this.cacheType = cacheType;
         }
-        BaseURL url = getClass().getAnnotation(BaseURL.class);
+        BaseURL url = null;
+        for (clazz = getClass(); clazz != Object.class && url == null; clazz = clazz.getSuperclass()) {
+            url = clazz.getAnnotation(BaseURL.class);
+        }
         if (url != null) {
             String baseURL = url.value();
             if (baseURL == null || "".equals(baseURL)) {
@@ -155,11 +169,35 @@ public class NetboxServer {
         Netbox.generateInterceptor(generateInterceptorType()).destroyRequest(context);
     }
 
+    /**
+     * handleResponse
+     *
+     * @param response response
+     * @return flag
+     */
     protected boolean handleResponse(Response response) {
         return false;
     }
 
+    /**
+     * handleFailure
+     *
+     * @param error error
+     * @return flag
+     */
     protected boolean handleFailure(NetboxError error) {
         return false;
+    }
+
+    /**
+     * handleURL
+     *
+     * @param baseUrl baseUrl
+     * @param path    path
+     * @param method  method
+     * @return url
+     */
+    protected String handleURL(String baseUrl, String path, Method method) {
+        return null;
     }
 }

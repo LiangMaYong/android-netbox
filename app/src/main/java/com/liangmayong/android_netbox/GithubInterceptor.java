@@ -16,7 +16,7 @@ public class GithubInterceptor extends DefualtNetboxInterceptor {
     @Override
     public void execRequest(Context context, Parameter parameter, OnNetboxListener listener) {
         Response response = new Response(parameter);
-        response.setBody("{\"data\":[{\"user\":\"lmy\",\"age\":23}]}");
+        response.setBody("{\"data\":[{\"user\":\"lmy\",\"age\":23}],\"id\":\"15800000000\"}");
         listener.onResponse(response);
     }
 

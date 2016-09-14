@@ -1,7 +1,6 @@
 package com.liangmayong.netbox.defualts;
 
 import com.liangmayong.netbox.interfaces.NetboxConverter;
-import com.liangmayong.netbox.response.Response;
 
 import java.lang.reflect.Type;
 

@@ -1,6 +1,5 @@
 package com.liangmayong.netbox.concretes;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**

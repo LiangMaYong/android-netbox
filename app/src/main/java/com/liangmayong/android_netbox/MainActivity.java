@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Netbox.server(GithubService.class).path("list").param("key", "param").exec(this, new NetboxCallback<List<UserBean>>() {
+        Netbox.server(ExServer.class).path("list").param("key", "param").exec(this, new NetboxCallback<List<UserBean>>() {
             @Override
             public void handleResponseSuccess(List<UserBean> data) {
                 Toast.makeText(MainActivity.this, data + "", Toast.LENGTH_SHORT).show();
@@ -38,11 +38,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Netbox.server(GithubService.class).path("list").param("key", "param").exec(this, new OnNetboxListener() {
+        Netbox.server(ExServer.class).path("list").param("key", "param").exec(this, new OnNetboxListener() {
             @Override
             public void onResponse(Response response) {
-                Toast.makeText(MainActivity.this, response.getData((new NetboxTypeToken<List<UserBean>>() {
-                }).getType()) + "", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, response.getData("id",String.class) + "", Toast.LENGTH_SHORT).show();
 
                 Toast.makeText(MainActivity.this, response.getUrl(), Toast.LENGTH_SHORT).show();
             }
@@ -52,16 +51,5 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-//        Netbox.server(GithubService.class).path("/list").param("key", "param").exec(this, new OnNetboxListener() {
-//            @Override
-//            public void onResponse(Response response) {
-//                Toast.makeText(MainActivity.this, response.getBody(), Toast.LENGTH_SHORT).show();
-//            }
-//
-//            @Override
-//            public void onFailure(NetboxError error) {
-//                Toast.makeText(MainActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
-//            }
-//        });
     }
 }

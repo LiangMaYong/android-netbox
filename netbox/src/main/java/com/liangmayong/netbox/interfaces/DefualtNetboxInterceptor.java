@@ -1,8 +1,8 @@
-package com.liangmayong.netbox.defualts;
+package com.liangmayong.netbox.interfaces;
 
 import android.content.Context;
 
-import com.liangmayong.netbox.concretes.Parameter;
+import com.liangmayong.netbox.params.Parameter;
 import com.liangmayong.netbox.interfaces.NetboxInterceptor;
 import com.liangmayong.netbox.interfaces.OnNetboxListener;
 import com.liangmayong.netbox.response.Response;

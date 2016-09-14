@@ -2,7 +2,7 @@ package com.liangmayong.netbox.interfaces;
 
 import android.content.Context;
 
-import com.liangmayong.netbox.concretes.Parameter;
+import com.liangmayong.netbox.params.Parameter;
 import com.liangmayong.netbox.response.Response;
 import com.liangmayong.netbox.throwables.NetboxError;
 

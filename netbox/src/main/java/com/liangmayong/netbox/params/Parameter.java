@@ -1,4 +1,6 @@
-package com.liangmayong.netbox.concretes;
+package com.liangmayong.netbox.params;
+
+import com.liangmayong.netbox.interfaces.Method;
 
 import java.util.Map;
 
@@ -14,43 +16,34 @@ public class Parameter {
     private Map<String, String> mParams = null;
     // headers
     private Map<String, String> mHeaders = null;
+    //files
+    private Map<String, FileParam> mFiles = null;
 
-    public Parameter(Method mMethod, String mUrl, Map<String, String> mParams, Map<String, String> mHeaders) {
+    public Parameter(Method mMethod, String mUrl, Map<String, String> mParams, Map<String, String> mHeaders, Map<String, FileParam> mFiles) {
         this.mMethod = mMethod;
         this.mUrl = mUrl;
         this.mParams = mParams;
         this.mHeaders = mHeaders;
+        this.mFiles = mFiles;
     }
 
     public Method getMethod() {
         return mMethod;
     }
 
-    public void setMethod(Method method) {
-        this.mMethod = method;
-    }
-
     public String getUrl() {
         return mUrl;
-    }
-
-    public void setUrl(String mUrl) {
-        this.mUrl = mUrl;
     }
 
     public Map<String, String> getParams() {
         return mParams;
     }
 
-    public void setParams(Map<String, String> params) {
-        this.mParams = params;
-    }
-
     public Map<String, String> getHeaders() {
         return mHeaders;
     }
 
-    public void setHeaders(Map<String, String> headers) {
-        this.mHeaders = headers;
+    public Map<String, FileParam> getFiles() {
+        return mFiles;
     }
 }

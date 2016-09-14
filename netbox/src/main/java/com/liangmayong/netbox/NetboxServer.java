@@ -8,10 +8,10 @@ import com.liangmayong.netbox.annotations.Converter;
 import com.liangmayong.netbox.annotations.DebugURL;
 import com.liangmayong.netbox.annotations.Debugable;
 import com.liangmayong.netbox.annotations.Interceptor;
-import com.liangmayong.netbox.concretes.Method;
-import com.liangmayong.netbox.defualts.DefualtNetboxCache;
-import com.liangmayong.netbox.defualts.DefualtNetboxConverter;
-import com.liangmayong.netbox.defualts.DefualtNetboxInterceptor;
+import com.liangmayong.netbox.interfaces.DefualtNetboxCache;
+import com.liangmayong.netbox.interfaces.DefualtNetboxConverter;
+import com.liangmayong.netbox.interfaces.DefualtNetboxInterceptor;
+import com.liangmayong.netbox.interfaces.Method;
 import com.liangmayong.netbox.interfaces.NetboxCache;
 import com.liangmayong.netbox.interfaces.NetboxConverter;
 import com.liangmayong.netbox.interfaces.NetboxInterceptor;
@@ -22,11 +22,12 @@ import com.liangmayong.netbox.utils.NetboxUtils;
 /**
  * Created by liangmayong on 2016/9/12.
  */
-
 public class NetboxServer {
 
     // debugable
     private boolean debugable = false;
+    // isSetDebugable
+    private boolean isSetDebugable = false;
     // baseURL
     private String debugURL = "";
     // baseURL
@@ -114,6 +115,7 @@ public class NetboxServer {
         }
         if (debug != null) {
             this.debugable = debug.value();
+            isSetDebugable = true;
         }
     }
 
@@ -135,8 +137,8 @@ public class NetboxServer {
      * @return debugable
      */
     public boolean isDebugable() {
-        if (debugable) {
-            return true;
+        if (isSetDebugable) {
+            return debugable;
         }
         return NetboxUtils.isDebugable();
     }

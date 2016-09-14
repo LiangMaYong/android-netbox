@@ -7,6 +7,7 @@ import android.os.Build;
 import android.util.Log;
 
 import java.lang.ref.WeakReference;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -34,7 +35,7 @@ public final class NetboxUtils {
      * @param path    url
      * @return newUrl
      */
-    public static String parseUrl(String baseUrl, String path, com.liangmayong.netbox.concretes.Method method) {
+    public static String parseUrl(String baseUrl, String path, com.liangmayong.netbox.interfaces.Method method) {
         if (baseUrl == null) {
             baseUrl = "";
         }
@@ -126,6 +127,35 @@ public final class NetboxUtils {
     }
 
     /**
+     * setField
+     *
+     * @param clazz     clazz
+     * @param object    object
+     * @param fieldName fieldName
+     * @param value     value
+     * @return true or false
+     */
+    public static boolean setField(Class<?> clazz, Object object, String fieldName, Object value) {
+        Field field = null;
+        for (; clazz != Object.class; clazz = clazz.getSuperclass()) {
+            try {
+                field = clazz.getDeclaredField(fieldName);
+            } catch (Exception e) {
+            }
+        }
+        if (field != null) {
+            field.setAccessible(true);
+            try {
+                field.set(object, value);
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+
+    /**
      * getApplication
      *
      * @return application
@@ -192,7 +222,7 @@ public final class NetboxUtils {
      *
      * @return key
      */
-    public static String generateCacheKey(com.liangmayong.netbox.concretes.Method method, String url, Map<String, String> params, Map<String, String> headers) {
+    public static String generateCacheKey(com.liangmayong.netbox.interfaces.Method method, String url, Map<String, String> params, Map<String, String> headers) {
         if (url == null)
             url = "";
         StringBuilder builder = new StringBuilder(method.name() + "@" + url);

@@ -1,7 +1,7 @@
 package com.liangmayong.android_netbox;
 
 import com.google.gson.Gson;
-import com.liangmayong.netbox.defualts.DefualtNetboxConverter;
+import com.liangmayong.netbox.interfaces.DefualtNetboxConverter;
 
 import org.json.JSONObject;
 

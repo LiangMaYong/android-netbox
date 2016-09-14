@@ -1,4 +1,4 @@
-package com.liangmayong.netbox.concretes;
+package com.liangmayong.netbox.interfaces;
 
 /**
  * Created by liangmayong on 2016/9/12.

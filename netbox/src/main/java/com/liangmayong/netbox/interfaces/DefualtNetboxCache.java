@@ -1,4 +1,4 @@
-package com.liangmayong.netbox.defualts;
+package com.liangmayong.netbox.interfaces;
 
 import com.liangmayong.netbox.interfaces.NetboxCache;
 

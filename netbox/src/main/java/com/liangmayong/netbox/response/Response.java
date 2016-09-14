@@ -1,9 +1,9 @@
 package com.liangmayong.netbox.response;
 
 import com.liangmayong.netbox.Netbox;
-import com.liangmayong.netbox.concretes.Method;
-import com.liangmayong.netbox.concretes.Parameter;
-import com.liangmayong.netbox.defualts.DefualtNetboxConverter;
+import com.liangmayong.netbox.interfaces.Method;
+import com.liangmayong.netbox.params.Parameter;
+import com.liangmayong.netbox.interfaces.DefualtNetboxConverter;
 import com.liangmayong.netbox.interfaces.NetboxConverter;
 import com.liangmayong.netbox.interfaces.NetboxResponse;
 
@@ -24,6 +24,10 @@ public final class Response implements NetboxResponse {
     private Method mMethod = Method.GET;
     // defualtKey
     private String mDefualtKey = null;
+    // request time
+    private long requestTime = 0;
+    // response time
+    private long responseTime = 0;
     // converterTypes
     private Class<? extends NetboxConverter> mConverterType = DefualtNetboxConverter.class;
     // params
@@ -32,6 +36,8 @@ public final class Response implements NetboxResponse {
     private final Map<String, String> mHeaders = new HashMap<String, String>();
     // Object
     private Object extra = null;
+    // isFormCache
+    private boolean isCache = false;
 
     public Response(Method method, String url, Map<String, String> params, Map<String, String> headers) {
         setUrl(url);
@@ -235,6 +241,42 @@ public final class Response implements NetboxResponse {
     @Override
     public <T> T getData(String key, Type type) {
         return getConverter().converterData(getData(key), type);
+    }
+
+    /**
+     * getConsumingTime
+     *
+     * @return consumingTime
+     */
+    public long getConsumingTime() {
+        return responseTime - requestTime;
+    }
+
+    /**
+     * getResponseTime
+     *
+     * @return responseTime
+     */
+    public long getResponseTime() {
+        return responseTime;
+    }
+
+    /**
+     * getRequestTime
+     *
+     * @return requestTime
+     */
+    public long getRequestTime() {
+        return requestTime;
+    }
+
+    /**
+     * isCache
+     *
+     * @return isCache
+     */
+    public boolean isCache() {
+        return isCache;
     }
 
 }

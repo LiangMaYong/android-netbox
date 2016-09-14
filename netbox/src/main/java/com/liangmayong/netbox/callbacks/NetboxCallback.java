@@ -10,6 +10,17 @@ import com.liangmayong.netbox.utils.NetboxUtils;
  */
 public abstract class NetboxCallback<T> implements OnNetboxListener {
 
+    private Response response = null;
+
+    /**
+     * getResponse
+     *
+     * @return response
+     */
+    public Response getResponse() {
+        return response;
+    }
+
     /**
      * handleResponseSuccess
      *
@@ -34,6 +45,7 @@ public abstract class NetboxCallback<T> implements OnNetboxListener {
 
     @Override
     public void onResponse(Response response) {
+        this.response = response;
         if (response.isSuccess()) {
             T data = null;
             try {

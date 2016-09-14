@@ -1,4 +1,4 @@
-package com.liangmayong.netbox.types;
+package com.liangmayong.netbox;
 
 import com.liangmayong.netbox.utils.NetboxUtils;
 

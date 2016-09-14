@@ -1,7 +1,5 @@
 package com.liangmayong.netbox.interfaces;
 
-import com.liangmayong.netbox.response.Response;
-
 import java.lang.reflect.Type;
 
 /**
@@ -12,26 +10,26 @@ public interface NetboxConverter {
     /**
      * is success
      *
-     * @param response response
+     * @param body body
      * @return true or false
      */
-    boolean isSuccess(Response response);
+    boolean isSuccess(String body);
 
     /**
      * converterErrorMessage
      *
-     * @param response response
+     * @param body body
      * @return error message
      */
-    String converterErrorMessage(Response response);
+    String converterErrorMessage(String body);
 
     /**
      * converterErrorCode
      *
-     * @param response response
+     * @param body body
      * @return error code
      */
-    String converterErrorCode(Response response);
+    String converterErrorCode(String body);
 
     /**
      * converterDefualtKey
@@ -53,9 +51,9 @@ public interface NetboxConverter {
     /**
      * converterKey
      *
-     * @param key      key
-     * @param response response
+     * @param key  key
+     * @param body body
      * @return t
      */
-    String converterKey(String key, Response response);
+    String converterKey(String key, String body);
 }

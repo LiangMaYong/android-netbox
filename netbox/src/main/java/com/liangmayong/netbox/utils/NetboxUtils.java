@@ -29,28 +29,35 @@ public final class NetboxUtils {
      * parseUrl
      *
      * @param baseUrl baseUrl
-     * @param url     url
+     * @param path    url
      * @return newUrl
      */
-    public static String parseUrl(String baseUrl, String url) {
+    public static String parseUrl(String baseUrl, String path) {
         if (baseUrl == null) {
             baseUrl = "";
         }
-        if (url == null) {
-            url = "";
+        if (path == null) {
+            path = "";
         }
-        if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("ftp://")) {
-            return url;
-        } else if (url.startsWith("/")) {
-            return parseHostURL(baseUrl) + url;
-        } else if (url.startsWith("./")) {
+        if (baseUrl.contains("{path}")) {
+            String newUrl = baseUrl.replace("{path}", path);
+            while (newUrl.contains("{path}")) {
+                newUrl = newUrl.replace("{path}", path);
+            }
+            return newUrl;
+        }
+        if (path.startsWith("http://") || path.startsWith("https://") || path.startsWith("ftp://")) {
+            return path;
+        } else if (path.startsWith("/")) {
+            return parseHostURL(baseUrl) + path;
+        } else if (path.startsWith("./")) {
             int subIndex = 1;
             if (baseUrl.endsWith("/")) {
                 subIndex = 2;
             }
-            return baseUrl + url.substring(subIndex);
+            return baseUrl + path.substring(subIndex);
         } else {
-            return baseUrl + url;
+            return baseUrl + path;
         }
     }
 
@@ -162,10 +169,10 @@ public final class NetboxUtils {
      *
      * @return key
      */
-    public static String generateCacheKey(String url, Map<String, String> params, Map<String, String> headers) {
+    public static String generateCacheKey(com.liangmayong.netbox.concretes.Method method, String url, Map<String, String> params, Map<String, String> headers) {
         if (url == null)
             url = "";
-        StringBuilder builder = new StringBuilder("@" + url);
+        StringBuilder builder = new StringBuilder(method.name() + "@" + url);
         if (params != null && !params.isEmpty()) {
             builder.append("@");
             for (Map.Entry<String, String> entry : params.entrySet()) {

@@ -9,7 +9,7 @@ import com.liangmayong.netbox.annotations.Interceptor;
 /**
  * Created by liangmayong on 2016/9/13.
  */
-@BaseURL("http://192.168.158.151/")
+@BaseURL(GithubFinal.API_URL)
 @Cache(GithubCache.class)
 @Converter(GithubConverter.class)
 @Interceptor(GithubInterceptor.class)

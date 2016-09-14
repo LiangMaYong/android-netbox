@@ -11,17 +11,17 @@ import java.lang.reflect.Type;
 public class DefualtNetboxConverter implements NetboxConverter {
 
     @Override
-    public boolean isSuccess(Response response) {
+    public boolean isSuccess(String response) {
         return false;
     }
 
     @Override
-    public String converterErrorMessage(Response response) {
+    public String converterErrorMessage(String body) {
         return null;
     }
 
     @Override
-    public String converterErrorCode(Response response) {
+    public String converterErrorCode(String response) {
         return null;
     }
 
@@ -36,7 +36,7 @@ public class DefualtNetboxConverter implements NetboxConverter {
     }
 
     @Override
-    public String converterKey(String key, Response response) {
+    public String converterKey(String key, String response) {
         return null;
     }
 

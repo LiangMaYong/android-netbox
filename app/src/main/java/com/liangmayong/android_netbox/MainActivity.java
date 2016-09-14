@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
-import com.google.gson.reflect.TypeToken;
 import com.liangmayong.netbox.Netbox;
 import com.liangmayong.netbox.callbacks.NetboxCallback;
 import com.liangmayong.netbox.interfaces.OnNetboxListener;
@@ -22,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Netbox.server(GithubService.class).path("/list").param("key", "param").exec(this, new NetboxCallback<List<UserBean>>() {
+        Netbox.server(GithubService.class).path("list").param("key", "param").exec(this, new NetboxCallback<List<UserBean>>() {
             @Override
             public void handleResponseSuccess(List<UserBean> data) {
                 Toast.makeText(MainActivity.this, data + "", Toast.LENGTH_SHORT).show();
@@ -39,10 +38,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Netbox.server(GithubService.class).path("/list").param("key", "param").exec(this, new OnNetboxListener() {
+        Netbox.server(GithubService.class).path("list").param("key", "param").exec(this, new OnNetboxListener() {
             @Override
             public void onResponse(Response response) {
-                Toast.makeText(MainActivity.this, response.getData((new NetboxTypeToken<List<UserBean>>()).getType()) + "", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, response.getData((new NetboxTypeToken<List<UserBean>>() {
+                }).getType()) + "", Toast.LENGTH_SHORT).show();
+
+                Toast.makeText(MainActivity.this, response.getUrl(), Toast.LENGTH_SHORT).show();
             }
 
             @Override

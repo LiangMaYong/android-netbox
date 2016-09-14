@@ -3,6 +3,8 @@ package com.liangmayong.netbox.response;
 import android.util.Log;
 
 import com.liangmayong.netbox.Netbox;
+import com.liangmayong.netbox.concretes.Method;
+import com.liangmayong.netbox.concretes.Parameter;
 import com.liangmayong.netbox.defualts.DefualtNetboxConverter;
 import com.liangmayong.netbox.interfaces.NetboxConverter;
 import com.liangmayong.netbox.interfaces.NetboxResponse;
@@ -20,6 +22,8 @@ public final class Response implements NetboxResponse {
     private String mBody = "";
     // url
     private String mUrl = "";
+    // method
+    private Method mMethod = Method.GET;
     // defualtKey
     private String mDefualtKey = null;
     // converterTypes
@@ -31,10 +35,20 @@ public final class Response implements NetboxResponse {
     // Object
     private Object extraObject = null;
 
-    public Response(String url, Map<String, String> params, Map<String, String> headers) {
+    public Response(Method method, String url, Map<String, String> params, Map<String, String> headers) {
         setUrl(url);
         setParams(params);
         setHeaders(headers);
+        setMethod(method);
+    }
+
+    public Response(Parameter parameter) {
+        if (parameter != null) {
+            setUrl(parameter.getUrl());
+            setParams(parameter.getParams());
+            setHeaders(parameter.getHeaders());
+            setMethod(parameter.getMethod());
+        }
     }
 
     public Response() {
@@ -83,6 +97,24 @@ public final class Response implements NetboxResponse {
      */
     public Object getExtraObject() {
         return extraObject;
+    }
+
+    /**
+     * setMethod
+     *
+     * @param method method
+     */
+    public void setMethod(Method method) {
+        this.mMethod = method;
+    }
+
+    /**
+     * getMethod
+     *
+     * @return method
+     */
+    public Method getMethod() {
+        return mMethod;
     }
 
     /**
@@ -176,17 +208,17 @@ public final class Response implements NetboxResponse {
 
     @Override
     public boolean isSuccess() {
-        return getConverter().isSuccess(this);
+        return getConverter().isSuccess(getBody());
     }
 
     @Override
     public String getErrorMessage() {
-        return getConverter().converterErrorMessage(this);
+        return getConverter().converterErrorMessage(getBody());
     }
 
     @Override
     public String getErrorCode() {
-        return getConverter().converterErrorCode(this);
+        return getConverter().converterErrorCode(getBody());
     }
 
     @Override
@@ -204,7 +236,7 @@ public final class Response implements NetboxResponse {
         if (key == null || "".equals(key)) {
             return getBody();
         }
-        return getConverter().converterKey(key, this);
+        return getConverter().converterKey(key, getBody());
     }
 
     @Override

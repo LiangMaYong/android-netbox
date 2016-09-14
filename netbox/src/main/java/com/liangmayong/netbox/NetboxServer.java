@@ -12,6 +12,8 @@ import com.liangmayong.netbox.defualts.DefualtNetboxInterceptor;
 import com.liangmayong.netbox.interfaces.NetboxCache;
 import com.liangmayong.netbox.interfaces.NetboxConverter;
 import com.liangmayong.netbox.interfaces.NetboxInterceptor;
+import com.liangmayong.netbox.response.Response;
+import com.liangmayong.netbox.throwables.NetboxError;
 
 /**
  * Created by liangmayong on 2016/9/12.
@@ -153,4 +155,11 @@ public class NetboxServer {
         Netbox.generateInterceptor(generateInterceptorType()).destroyRequest(context);
     }
 
+    protected boolean handleResponse(Response response) {
+        return false;
+    }
+
+    protected boolean handleFailure(NetboxError error) {
+        return false;
+    }
 }

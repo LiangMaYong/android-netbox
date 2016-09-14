@@ -3,6 +3,7 @@ package com.liangmayong.netbox;
 import android.content.Context;
 
 import com.liangmayong.netbox.concretes.Method;
+import com.liangmayong.netbox.concretes.Parameter;
 import com.liangmayong.netbox.interfaces.NetboxCache;
 import com.liangmayong.netbox.interfaces.OnNetboxListener;
 import com.liangmayong.netbox.response.Response;
@@ -36,6 +37,7 @@ public final class NetboxPath {
      */
     public NetboxPath(Class<? extends NetboxServer> actionType, String path) {
         this.mServerType = actionType;
+        this.mPath = path;
         NetboxConfig boxConfig = NetboxConfig.getInstance(actionType);
         this.mParams = boxConfig.getCommonParams();
         this.mHeaders = boxConfig.getCommonHeaders();
@@ -100,11 +102,12 @@ public final class NetboxPath {
             throw new IllegalArgumentException("The calling method exec must have context parameters,and context not null");
         }
         String requestUrl = NetboxUtils.parseUrl(Netbox.server(mServerType).generateBaseUrl(), mPath);
-        Netbox.generateInterceptor(Netbox.server(mServerType).generateInterceptorType()).execRequest(context, mMethod, requestUrl, mParams, mHeaders, new OnNetboxListener() {
+        Parameter parameter = new Parameter(mMethod, requestUrl, mParams, mHeaders);
+        Netbox.generateInterceptor(Netbox.server(mServerType).generateInterceptorType()).execRequest(context, parameter, new OnNetboxListener() {
             @Override
             public void onResponse(Response response) {
                 response.setConverter(Netbox.server(mServerType).generateConverterType());
-                String cacheKey = NetboxUtils.generateCacheKey(response.getUrl(), response.getParams(), response.getHeaders());
+                String cacheKey = NetboxUtils.generateCacheKey(response.getMethod(), response.getUrl(), response.getParams(), response.getHeaders());
                 Netbox.generateCache(Netbox.server(mServerType).generateCacheType()).saveCache(cacheKey, response.getBody());
                 handleResponse(response);
                 listener.onResponse(response);
@@ -130,8 +133,9 @@ public final class NetboxPath {
         }
         try {
             String requestUrl = NetboxUtils.parseUrl(Netbox.server(mServerType).generateBaseUrl(), mPath);
-            Response response = Netbox.generateInterceptor(Netbox.server(mServerType).generateInterceptorType()).syncRequest(context, mMethod, requestUrl, mParams, mHeaders);
-            String cacheKey = NetboxUtils.generateCacheKey(response.getUrl(), response.getParams(), response.getHeaders());
+            Parameter parameter = new Parameter(mMethod, requestUrl, mParams, mHeaders);
+            Response response = Netbox.generateInterceptor(Netbox.server(mServerType).generateInterceptorType()).syncRequest(context, parameter);
+            String cacheKey = NetboxUtils.generateCacheKey(response.getMethod(), response.getUrl(), response.getParams(), response.getHeaders());
             Netbox.generateCache(Netbox.server(mServerType).generateCacheType()).saveCache(cacheKey, response.getBody());
             handleResponse(response);
             return response;
@@ -148,7 +152,7 @@ public final class NetboxPath {
      */
     public Response cache() {
         String requestUrl = NetboxUtils.parseUrl(Netbox.server(mServerType).generateBaseUrl(), mPath);
-        String cacheKey = NetboxUtils.generateCacheKey(requestUrl, mParams, mHeaders);
+        String cacheKey = NetboxUtils.generateCacheKey(mMethod, requestUrl, mParams, mHeaders);
         NetboxCache cache = Netbox.generateCache(Netbox.server(mServerType).generateCacheType());
         String body = cache.getCache(cacheKey);
         if (body != null && !"".equals(body)) {
@@ -169,8 +173,20 @@ public final class NetboxPath {
      * @param response response
      */
     private void handleResponse(Response response) {
-        if (NetboxUtils.isDebugable())
-            NetboxUtils.debugLog("onResponse url:" + response.getUrl() + "\n" + "body:" + response.getBody(), null);
+        if (!Netbox.server(mServerType).handleResponse(response)) {
+            if (NetboxUtils.isDebugable()) {
+                NetboxUtils.debugLog("+=====================================+", null);
+                NetboxUtils.debugLog("url = " + response.getUrl(), null);
+                NetboxUtils.debugLog("method = " + response.getMethod().name(), null);
+                NetboxUtils.debugLog("body = " + response.getBody(), null);
+                if (response.getParams() != null && !response.getParams().isEmpty()) {
+                    NetboxUtils.debugLog("params = " + response.getParams(), null);
+                }
+                if (response.getHeaders() != null && !response.getHeaders().isEmpty()) {
+                    NetboxUtils.debugLog("headers = " + response.getHeaders(), null);
+                }
+            }
+        }
     }
 
     /**
@@ -179,7 +195,10 @@ public final class NetboxPath {
      * @param error error
      */
     private void handleFailure(NetboxError error) {
-        if (NetboxUtils.isDebugable())
-            NetboxUtils.debugLog("onFailure:", error);
+        if (!Netbox.server(mServerType).handleFailure(error)) {
+            if (NetboxUtils.isDebugable()) {
+                NetboxUtils.debugLog("onFailure:", error);
+            }
+        }
     }
 }

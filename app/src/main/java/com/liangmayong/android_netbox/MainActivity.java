@@ -9,7 +9,6 @@ import com.liangmayong.netbox.callbacks.NetboxCallback;
 import com.liangmayong.netbox.interfaces.OnNetboxListener;
 import com.liangmayong.netbox.response.Response;
 import com.liangmayong.netbox.throwables.NetboxError;
-import com.liangmayong.netbox.types.NetboxTypeToken;
 
 import java.util.List;
 
@@ -41,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         Netbox.server(ExServer.class).path("list").param("key", "param").exec(this, new OnNetboxListener() {
             @Override
             public void onResponse(Response response) {
-                Toast.makeText(MainActivity.this, response.getData("id",String.class) + "", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, response.getData("id", String.class) + "", Toast.LENGTH_SHORT).show();
 
                 Toast.makeText(MainActivity.this, response.getUrl(), Toast.LENGTH_SHORT).show();
             }

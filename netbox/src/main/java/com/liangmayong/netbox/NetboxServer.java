@@ -5,6 +5,8 @@ import android.content.Context;
 import com.liangmayong.netbox.annotations.BaseURL;
 import com.liangmayong.netbox.annotations.Cache;
 import com.liangmayong.netbox.annotations.Converter;
+import com.liangmayong.netbox.annotations.DebugURL;
+import com.liangmayong.netbox.annotations.Debugable;
 import com.liangmayong.netbox.annotations.Interceptor;
 import com.liangmayong.netbox.concretes.Method;
 import com.liangmayong.netbox.defualts.DefualtNetboxCache;
@@ -15,6 +17,7 @@ import com.liangmayong.netbox.interfaces.NetboxConverter;
 import com.liangmayong.netbox.interfaces.NetboxInterceptor;
 import com.liangmayong.netbox.response.Response;
 import com.liangmayong.netbox.throwables.NetboxError;
+import com.liangmayong.netbox.utils.NetboxUtils;
 
 /**
  * Created by liangmayong on 2016/9/12.
@@ -22,6 +25,10 @@ import com.liangmayong.netbox.throwables.NetboxError;
 
 public class NetboxServer {
 
+    // debugable
+    private boolean debugable = false;
+    // baseURL
+    private String debugURL = "";
     // baseURL
     private String baseURL = "";
     // interceptorType
@@ -34,6 +41,8 @@ public class NetboxServer {
     // generateAction
     protected final void generateAction() {
         Class<?> clazz = null;
+
+        // interceptorType
         Interceptor interceptor = null;
         for (clazz = getClass(); clazz != Object.class && interceptor == null; clazz = clazz.getSuperclass()) {
             interceptor = clazz.getAnnotation(Interceptor.class);
@@ -45,6 +54,8 @@ public class NetboxServer {
             }
             this.interceptorType = interceptorType;
         }
+
+        // converterType
         Converter converter = null;
         for (clazz = getClass(); clazz != Object.class && converter == null; clazz = clazz.getSuperclass()) {
             converter = clazz.getAnnotation(Converter.class);
@@ -56,6 +67,8 @@ public class NetboxServer {
             }
             this.converterType = converterType;
         }
+
+        // cacheType
         Cache cache = null;
         for (clazz = getClass(); clazz != Object.class && cache == null; clazz = clazz.getSuperclass()) {
             cache = clazz.getAnnotation(Cache.class);
@@ -67,6 +80,8 @@ public class NetboxServer {
             }
             this.cacheType = cacheType;
         }
+
+        // baseURL
         BaseURL url = null;
         for (clazz = getClass(); clazz != Object.class && url == null; clazz = clazz.getSuperclass()) {
             url = clazz.getAnnotation(BaseURL.class);
@@ -78,6 +93,28 @@ public class NetboxServer {
             }
             this.baseURL = baseURL;
         }
+
+        // debugURL
+        DebugURL deUrl = null;
+        for (clazz = getClass(); clazz != Object.class && deUrl == null; clazz = clazz.getSuperclass()) {
+            deUrl = clazz.getAnnotation(DebugURL.class);
+        }
+        if (deUrl != null) {
+            String debugURL = deUrl.value();
+            if (debugURL == null || "".equals(debugURL)) {
+                debugURL = "";
+            }
+            this.debugURL = debugURL;
+        }
+
+        // debugable
+        Debugable debug = null;
+        for (clazz = getClass(); clazz != Object.class && debug == null; clazz = clazz.getSuperclass()) {
+            debug = clazz.getAnnotation(Debugable.class);
+        }
+        if (debug != null) {
+            this.debugable = debug.value();
+        }
     }
 
     /**
@@ -85,11 +122,47 @@ public class NetboxServer {
      *
      * @return base url
      */
-    protected String generateBaseUrl() {
+    protected String generateBaseURL() {
         if (baseURL == null) {
             return "";
         }
         return baseURL;
+    }
+
+    /**
+     * isDebugable
+     *
+     * @return debugable
+     */
+    public boolean isDebugable() {
+        if (debugable) {
+            return true;
+        }
+        return NetboxUtils.isDebugable();
+    }
+
+    /**
+     * generateURL
+     *
+     * @return base url
+     */
+    protected String generateURL() {
+        if (isDebugable()) {
+            return generateDebugURL();
+        }
+        return generateBaseURL();
+    }
+
+    /**
+     * generateDebugURL
+     *
+     * @return base url
+     */
+    protected String generateDebugURL() {
+        if (debugURL == null) {
+            return "";
+        }
+        return debugURL;
     }
 
     /**

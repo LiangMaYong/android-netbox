@@ -127,9 +127,9 @@ public final class NetboxPath {
      * @return url
      */
     private String getRequestURL() {
-        String requestUrl = Netbox.server(mServerType).handleURL(Netbox.server(mServerType).generateBaseUrl(), mPath, mMethod);
+        String requestUrl = Netbox.server(mServerType).handleURL(Netbox.server(mServerType).generateURL(), mPath, mMethod);
         if (requestUrl == null || "".equals(requestUrl)) {
-            requestUrl = NetboxUtils.parseUrl(Netbox.server(mServerType).generateBaseUrl(), mPath, mMethod);
+            requestUrl = NetboxUtils.parseUrl(Netbox.server(mServerType).generateURL(), mPath, mMethod);
         }
         return requestUrl;
     }

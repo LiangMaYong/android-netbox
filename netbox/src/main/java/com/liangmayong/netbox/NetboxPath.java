@@ -26,6 +26,8 @@ public final class NetboxPath {
     private Method mMethod = Method.GET;
     // path
     private String mPath = "";
+    // cacheEnable
+    private boolean cacheEnable = false;
     // mRequsetIng
     private boolean mRequsetIng = false;
     // params
@@ -85,6 +87,7 @@ public final class NetboxPath {
         return this;
     }
 
+
     /**
      * file
      *
@@ -103,6 +106,16 @@ public final class NetboxPath {
                 mFiles.remove(key);
             }
         }
+        return this;
+    }
+
+    /**
+     * cacheEnable
+     *
+     * @param cacheEnable cacheEnable
+     */
+    public NetboxPath cache(boolean cacheEnable) {
+        this.cacheEnable = cacheEnable;
         return this;
     }
 
@@ -145,18 +158,22 @@ public final class NetboxPath {
      * @param context  context
      * @param listener listener
      */
-    public void exec(Context context, final boolean local, final OnNetboxListener listener) {
+    public void exec(final Context context, final boolean local, final OnNetboxListener listener) {
         if (context == null) {
             throw new IllegalArgumentException("The calling method exec must have context parameters,and context not null");
         }
         if (checkRequestIng()) {
             return;
         }
-        final String requestUrl = getRequestURL();
-        if (!mFiles.isEmpty()) {
-            mMethod = Method.FILES;
+        if (cacheEnable) {
+            Response response = cache(context);
+            if (response != null) {
+                handleResponse(response);
+                listener.onResponse(response);
+                return;
+            }
         }
-        Parameter parameter = new Parameter(mMethod, requestUrl, mParams, mHeaders, mFiles);
+        final Parameter parameter = new Parameter(Method.valueOf(mMethod.value()), getRequestURL(), new HashMap<String, String>(mParams), new HashMap<String, String>(mHeaders), new HashMap<String, FileParam>(mFiles));
         mRequsetIng = true;
         final long requestTime = System.currentTimeMillis();
         Netbox.generateInterceptor(Netbox.server(mServerType).generateInterceptorType()).execRequest(context, parameter, new OnNetboxListener() {
@@ -170,8 +187,12 @@ public final class NetboxPath {
                 NetboxUtils.setField(Response.class, response, "requestTime", requestTime);
                 NetboxUtils.setField(Response.class, response, "responseTime", System.currentTimeMillis());
                 NetboxUtils.setField(Response.class, response, "isCache", false);
-                String cacheKey = NetboxUtils.generateCacheKey(response.getMethod(), response.getUrl(), response.getParams(), response.getHeaders());
-                Netbox.generateCache(Netbox.server(mServerType).generateCacheType()).saveCache(cacheKey, response.getBody());
+                NetboxCache cache = Netbox.generateCache(Netbox.server(mServerType).generateCacheType());
+                String cacheKey = cache.generateKey(context, parameter);
+                if (cacheKey == null || "".equals(cacheKey)) {
+                    cacheKey = NetboxUtils.generateCacheKey(parameter);
+                }
+                cache.putCache(context, cacheKey, response.getBody());
                 handleResponse(response);
                 listener.onResponse(response);
                 mRequsetIng = false;
@@ -181,7 +202,7 @@ public final class NetboxPath {
             public void onFailure(NetboxError error) {
                 mRequsetIng = false;
                 if (local) {
-                    Response response = cache();
+                    Response response = cache(context);
                     if (response != null) {
                         onResponse(response);
                         return;
@@ -203,16 +224,19 @@ public final class NetboxPath {
         if (checkRequestIng()) {
             return null;
         }
+        if (cacheEnable) {
+            Response response = cache(context);
+            if (response != null) {
+                handleResponse(response);
+                return response;
+            }
+        }
         mRequsetIng = true;
         if (context == null) {
             throw new IllegalArgumentException("The calling method exec must have context parameters,and context not null");
         }
         try {
-            String requestUrl = getRequestURL();
-            if (!mFiles.isEmpty()) {
-                mMethod = Method.FILES;
-            }
-            Parameter parameter = new Parameter(mMethod, requestUrl, mParams, mHeaders, mFiles);
+            Parameter parameter = new Parameter(Method.valueOf(mMethod.value()), getRequestURL(), new HashMap<String, String>(mParams), new HashMap<String, String>(mHeaders), new HashMap<String, FileParam>(mFiles));
             final long requestTime = System.currentTimeMillis();
             Response response = Netbox.generateInterceptor(Netbox.server(mServerType).generateInterceptorType()).syncRequest(context, parameter);
             if (response == null) {
@@ -222,8 +246,12 @@ public final class NetboxPath {
             NetboxUtils.setField(Response.class, response, "requestTime", requestTime);
             NetboxUtils.setField(Response.class, response, "responseTime", System.currentTimeMillis());
             NetboxUtils.setField(Response.class, response, "isCache", false);
-            String cacheKey = NetboxUtils.generateCacheKey(response.getMethod(), response.getUrl(), response.getParams(), response.getHeaders());
-            Netbox.generateCache(Netbox.server(mServerType).generateCacheType()).saveCache(cacheKey, response.getBody());
+            NetboxCache cache = Netbox.generateCache(Netbox.server(mServerType).generateCacheType());
+            String cacheKey = cache.generateKey(context, parameter);
+            if (cacheKey == null || "".equals(cacheKey)) {
+                cacheKey = NetboxUtils.generateCacheKey(parameter);
+            }
+            cache.putCache(context, cacheKey, response.getBody());
             handleResponse(response);
             mRequsetIng = false;
             return response;
@@ -239,14 +267,18 @@ public final class NetboxPath {
      *
      * @return response
      */
-    public Response cache() {
-        String requestUrl = getRequestURL();
-        String cacheKey = NetboxUtils.generateCacheKey(mMethod, requestUrl, mParams, mHeaders);
+    private Response cache(Context context) {
+        Parameter parameter = new Parameter(Method.valueOf(mMethod.value()), getRequestURL(), new HashMap<String, String>(mParams), new HashMap<String, String>(mHeaders), new HashMap<String, FileParam>(mFiles));
         NetboxCache cache = Netbox.generateCache(Netbox.server(mServerType).generateCacheType());
-        String body = cache.getCache(cacheKey);
+        String cacheKey = cache.generateKey(context, parameter);
+        if (cacheKey == null || "".equals(cacheKey)) {
+            cacheKey = NetboxUtils.generateCacheKey(parameter);
+        }
+        String body = cache.getCache(context, cacheKey);
         if (body != null && !"".equals(body)) {
             final long requestTime = System.currentTimeMillis();
-            Response response = new Response(mMethod, requestUrl, new HashMap<String, String>(mParams), new HashMap<String, String>(mHeaders));
+            Response response = new Response(parameter);
+            response.setBody(body);
             response.setConverter(Netbox.server(mServerType).generateConverterType());
             NetboxUtils.setField(Response.class, response, "requestTime", requestTime);
             NetboxUtils.setField(Response.class, response, "responseTime", System.currentTimeMillis());

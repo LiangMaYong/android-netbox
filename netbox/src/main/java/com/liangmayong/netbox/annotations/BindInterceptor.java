@@ -1,6 +1,6 @@
 package com.liangmayong.netbox.annotations;
 
-import com.liangmayong.netbox.interfaces.NetboxConverter;
+import com.liangmayong.netbox.interfaces.NetboxInterceptor;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -8,10 +8,15 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Created by liangmayong on 2016/9/12.
+ * BindInterceptor
+ *
+ * @author LiangMaYong
+ * @version 1.0
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Converter {
-    Class<? extends NetboxConverter> value();
+public @interface BindInterceptor {
+    Class<? extends NetboxInterceptor> value();
+
+    String note() default "";
 }

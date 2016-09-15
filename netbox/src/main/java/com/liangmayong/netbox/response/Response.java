@@ -1,11 +1,11 @@
 package com.liangmayong.netbox.response;
 
 import com.liangmayong.netbox.Netbox;
-import com.liangmayong.netbox.interfaces.Method;
-import com.liangmayong.netbox.params.Parameter;
 import com.liangmayong.netbox.interfaces.DefualtNetboxConverter;
+import com.liangmayong.netbox.interfaces.Method;
 import com.liangmayong.netbox.interfaces.NetboxConverter;
 import com.liangmayong.netbox.interfaces.NetboxResponse;
+import com.liangmayong.netbox.params.Parameter;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
@@ -35,9 +35,11 @@ public final class Response implements NetboxResponse {
     // headers
     private final Map<String, String> mHeaders = new HashMap<String, String>();
     // Object
-    private Object extra = null;
+    private Object mExtra = null;
     // isFormCache
     private boolean isCache = false;
+    // isConverter
+    private boolean isConverter = false;
 
     public Response(Method method, String url, Map<String, String> params, Map<String, String> headers) {
         setUrl(url);
@@ -64,6 +66,10 @@ public final class Response implements NetboxResponse {
      * @return body
      */
     public String getBody() {
+        if (!isConverter) {
+            mBody = getConverter().converterBody(mBody);
+            isConverter = true;
+        }
         return mBody;
     }
 
@@ -100,7 +106,7 @@ public final class Response implements NetboxResponse {
      * @return extra
      */
     public Object getExtra() {
-        return extra;
+        return mExtra;
     }
 
     /**
@@ -127,7 +133,7 @@ public final class Response implements NetboxResponse {
      * @param extra extra
      */
     public void setExtra(Object extra) {
-        this.extra = extra;
+        this.mExtra = extra;
     }
 
     /**
@@ -279,4 +285,16 @@ public final class Response implements NetboxResponse {
         return isCache;
     }
 
+    @Override
+    public String toString() {
+        return "Response{" +
+                "Body='" + mBody + '\'' +
+                ", Url='" + mUrl + '\'' +
+                ", Method=" + mMethod +
+                ", Params=" + mParams +
+                ", Headers=" + mHeaders +
+                ", Extra=" + mExtra +
+                ", isCache=" + isCache +
+                '}';
+    }
 }

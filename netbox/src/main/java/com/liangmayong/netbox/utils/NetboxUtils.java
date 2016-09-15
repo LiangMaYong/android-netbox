@@ -6,6 +6,8 @@ import android.content.pm.ApplicationInfo;
 import android.os.Build;
 import android.util.Log;
 
+import com.liangmayong.netbox.params.Parameter;
+
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -222,13 +224,11 @@ public final class NetboxUtils {
      *
      * @return key
      */
-    public static String generateCacheKey(com.liangmayong.netbox.interfaces.Method method, String url, Map<String, String> params, Map<String, String> headers) {
-        if (url == null)
-            url = "";
-        StringBuilder builder = new StringBuilder(method.name() + "@" + url);
-        if (params != null && !params.isEmpty()) {
+    public static String generateCacheKey(Parameter parameter) {
+        StringBuilder builder = new StringBuilder(parameter.getMethod().name() + "@" + parameter.getUrl());
+        if (parameter.getParams() != null && !parameter.getParams().isEmpty()) {
             builder.append("@");
-            for (Map.Entry<String, String> entry : params.entrySet()) {
+            for (Map.Entry<String, String> entry : parameter.getParams().entrySet()) {
                 builder.append(entry.getKey());
                 builder.append("=");
                 builder.append(entry.getValue());
@@ -236,9 +236,9 @@ public final class NetboxUtils {
             }
             builder.deleteCharAt(builder.length() - 1);
         }
-        if (headers != null && !headers.isEmpty()) {
+        if (parameter.getHeaders() != null && !parameter.getHeaders().isEmpty()) {
             builder.append("@");
-            for (Map.Entry<String, String> entry : headers.entrySet()) {
+            for (Map.Entry<String, String> entry : parameter.getHeaders().entrySet()) {
                 builder.append(entry.getKey());
                 builder.append("=");
                 builder.append(entry.getValue());

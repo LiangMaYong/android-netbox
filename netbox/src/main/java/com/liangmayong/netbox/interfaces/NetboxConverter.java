@@ -56,4 +56,12 @@ public interface NetboxConverter {
      * @return t
      */
     String converterKey(String key, String body);
+
+    /**
+     * converterBody
+     *
+     * @param body body
+     * @return t
+     */
+    String converterBody(String body);
 }

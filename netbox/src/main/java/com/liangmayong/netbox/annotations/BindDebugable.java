@@ -6,10 +6,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Created by liangmayong on 2016/9/13.
+ * Created by LiangMaYong on 2016/9/14.
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface BaseURL {
-    String value();
+public @interface BindDebugable {
+    boolean value() default true;
+
+    String note() default "";
 }

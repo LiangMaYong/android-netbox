@@ -2,12 +2,11 @@ package com.liangmayong.netbox;
 
 import android.content.Context;
 
-import com.liangmayong.netbox.annotations.BaseURL;
-import com.liangmayong.netbox.annotations.Cache;
-import com.liangmayong.netbox.annotations.Converter;
-import com.liangmayong.netbox.annotations.DebugURL;
-import com.liangmayong.netbox.annotations.Debugable;
-import com.liangmayong.netbox.annotations.Interceptor;
+import com.liangmayong.netbox.annotations.BindCache;
+import com.liangmayong.netbox.annotations.BindConverter;
+import com.liangmayong.netbox.annotations.BindDebugable;
+import com.liangmayong.netbox.annotations.BindInterceptor;
+import com.liangmayong.netbox.annotations.BindURL;
 import com.liangmayong.netbox.interfaces.DefualtNetboxCache;
 import com.liangmayong.netbox.interfaces.DefualtNetboxConverter;
 import com.liangmayong.netbox.interfaces.DefualtNetboxInterceptor;
@@ -44,9 +43,9 @@ public class NetboxServer {
         Class<?> clazz = null;
 
         // interceptorType
-        Interceptor interceptor = null;
+        BindInterceptor interceptor = null;
         for (clazz = getClass(); clazz != Object.class && interceptor == null; clazz = clazz.getSuperclass()) {
-            interceptor = clazz.getAnnotation(Interceptor.class);
+            interceptor = clazz.getAnnotation(BindInterceptor.class);
         }
         if (interceptor != null) {
             Class<? extends NetboxInterceptor> interceptorType = interceptor.value();
@@ -57,9 +56,9 @@ public class NetboxServer {
         }
 
         // converterType
-        Converter converter = null;
+        BindConverter converter = null;
         for (clazz = getClass(); clazz != Object.class && converter == null; clazz = clazz.getSuperclass()) {
-            converter = clazz.getAnnotation(Converter.class);
+            converter = clazz.getAnnotation(BindConverter.class);
         }
         if (converter != null) {
             Class<? extends NetboxConverter> converterType = converter.value();
@@ -70,9 +69,9 @@ public class NetboxServer {
         }
 
         // cacheType
-        Cache cache = null;
+        BindCache cache = null;
         for (clazz = getClass(); clazz != Object.class && cache == null; clazz = clazz.getSuperclass()) {
-            cache = clazz.getAnnotation(Cache.class);
+            cache = clazz.getAnnotation(BindCache.class);
         }
         if (cache != null) {
             Class<? extends NetboxCache> cacheType = cache.value();
@@ -83,35 +82,27 @@ public class NetboxServer {
         }
 
         // baseURL
-        BaseURL url = null;
+        BindURL url = null;
         for (clazz = getClass(); clazz != Object.class && url == null; clazz = clazz.getSuperclass()) {
-            url = clazz.getAnnotation(BaseURL.class);
+            url = clazz.getAnnotation(BindURL.class);
         }
         if (url != null) {
             String baseURL = url.value();
+            String debugURL = url.debug();
             if (baseURL == null || "".equals(baseURL)) {
                 baseURL = "";
             }
-            this.baseURL = baseURL;
-        }
-
-        // debugURL
-        DebugURL deUrl = null;
-        for (clazz = getClass(); clazz != Object.class && deUrl == null; clazz = clazz.getSuperclass()) {
-            deUrl = clazz.getAnnotation(DebugURL.class);
-        }
-        if (deUrl != null) {
-            String debugURL = deUrl.value();
             if (debugURL == null || "".equals(debugURL)) {
                 debugURL = "";
             }
             this.debugURL = debugURL;
+            this.baseURL = baseURL;
         }
 
         // debugable
-        Debugable debug = null;
+        BindDebugable debug = null;
         for (clazz = getClass(); clazz != Object.class && debug == null; clazz = clazz.getSuperclass()) {
-            debug = clazz.getAnnotation(Debugable.class);
+            debug = clazz.getAnnotation(BindDebugable.class);
         }
         if (debug != null) {
             this.debugable = debug.value();
@@ -206,6 +197,15 @@ public class NetboxServer {
     /**
      * path
      *
+     * @return action
+     */
+    public final NetboxPath path() {
+        return new NetboxPath(getClass(), "");
+    }
+
+    /**
+     * path
+     *
      * @param path path
      * @return action
      */
@@ -233,6 +233,15 @@ public class NetboxServer {
      */
     public final NetboxConfig config() {
         return NetboxConfig.getInstance(getClass());
+    }
+
+    /**
+     * cache
+     *
+     * @return cache
+     */
+    public final NetboxCache cache() {
+        return Netbox.generateCache(generateCacheType());
     }
 
     /**

@@ -32,6 +32,13 @@ public class Parameter {
     }
 
     public String getUrl() {
+        if (mMethod == Method.GET) {
+            String url = mUrl;
+            url = url.contains("?") ? new StringBuilder(url).append("&").append(getStringParams()).toString() :
+                    new StringBuilder(url).append("?").append(getStringParams()).toString();
+            url = url.replaceAll(" ", "-");
+            return url;
+        }
         return mUrl;
     }
 
@@ -45,5 +52,14 @@ public class Parameter {
 
     public Map<String, FileParam> getFiles() {
         return mFiles;
+    }
+
+    private String getStringParams() {
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry<String, String> entry : getParams().entrySet()) {
+            sb.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
+        }
+        sb.deleteCharAt(sb.length() - 1);
+        return sb.toString();
     }
 }

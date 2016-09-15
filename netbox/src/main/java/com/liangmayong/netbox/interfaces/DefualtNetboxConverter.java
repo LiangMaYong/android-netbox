@@ -39,4 +39,9 @@ public class DefualtNetboxConverter implements NetboxConverter {
         return null;
     }
 
+    @Override
+    public String converterBody(String body) {
+        return body;
+    }
+
 }

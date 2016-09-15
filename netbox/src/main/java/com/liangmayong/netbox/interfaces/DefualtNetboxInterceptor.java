@@ -20,12 +20,12 @@ public class DefualtNetboxInterceptor implements NetboxInterceptor {
 
     @Override
     public void execRequest(Context context, Parameter parameter, OnNetboxListener listener) {
-        listener.onFailure(new UnkownError("Interceptor uninitialized"));
+        listener.onFailure(new UnkownError("BindInterceptor uninitialized"));
     }
 
     @Override
     public Response syncRequest(Context context, Parameter parameter) throws NetboxError {
-        throw new UnkownError("Interceptor uninitialized");
+        throw new UnkownError("BindInterceptor uninitialized");
     }
 
 }

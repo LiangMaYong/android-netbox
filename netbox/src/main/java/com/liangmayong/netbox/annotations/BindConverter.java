@@ -1,6 +1,6 @@
 package com.liangmayong.netbox.annotations;
 
-import com.liangmayong.netbox.interfaces.NetboxCache;
+import com.liangmayong.netbox.interfaces.NetboxConverter;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -8,10 +8,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Created by LiangMaYong on 2016/9/13.
+ * Created by liangmayong on 2016/9/12.
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Cache {
-    Class<? extends NetboxCache> value();
+public @interface BindConverter {
+    Class<? extends NetboxConverter> value();
+
+    String note() default "";
 }

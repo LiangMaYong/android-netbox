@@ -1,10 +1,14 @@
-﻿# android-netbox
+﻿# Android-netbox
 this is android netbox library
 
 [![LatestVersion](https://img.shields.io/badge/LatestVersion-1.0.0-brightgreen.svg?style=plastic) ](https://github.com/LiangMaYong/android-netbox/releases/)
-## gradle
+## Gradle
 ```
 compile 'com.liangmayong.android:netbox:$LatestVersion'
+```
+## Get start
+```
+Netbox.server(GithubService.class).path("list").param("username", "liangmayong").exec(...)
 ```
 ## LICENSE
 ```

@@ -1,13 +1,12 @@
 ﻿# android-netbox
-this is android netbox
+this is android netbox library
 
-
-download jar : [android-netbox-src.jar](https://raw.githubusercontent.com/LiangMaYong/android-netbox/master/jar/android-netbox-src.jar)
-## use
+[![LatestVersion](https://img.shields.io/badge/LatestVersion-1.0.0-brightgreen.svg?style=plastic) ](https://github.com/LiangMaYong/android-netbox/releases/)
+## gradle
 ```
-Netbox.server(GithubService.class).path("list").param("username", "liangmayong").exec(...)
+compile 'com.liangmayong.android:netbox:$LatestVersion'
 ```
-##License
+## LICENSE
 ```
 Copyright 2016 LiangMaYong
 

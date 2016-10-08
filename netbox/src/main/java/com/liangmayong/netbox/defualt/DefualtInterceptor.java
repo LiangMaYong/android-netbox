@@ -1,4 +1,4 @@
-package com.liangmayong.android_netbox;
+package com.liangmayong.netbox.defualt;
 
 import android.content.Context;
 
@@ -20,7 +20,7 @@ import com.liangmayong.volley.VoMethod;
 /**
  * Created by LiangMaYong on 2016/9/13.
  */
-public class DefualtVolleyInterceptor extends DefualtNetboxInterceptor {
+public class DefualtInterceptor extends DefualtNetboxInterceptor {
 
     @Override
     public void execRequest(Context context, final Parameter parameter, final OnNetboxListener listener) {
@@ -57,7 +57,6 @@ public class DefualtVolleyInterceptor extends DefualtNetboxInterceptor {
         VoMethod method = VoMethod.valueOf(parameter.getMethod().value());
         try {
             String data = Vo.stringSync(context, method, parameter.getUrl(), parameter.getParams(), parameter.getHeaders());
-
             Response response = new Response(parameter);
             response.setBody(data);
             return response;

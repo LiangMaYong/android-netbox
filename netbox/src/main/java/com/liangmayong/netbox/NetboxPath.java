@@ -147,18 +147,7 @@ public final class NetboxPath {
      * @param context  context
      * @param listener listener
      */
-    public void exec(Context context, final OnNetboxListener listener) {
-        exec(context, false, listener);
-    }
-
-
-    /**
-     * exec
-     *
-     * @param context  context
-     * @param listener listener
-     */
-    public void exec(final Context context, final boolean local, final OnNetboxListener listener) {
+    public void exec(final Context context, final OnNetboxListener listener) {
         if (context == null) {
             throw new IllegalArgumentException("The calling method exec must have context parameters,and context not null");
         }
@@ -201,13 +190,6 @@ public final class NetboxPath {
             @Override
             public void onFailure(NetboxError error) {
                 mRequsetIng = false;
-                if (local) {
-                    Response response = cache(context);
-                    if (response != null) {
-                        onResponse(response);
-                        return;
-                    }
-                }
                 handleFailure(error);
                 listener.onFailure(error);
             }
@@ -325,7 +307,7 @@ public final class NetboxPath {
         if (!Netbox.server(mServerType).handleResponse(response)) {
             if (NetboxUtils.isDebugable()) {
                 NetboxUtils.debugLog("+=-------------------------------------------------------=+", null);
-                NetboxUtils.debugLog("+=                  by Netbox onResponse                 =+", null);
+                NetboxUtils.debugLog("+=                  By Netbox onResponse                 =+", null);
                 NetboxUtils.debugLog("+=-------------------------------------------------------=+", null);
                 NetboxUtils.debugLog("+= url = " + response.getUrl(), null);
                 NetboxUtils.debugLog("+= method = " + response.getMethod().name(), null);
@@ -350,7 +332,7 @@ public final class NetboxPath {
         if (!Netbox.server(mServerType).handleFailure(error)) {
             if (NetboxUtils.isDebugable()) {
                 NetboxUtils.debugLog("+=-------------------------------------------------------=+", null);
-                NetboxUtils.debugLog("+=                 by Netbox onFailure                   =+", null);
+                NetboxUtils.debugLog("+=                 By Netbox onFailure                   =+", null);
                 NetboxUtils.debugLog("+=-------------------------------------------------------=+", null);
                 NetboxUtils.debugLog("onFailure:", error);
             }

@@ -55,11 +55,14 @@ public class Parameter {
     }
 
     private String getStringParams() {
-        StringBuilder sb = new StringBuilder();
-        for (Map.Entry<String, String> entry : getParams().entrySet()) {
-            sb.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
+        if (!getParams().isEmpty()) {
+            StringBuilder sb = new StringBuilder();
+            for (Map.Entry<String, String> entry : getParams().entrySet()) {
+                sb.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
+            }
+            sb.deleteCharAt(sb.length() - 1);
+            return sb.toString();
         }
-        sb.deleteCharAt(sb.length() - 1);
-        return sb.toString();
+        return "";
     }
 }

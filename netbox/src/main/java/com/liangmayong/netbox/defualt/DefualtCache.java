@@ -1,4 +1,4 @@
-package com.liangmayong.android_netbox;
+package com.liangmayong.netbox.defualt;
 
 import android.content.Context;
 
@@ -8,7 +8,7 @@ import com.liangmayong.netbox.interfaces.DefualtNetboxCache;
 /**
  * Created by LiangMaYong on 2016/9/13.
  */
-public class DefualtHoldCache extends DefualtNetboxCache {
+public class DefualtCache extends DefualtNetboxCache {
 
     @Override
     public void putCache(Context context, String key, String body) {

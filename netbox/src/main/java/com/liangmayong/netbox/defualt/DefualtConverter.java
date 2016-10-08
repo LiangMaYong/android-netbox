@@ -1,8 +1,9 @@
-package com.liangmayong.android_netbox;
+package com.liangmayong.netbox.defualt;
 
 import com.google.gson.Gson;
 import com.liangmayong.netbox.interfaces.DefualtNetboxConverter;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
@@ -10,29 +11,43 @@ import java.lang.reflect.Type;
 /**
  * Created by liangmayong on 2016/9/15.
  */
-public class DefualtGsonConverter extends DefualtNetboxConverter {
+public class DefualtConverter extends DefualtNetboxConverter {
 
     //gson
     private volatile Gson gson = null;
 
     @Override
     public boolean isSuccess(String body) {
-        return true;
+        String result_code = converterErrorCode(body);
+        if ("1".equals(result_code) || "10000".equals(result_code)) {
+            return true;
+        }
+        return false;
     }
 
     @Override
     public String converterErrorMessage(String body) {
+        try {
+            JSONObject jsonObject = new JSONObject(body);
+            return jsonObject.getString("result_msg");
+        } catch (JSONException e) {
+        }
         return "unkown error";
     }
 
     @Override
     public String converterErrorCode(String body) {
+        try {
+            JSONObject jsonObject = new JSONObject(body);
+            return jsonObject.getString("result_code");
+        } catch (JSONException e) {
+        }
         return "-1";
     }
 
     @Override
     public String converterDefualtKey() {
-        return null;
+        return "result_data";
     }
 
     @Override

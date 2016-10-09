@@ -64,4 +64,11 @@ public interface NetboxConverter {
      * @return t
      */
     String converterBody(String body);
+
+    /**
+     * converterTimestamp
+     *
+     * @return timestamp
+     */
+    long converterTimestamp(String body);
 }

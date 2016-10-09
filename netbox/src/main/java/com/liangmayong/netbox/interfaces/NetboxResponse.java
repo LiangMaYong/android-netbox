@@ -15,6 +15,13 @@ public interface NetboxResponse {
     boolean isSuccess();
 
     /**
+     * getTimestamp
+     *
+     * @return timestamp
+     */
+    long getTimestamp();
+
+    /**
      * getErrorMessage
      *
      * @return error message

@@ -44,4 +44,8 @@ public class DefualtNetboxConverter implements NetboxConverter {
         return body;
     }
 
+    @Override
+    public long converterTimestamp(String body) {
+        return System.currentTimeMillis();
+    }
 }

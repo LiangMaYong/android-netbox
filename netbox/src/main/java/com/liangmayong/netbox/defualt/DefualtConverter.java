@@ -46,6 +46,16 @@ public class DefualtConverter extends DefualtNetboxConverter {
     }
 
     @Override
+    public long converterTimestamp(String body) {
+        try {
+            JSONObject jsonObject = new JSONObject(body);
+            return jsonObject.getLong("timestamp");
+        } catch (JSONException e) {
+        }
+        return super.converterTimestamp(body);
+    }
+
+    @Override
     public String converterDefualtKey() {
         return "result_data";
     }

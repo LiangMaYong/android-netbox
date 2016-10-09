@@ -5,8 +5,13 @@ import android.content.Context;
 import com.liangmayong.netbox.annotations.BindCache;
 import com.liangmayong.netbox.annotations.BindConverter;
 import com.liangmayong.netbox.annotations.BindDebugable;
+import com.liangmayong.netbox.annotations.BindHeaders;
 import com.liangmayong.netbox.annotations.BindInterceptor;
+import com.liangmayong.netbox.annotations.BindParams;
 import com.liangmayong.netbox.annotations.BindURL;
+import com.liangmayong.netbox.defualt.DefualtCache;
+import com.liangmayong.netbox.defualt.DefualtConverter;
+import com.liangmayong.netbox.defualt.DefualtInterceptor;
 import com.liangmayong.netbox.interfaces.DefualtNetboxCache;
 import com.liangmayong.netbox.interfaces.DefualtNetboxConverter;
 import com.liangmayong.netbox.interfaces.DefualtNetboxInterceptor;
@@ -18,9 +23,15 @@ import com.liangmayong.netbox.response.Response;
 import com.liangmayong.netbox.throwables.NetboxError;
 import com.liangmayong.netbox.utils.NetboxUtils;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by liangmayong on 2016/9/12.
  */
+@BindCache(DefualtCache.class)
+@BindConverter(DefualtConverter.class)
+@BindInterceptor(DefualtInterceptor.class)
 public class NetboxServer {
 
     // debugable
@@ -107,6 +118,38 @@ public class NetboxServer {
         if (debug != null) {
             this.debugable = debug.value();
             isSetDebugable = true;
+        }
+
+        BindParams bindParam = null;
+        for (clazz = getClass(); clazz != Object.class && bindParam == null; clazz = clazz.getSuperclass()) {
+            bindParam = clazz.getAnnotation(BindParams.class);
+        }
+        if (bindParam != null) {
+            Map<String, String> params = new HashMap<String, String>();
+            String[] keys = bindParam.key();
+            String[] values = bindParam.value();
+            for (int i = 0; i < keys.length; i++) {
+                if (values.length > i) {
+                    params.put(keys[i], values[i]);
+                }
+            }
+            config().putParams(params);
+        }
+
+        BindHeaders bindHeader = null;
+        for (clazz = getClass(); clazz != Object.class && bindHeader == null; clazz = clazz.getSuperclass()) {
+            bindHeader = clazz.getAnnotation(BindHeaders.class);
+        }
+        if (bindHeader != null) {
+            Map<String, String> headers = new HashMap<String, String>();
+            String[] keys = bindHeader.key();
+            String[] values = bindHeader.value();
+            for (int i = 0; i < keys.length; i++) {
+                if (values.length > i) {
+                    headers.put(keys[i], values[i]);
+                }
+            }
+            config().putHeaders(headers);
         }
     }
 

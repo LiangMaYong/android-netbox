@@ -12,5 +12,4 @@ import com.liangmayong.netbox.annotations.BindInterceptor;
 @BindConverter(DefualtConverter.class)
 @BindInterceptor(DefualtInterceptor.class)
 public abstract class DefualtServer extends NetboxServer {
-
 }

@@ -318,6 +318,7 @@ public final class NetboxPath {
                 if (response.getHeaders() != null && !response.getHeaders().isEmpty()) {
                     NetboxUtils.debugLog("+= headers = " + response.getHeaders(), null);
                 }
+                NetboxUtils.debugLog("+= timestamp = " + response.getTimestamp(), null);
                 NetboxUtils.debugLog("+=-------------------------------------------------------=+", null);
             }
         }

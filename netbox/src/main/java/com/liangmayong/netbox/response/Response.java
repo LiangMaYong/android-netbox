@@ -222,6 +222,11 @@ public final class Response implements NetboxResponse {
     }
 
     @Override
+    public long getTimestamp() {
+        return getConverter().converterTimestamp(getBody());
+    }
+
+    @Override
     public String getErrorMessage() {
         return getConverter().converterErrorMessage(getBody());
     }
@@ -290,6 +295,7 @@ public final class Response implements NetboxResponse {
         return "Response{" +
                 "Body='" + mBody + '\'' +
                 ", Url='" + mUrl + '\'' +
+                ", Timestamp='" + getTimestamp() + '\'' +
                 ", Method=" + mMethod +
                 ", Params=" + mParams +
                 ", Headers=" + mHeaders +

@@ -6,7 +6,7 @@ import com.liangmayong.netbox.throwables.NetboxError;
 /**
  * Created by liangmayong on 2016/9/12.
  */
-public interface OnNetboxListener{
+public interface OnNetboxListener {
 
     /**
      * onResponse
@@ -21,4 +21,12 @@ public interface OnNetboxListener{
      * @param error error
      */
     void onFailure(NetboxError error);
+
+
+    /**
+     * onProgress
+     *
+     * @param progress progress
+     */
+    void onProgress(int progress);
 }

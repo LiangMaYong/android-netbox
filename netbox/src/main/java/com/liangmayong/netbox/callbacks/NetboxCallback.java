@@ -60,4 +60,8 @@ public abstract class NetboxCallback<T> implements OnNetboxListener {
 
     @Override
     public abstract void onFailure(NetboxError error);
+
+    @Override
+    public void onProgress(int progress) {
+    }
 }

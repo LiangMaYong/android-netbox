@@ -26,8 +26,8 @@ public final class NetboxPath {
     private Method mMethod = Method.GET;
     // path
     private String mPath = "";
-    // cacheEnable
-    private boolean cacheEnable = false;
+    // mCache
+    private boolean mCache = false;
     // mRequsetIng
     private boolean mRequsetIng = false;
     // params
@@ -87,6 +87,21 @@ public final class NetboxPath {
         return this;
     }
 
+    /**
+     * params
+     *
+     * @param params params
+     * @return path
+     */
+    public NetboxPath params(Map<String, String> params) {
+        if (checkRequestIng()) {
+            return this;
+        }
+        if (params != null) {
+            mParams.putAll(params);
+        }
+        return this;
+    }
 
     /**
      * file
@@ -110,12 +125,12 @@ public final class NetboxPath {
     }
 
     /**
-     * cacheEnable
+     * mCache
      *
-     * @param cacheEnable cacheEnable
+     * @param cacheEnable mCache
      */
     public NetboxPath cache(boolean cacheEnable) {
-        this.cacheEnable = cacheEnable;
+        this.mCache = cacheEnable;
         return this;
     }
 
@@ -140,6 +155,21 @@ public final class NetboxPath {
         return this;
     }
 
+    /**
+     * headers
+     *
+     * @param headers headers
+     * @return path
+     */
+    public NetboxPath headers(Map<String, String> headers) {
+        if (checkRequestIng()) {
+            return this;
+        }
+        if (headers != null) {
+            mHeaders.putAll(headers);
+        }
+        return this;
+    }
 
     /**
      * exec
@@ -154,7 +184,7 @@ public final class NetboxPath {
         if (checkRequestIng()) {
             return;
         }
-        if (cacheEnable) {
+        if (mCache) {
             Response response = cache(context);
             if (response != null) {
                 handleResponse(response);
@@ -183,7 +213,9 @@ public final class NetboxPath {
                 }
                 cache.putCache(context, cacheKey, response.getBody());
                 handleResponse(response);
-                listener.onResponse(response);
+                if (listener != null) {
+                    listener.onResponse(response);
+                }
                 mRequsetIng = false;
             }
 
@@ -191,7 +223,16 @@ public final class NetboxPath {
             public void onFailure(NetboxError error) {
                 mRequsetIng = false;
                 handleFailure(error);
-                listener.onFailure(error);
+                if (listener != null) {
+                    listener.onFailure(error);
+                }
+            }
+
+            @Override
+            public void onProgress(int progress) {
+                if (listener != null) {
+                    listener.onProgress(progress);
+                }
             }
         });
     }
@@ -206,7 +247,7 @@ public final class NetboxPath {
         if (checkRequestIng()) {
             return null;
         }
-        if (cacheEnable) {
+        if (mCache) {
             Response response = cache(context);
             if (response != null) {
                 handleResponse(response);

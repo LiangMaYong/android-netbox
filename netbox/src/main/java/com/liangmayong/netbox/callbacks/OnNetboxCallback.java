@@ -8,7 +8,7 @@ import com.liangmayong.netbox.utils.NetboxUtils;
 /**
  * Created by LiangMaYong on 2016/9/13.
  */
-public abstract class NetboxCallback<T> implements OnNetboxListener {
+public abstract class OnNetboxCallback<T> implements OnNetboxListener {
 
     private Response response = null;
 

@@ -2,12 +2,10 @@ package com.liangmayong.android_netbox;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.Toast;
 
 import com.liangmayong.netbox.Netbox;
+import com.liangmayong.netbox.callbacks.OnNetboxCallback;
 import com.liangmayong.netbox.interfaces.Method;
-import com.liangmayong.netbox.interfaces.OnNetboxListener;
-import com.liangmayong.netbox.response.Response;
 import com.liangmayong.netbox.throwables.NetboxError;
 
 public class MainActivity extends AppCompatActivity {
@@ -17,12 +15,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Netbox.server(DemoService.class).path().method(Method.POST).exec(this, new OnNetboxListener() {
+        Netbox.server(DemoService.class).path().method(Method.POST).exec(new OnNetboxCallback<DemoBean>() {
             @Override
-            public void onResponse(Response response) {
-                Toast.makeText(MainActivity.this, response.getData("result_msg", String.class) + "", Toast.LENGTH_SHORT).show();
-                Toast.makeText(MainActivity.this, response.getUrl(), Toast.LENGTH_SHORT).show();
-                Toast.makeText(MainActivity.this, response.getConsumingTime() + "", Toast.LENGTH_SHORT).show();
+            public void handleResponseSuccess(DemoBean data) {
+
+            }
+
+            @Override
+            public void handleResponseError(String code, String message) {
+
             }
 
             @Override

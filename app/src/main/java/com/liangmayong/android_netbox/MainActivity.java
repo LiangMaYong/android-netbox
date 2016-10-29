@@ -15,7 +15,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Netbox.server(DemoService.class).path().method(Method.POST).exec(new OnNetboxCallback<DemoBean>() {
+        Netbox.server(DemoService.class).path().method(Method.POST).exec(this, new OnNetboxCallback<DemoBean>() {
             @Override
             public void handleResponseSuccess(DemoBean data) {
 

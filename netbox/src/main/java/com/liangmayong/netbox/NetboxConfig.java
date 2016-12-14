@@ -37,6 +37,26 @@ public final class NetboxConfig {
     private final Map<String, String> commonParams = new HashMap<String, String>();
     // commonHeaders
     private final Map<String, String> commonHeaders = new HashMap<String, String>();
+    // debugable
+    private boolean debugable = false;
+
+    /**
+     * isDebugable
+     *
+     * @return debugable
+     */
+    public boolean isDebugable() {
+        return debugable;
+    }
+
+    /**
+     * setDebugable
+     *
+     * @param debugable debugable
+     */
+    public void setDebugable(boolean debugable) {
+        this.debugable = debugable;
+    }
 
     /**
      * getCommonHeaders

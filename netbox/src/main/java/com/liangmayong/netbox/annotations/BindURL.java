@@ -14,6 +14,4 @@ public @interface BindURL {
     String value();
 
     String debug() default "";
-
-    String note() default "";
 }

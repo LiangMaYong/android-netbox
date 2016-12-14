@@ -14,6 +14,4 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface BindConverter {
     Class<? extends NetboxConverter> value();
-
-    String note() default "";
 }

@@ -49,7 +49,7 @@ public abstract class OnNetboxCallback<T> implements OnNetboxListener {
         if (response.isSuccess()) {
             T data = null;
             try {
-                data = response.getData(NetboxUtils.getGenericType(this, 0));
+                data = response.getData(generateDefualtKey(), NetboxUtils.getGenericType(this, 0));
             } catch (Exception e) {
             }
             handleResponseSuccess(data);

@@ -14,6 +14,4 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface BindCache {
     Class<? extends NetboxCache> value();
-
-    String note() default "";
 }

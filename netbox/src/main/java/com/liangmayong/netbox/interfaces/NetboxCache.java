@@ -9,13 +9,13 @@ import com.liangmayong.netbox.params.Parameter;
  */
 public interface NetboxCache {
     /**
-     * putCache
+     * setCache
      *
      * @param context context
      * @param key     key
      * @param body    body
      */
-    void putCache(Context context, String key, String body);
+    void setCache(Context context, String key, String body);
 
     /**
      * getCache

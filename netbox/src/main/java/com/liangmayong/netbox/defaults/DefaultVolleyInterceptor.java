@@ -1,9 +1,9 @@
-package com.liangmayong.netbox.defualt;
+package com.liangmayong.netbox.defaults;
 
 import android.content.Context;
 
 import com.android.volley.VolleyError;
-import com.liangmayong.netbox.interfaces.DefualtNetboxInterceptor;
+import com.liangmayong.netbox.interfaces.DefaultNetboxInterceptor;
 import com.liangmayong.netbox.interfaces.OnNetboxListener;
 import com.liangmayong.netbox.params.Parameter;
 import com.liangmayong.netbox.response.Response;
@@ -13,14 +13,14 @@ import com.liangmayong.netbox.throwables.NetworkError;
 import com.liangmayong.netbox.throwables.ParseError;
 import com.liangmayong.netbox.throwables.ServerError;
 import com.liangmayong.netbox.throwables.UnkownError;
-import com.liangmayong.volley.Vo;
-import com.liangmayong.volley.VoError;
-import com.liangmayong.volley.VoMethod;
+import com.liangmayong.netbox.volley.Vo;
+import com.liangmayong.netbox.volley.VoError;
+import com.liangmayong.netbox.volley.VoMethod;
 
 /**
  * Created by LiangMaYong on 2016/9/13.
  */
-public class DefualtInterceptor extends DefualtNetboxInterceptor {
+public class DefaultVolleyInterceptor extends DefaultNetboxInterceptor {
 
     @Override
     public void execRequest(Context context, final Parameter parameter, final OnNetboxListener listener) {

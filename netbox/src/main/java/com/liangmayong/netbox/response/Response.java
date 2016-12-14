@@ -1,7 +1,7 @@
 package com.liangmayong.netbox.response;
 
 import com.liangmayong.netbox.Netbox;
-import com.liangmayong.netbox.interfaces.DefualtNetboxConverter;
+import com.liangmayong.netbox.interfaces.DefaultNetboxConverter;
 import com.liangmayong.netbox.interfaces.Method;
 import com.liangmayong.netbox.interfaces.NetboxConverter;
 import com.liangmayong.netbox.interfaces.NetboxResponse;
@@ -29,7 +29,7 @@ public final class Response implements NetboxResponse {
     // response time
     private long responseTime = 0;
     // converterTypes
-    private Class<? extends NetboxConverter> mConverterType = DefualtNetboxConverter.class;
+    private Class<? extends NetboxConverter> mConverterType = DefaultNetboxConverter.class;
     // params
     private final Map<String, String> mParams = new HashMap<String, String>();
     // headers
@@ -211,7 +211,7 @@ public final class Response implements NetboxResponse {
      */
     public void setConverter(Class<? extends NetboxConverter> converterType) {
         if (converterType == null) {
-            converterType = DefualtNetboxConverter.class;
+            converterType = DefaultNetboxConverter.class;
         }
         this.mConverterType = converterType;
     }
@@ -251,6 +251,9 @@ public final class Response implements NetboxResponse {
 
     @Override
     public <T> T getData(String key, Type type) {
+        if (key == null) {
+            key = getDefualtKey();
+        }
         return getConverter().converterData(getData(key), type);
     }
 
@@ -261,24 +264,6 @@ public final class Response implements NetboxResponse {
      */
     public long getConsumingTime() {
         return responseTime - requestTime;
-    }
-
-    /**
-     * getResponseTime
-     *
-     * @return responseTime
-     */
-    public long getResponseTime() {
-        return responseTime;
-    }
-
-    /**
-     * getRequestTime
-     *
-     * @return requestTime
-     */
-    public long getRequestTime() {
-        return requestTime;
     }
 
     /**

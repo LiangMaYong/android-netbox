@@ -1,4 +1,4 @@
-package com.liangmayong.netbox.defualt;
+package com.liangmayong.netbox.defaults;
 
 import com.liangmayong.netbox.NetboxServer;
 import com.liangmayong.netbox.annotations.BindCache;
@@ -8,8 +8,8 @@ import com.liangmayong.netbox.annotations.BindInterceptor;
 /**
  * Created by liangmayong on 2016/9/13.
  */
-@BindCache(DefualtCache.class)
-@BindConverter(DefualtConverter.class)
-@BindInterceptor(DefualtInterceptor.class)
-public abstract class DefualtServer extends NetboxServer {
+@BindCache(DefaultCache.class)
+@BindConverter(DefaultGsonConverter.class)
+@BindInterceptor(DefaultVolleyInterceptor.class)
+public abstract class DefaultVolleyServer extends NetboxServer {
 }

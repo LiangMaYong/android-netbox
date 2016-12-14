@@ -1,7 +1,7 @@
-package com.liangmayong.netbox.defualt;
+package com.liangmayong.netbox.defaults;
 
 import com.google.gson.Gson;
-import com.liangmayong.netbox.interfaces.DefualtNetboxConverter;
+import com.liangmayong.netbox.interfaces.DefaultNetboxConverter;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -11,7 +11,7 @@ import java.lang.reflect.Type;
 /**
  * Created by liangmayong on 2016/9/15.
  */
-public class DefualtConverter extends DefualtNetboxConverter {
+public class DefaultGsonConverter extends DefaultNetboxConverter {
 
     //gson
     private volatile Gson gson = null;

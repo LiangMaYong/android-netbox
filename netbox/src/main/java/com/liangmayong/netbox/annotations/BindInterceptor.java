@@ -17,6 +17,4 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface BindInterceptor {
     Class<? extends NetboxInterceptor> value();
-
-    String note() default "";
 }

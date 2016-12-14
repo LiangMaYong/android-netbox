@@ -9,16 +9,14 @@ import com.liangmayong.netbox.annotations.BindHeaders;
 import com.liangmayong.netbox.annotations.BindInterceptor;
 import com.liangmayong.netbox.annotations.BindParams;
 import com.liangmayong.netbox.annotations.BindURL;
-import com.liangmayong.netbox.defualt.DefualtCache;
-import com.liangmayong.netbox.defualt.DefualtConverter;
-import com.liangmayong.netbox.defualt.DefualtInterceptor;
-import com.liangmayong.netbox.interfaces.DefualtNetboxCache;
-import com.liangmayong.netbox.interfaces.DefualtNetboxConverter;
-import com.liangmayong.netbox.interfaces.DefualtNetboxInterceptor;
+import com.liangmayong.netbox.interfaces.DefaultNetboxCache;
+import com.liangmayong.netbox.interfaces.DefaultNetboxConverter;
+import com.liangmayong.netbox.interfaces.DefaultNetboxInterceptor;
 import com.liangmayong.netbox.interfaces.Method;
 import com.liangmayong.netbox.interfaces.NetboxCache;
 import com.liangmayong.netbox.interfaces.NetboxConverter;
 import com.liangmayong.netbox.interfaces.NetboxInterceptor;
+import com.liangmayong.netbox.params.Parameter;
 import com.liangmayong.netbox.response.Response;
 import com.liangmayong.netbox.throwables.NetboxError;
 import com.liangmayong.netbox.utils.NetboxUtils;
@@ -29,9 +27,9 @@ import java.util.Map;
 /**
  * Created by liangmayong on 2016/9/12.
  */
-@BindCache(DefualtCache.class)
-@BindConverter(DefualtConverter.class)
-@BindInterceptor(DefualtInterceptor.class)
+@BindCache(DefaultNetboxCache.class)
+@BindConverter(DefaultNetboxConverter.class)
+@BindInterceptor(DefaultNetboxInterceptor.class)
 public class NetboxServer {
 
     // debugable
@@ -43,11 +41,11 @@ public class NetboxServer {
     // baseURL
     private String baseURL = "";
     // interceptorType
-    private Class<? extends NetboxInterceptor> interceptorType = DefualtNetboxInterceptor.class;
+    private Class<? extends NetboxInterceptor> interceptorType = DefaultNetboxInterceptor.class;
     // converterType
-    private Class<? extends NetboxConverter> converterType = DefualtNetboxConverter.class;
+    private Class<? extends NetboxConverter> converterType = DefaultNetboxConverter.class;
     // cacheType
-    private Class<? extends NetboxCache> cacheType = DefualtNetboxCache.class;
+    private Class<? extends NetboxCache> cacheType = DefaultNetboxCache.class;
 
     // generateAction
     protected final void generateAction() {
@@ -61,7 +59,7 @@ public class NetboxServer {
         if (interceptor != null) {
             Class<? extends NetboxInterceptor> interceptorType = interceptor.value();
             if (interceptorType == NetboxInterceptor.class) {
-                interceptorType = DefualtNetboxInterceptor.class;
+                interceptorType = DefaultNetboxInterceptor.class;
             }
             this.interceptorType = interceptorType;
         }
@@ -74,7 +72,7 @@ public class NetboxServer {
         if (converter != null) {
             Class<? extends NetboxConverter> converterType = converter.value();
             if (converterType == NetboxConverter.class) {
-                converterType = DefualtNetboxConverter.class;
+                converterType = DefaultNetboxConverter.class;
             }
             this.converterType = converterType;
         }
@@ -87,7 +85,7 @@ public class NetboxServer {
         if (cache != null) {
             Class<? extends NetboxCache> cacheType = cache.value();
             if (cacheType == NetboxCache.class) {
-                cacheType = DefualtNetboxCache.class;
+                cacheType = DefaultNetboxCache.class;
             }
             this.cacheType = cacheType;
         }
@@ -171,6 +169,9 @@ public class NetboxServer {
      * @return debugable
      */
     public boolean isDebugable() {
+        if (config().isDebugable()) {
+            return true;
+        }
         if (isSetDebugable) {
             return debugable;
         }
@@ -208,7 +209,7 @@ public class NetboxServer {
      */
     protected Class<? extends NetboxConverter> generateConverterType() {
         if (converterType == null) {
-            return DefualtNetboxConverter.class;
+            return DefaultNetboxConverter.class;
         }
         return converterType;
     }
@@ -220,7 +221,7 @@ public class NetboxServer {
      */
     protected Class<? extends NetboxInterceptor> generateInterceptorType() {
         if (interceptorType == null) {
-            return DefualtNetboxInterceptor.class;
+            return DefaultNetboxInterceptor.class;
         }
         return interceptorType;
     }
@@ -232,7 +233,7 @@ public class NetboxServer {
      */
     protected Class<? extends NetboxCache> generateCacheType() {
         if (cacheType == null) {
-            return DefualtNetboxCache.class;
+            return DefaultNetboxCache.class;
         }
         return cacheType;
     }
@@ -312,7 +313,7 @@ public class NetboxServer {
      * @param error error
      * @return flag
      */
-    protected boolean handleFailure(NetboxError error) {
+    protected boolean handleFailure(Parameter parameter, NetboxError error) {
         return false;
     }
 

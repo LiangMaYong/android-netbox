@@ -12,6 +12,4 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface BindDebugable {
     boolean value() default true;
-
-    String note() default "";
 }

@@ -7,7 +7,7 @@ import java.lang.reflect.Type;
 /**
  * Created by liangmayong on 2016/9/12.
  */
-public class DefualtNetboxConverter implements NetboxConverter {
+public class DefaultNetboxConverter implements NetboxConverter {
 
     @Override
     public boolean isSuccess(String response) {

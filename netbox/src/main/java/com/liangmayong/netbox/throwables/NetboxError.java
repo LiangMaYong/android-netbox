@@ -10,8 +10,8 @@ public class NetboxError extends Exception {
 
     private static final long serialVersionUID = 1L;
 
-    public static enum ErrorType {
-        AUTH_FAILURE_ERROR, NETWORK_ERROR, PARSE_ERROR, SERVER_ERROR, TIMEOUT_ERROR, UNKOWN_ERROR
+    public enum ErrorType {
+        AUTH_FAILURE_ERROR, NETWORK_ERROR, PARSE_ERROR, SERVER_ERROR, TIMEOUT_ERROR, UNKOWN_ERROR, REQUEST_LOCK_ERROR
     }
 
     private ErrorType errorType = ErrorType.UNKOWN_ERROR;

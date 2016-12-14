@@ -7,10 +7,10 @@ import com.liangmayong.netbox.params.Parameter;
 /**
  * Created by LiangMaYong on 2016/9/13.
  */
-public class DefualtNetboxCache implements NetboxCache {
+public class DefaultNetboxCache implements NetboxCache {
 
     @Override
-    public void putCache(Context context, String key, String body) {
+    public void setCache(Context context, String key, String body) {
     }
 
     @Override

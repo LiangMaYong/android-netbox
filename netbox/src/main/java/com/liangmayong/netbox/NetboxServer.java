@@ -158,7 +158,7 @@ public class NetboxServer {
         }
     }
 
-    public <T> T serverInterface(final Context context, Class<T> serverInterface) {
+    public <T> T interfaceServer(final Context context, Class<T> serverInterface) {
         if (serverInterface.isInterface()) {
             T instance = (T) Proxy.newProxyInstance(serverInterface.getClassLoader(), new Class[]{serverInterface}, new InvocationHandler() {
                 @Override
@@ -217,7 +217,7 @@ public class NetboxServer {
             });
             return instance;
         } else {
-            throw new IllegalArgumentException("serverInterface must is Interfaces");
+            throw new IllegalArgumentException("interfaceServer must is Interfaces");
         }
     }
 

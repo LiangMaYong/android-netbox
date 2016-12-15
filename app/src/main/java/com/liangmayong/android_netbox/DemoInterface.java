@@ -15,6 +15,12 @@ public interface DemoInterface {
 
     @Mod(Method.GET)
     @Path("")
-    @Param(key = {"key1", "value1"}, value = {"key2", "value2"})
+    @Param(key = {"key1", "key2"}, value = {"value1", "value2"})
     void demo(@Key("key3") String key, OnNetboxListener listener);
+
+
+    @Mod(Method.GET)
+    @Path("/list")
+    @Param(key = {"key1", "value1"}, value = {"key2", "value2"})
+    void list(@Key("key3") String key, OnNetboxListener listener);
 }

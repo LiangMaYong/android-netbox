@@ -19,24 +19,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         _initView();
-//        Netbox.server(DemoServer.class).path("https://www.baidu.com").method(Method.POST).exec(this, new OnNetboxListener() {
-//            @Override
-//            public void onResponse(Response response) {
-//                Toast.makeText(getApplicationContext(), response.getBody(), Toast.LENGTH_SHORT).show();
-//                text.setText(response.getBody());
-//            }
-//
-//            @Override
-//            public void onFailure(NetboxError error) {
-//
-//            }
-//
-//            @Override
-//            public void onProgress(int progress) {
-//
-//            }
-//        });
-        Netbox.server(DemoServer.class).serverInterface(this, DemoInterface.class).demo("hello", new OnNetboxListener() {
+        Netbox.server(DemoServer.class).interfaceServer(this, DemoInterface.class).demo("hello", new OnNetboxListener() {
             @Override
             public void onResponse(Response response) {
                 text.setText(response.getBody());

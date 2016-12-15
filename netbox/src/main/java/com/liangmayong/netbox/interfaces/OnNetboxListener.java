@@ -21,12 +21,4 @@ public interface OnNetboxListener {
      * @param error error
      */
     void onFailure(NetboxError error);
-
-
-    /**
-     * onProgress
-     *
-     * @param progress progress
-     */
-    void onProgress(int progress);
 }

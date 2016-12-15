@@ -94,4 +94,9 @@ public class FileParam {
         }
         return extras;
     }
+
+    @Override
+    public String toString() {
+        return localPath;
+    }
 }

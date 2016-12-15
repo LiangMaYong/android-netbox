@@ -123,6 +123,22 @@ public final class NetboxPath {
         return this;
     }
 
+    /**
+     * files
+     *
+     * @param files files
+     * @return path
+     */
+    public NetboxPath files(Map<String, FileParam> files) {
+        if (checkRequestIng(false)) {
+            return this;
+        }
+        if (files != null) {
+            mFiles.putAll(files);
+        }
+        return this;
+    }
+
     /***
      * header
      *
@@ -209,13 +225,6 @@ public final class NetboxPath {
                 handleFailure(parameter, error);
                 if (listener != null) {
                     listener.onFailure(error);
-                }
-            }
-
-            @Override
-            public void onProgress(int progress) {
-                if (listener != null) {
-                    listener.onProgress(progress);
                 }
             }
         });
@@ -351,6 +360,9 @@ public final class NetboxPath {
                 }
                 if (response.getHeaders() != null && !response.getHeaders().isEmpty()) {
                     NetboxUtils.debugLog("+= headers = " + response.getHeaders(), null);
+                }
+                if (response.getFiles() != null && !response.getFiles().isEmpty()) {
+                    NetboxUtils.debugLog("+= files = " + response.getFiles(), null);
                 }
                 NetboxUtils.debugLog("+= timestamp = " + response.getTimestamp(), null);
                 NetboxUtils.debugLog("+=-------------------------------------------------------=+", null);

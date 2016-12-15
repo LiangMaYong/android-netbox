@@ -5,6 +5,7 @@ import com.liangmayong.netbox.interfaces.DefaultNetboxConverter;
 import com.liangmayong.netbox.interfaces.Method;
 import com.liangmayong.netbox.interfaces.NetboxConverter;
 import com.liangmayong.netbox.interfaces.NetboxResponse;
+import com.liangmayong.netbox.params.FileParam;
 import com.liangmayong.netbox.params.Parameter;
 
 import java.lang.reflect.Type;
@@ -30,10 +31,12 @@ public final class Response implements NetboxResponse {
     private long responseTime = 0;
     // converterTypes
     private Class<? extends NetboxConverter> mConverterType = DefaultNetboxConverter.class;
-    // params
+    // mParams
     private final Map<String, String> mParams = new HashMap<String, String>();
-    // headers
+    // mHeaders
     private final Map<String, String> mHeaders = new HashMap<String, String>();
+    // mFiles
+    private final Map<String, FileParam> mFiles = new HashMap<String, FileParam>();
     // Object
     private Object mExtra = null;
     // isFormCache
@@ -52,6 +55,7 @@ public final class Response implements NetboxResponse {
         if (parameter != null) {
             setUrl(parameter.getUrl());
             setParams(parameter.getParams());
+            setFiles(parameter.getFiles());
             setHeaders(parameter.getHeaders());
             setMethod(parameter.getMethod());
         }
@@ -89,6 +93,15 @@ public final class Response implements NetboxResponse {
      */
     public Map<String, String> getParams() {
         return mParams;
+    }
+
+    /**
+     * getParams
+     *
+     * @return mParams
+     */
+    public Map<String, FileParam> getFiles() {
+        return mFiles;
     }
 
     /**
@@ -162,6 +175,16 @@ public final class Response implements NetboxResponse {
     private void setHeaders(Map<String, String> headers) {
         this.mHeaders.clear();
         this.mHeaders.putAll(headers);
+    }
+
+    /**
+     * setFiles
+     *
+     * @param files files
+     */
+    private void setFiles(Map<String, FileParam> files) {
+        this.mFiles.clear();
+        this.mFiles.putAll(files);
     }
 
     /**
@@ -281,7 +304,7 @@ public final class Response implements NetboxResponse {
                 "Body='" + mBody + '\'' +
                 ", Url='" + mUrl + '\'' +
                 ", Timestamp='" + getTimestamp() + '\'' +
-                ", Method=" + mMethod +
+                ", Mod=" + mMethod +
                 ", Params=" + mParams +
                 ", Headers=" + mHeaders +
                 ", Extra=" + mExtra +

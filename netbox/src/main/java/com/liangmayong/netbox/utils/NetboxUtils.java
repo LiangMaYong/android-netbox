@@ -6,8 +6,12 @@ import android.content.pm.ApplicationInfo;
 import android.os.Build;
 import android.util.Log;
 
+import com.liangmayong.netbox.annotations.File;
+import com.liangmayong.netbox.annotations.Key;
+import com.liangmayong.netbox.params.FileParam;
 import com.liangmayong.netbox.params.Parameter;
 
+import java.lang.annotation.Annotation;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -16,6 +20,7 @@ import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.MessageDigest;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -282,6 +287,58 @@ public final class NetboxUtils {
      */
     public static void setDebugTAG(String tag) {
         NetboxUtils.TAG = tag;
+    }
+
+    /**
+     * getMethodParametersByAnnotation
+     *
+     * @param method method
+     * @param args   args
+     * @return params
+     */
+    public static Map<String, String> getMethodParametersByAnnotation(Method method, Object[] args) {
+        Annotation[][] parameterAnnotations = method.getParameterAnnotations();
+        if (parameterAnnotations == null || parameterAnnotations.length == 0) {
+            return null;
+        }
+        Map<String, String> stringMap = new HashMap<String, String>();
+        for (int i = 0; i < parameterAnnotations.length; i++) {
+            for (int j = 0; j < parameterAnnotations[i].length; j++) {
+                Annotation annotation = parameterAnnotations[i][j];
+                if (annotation instanceof Key) {
+                    Key param = (Key) annotation;
+                    stringMap.put(param.value(), args[i] + "");
+                }
+            }
+        }
+        return stringMap;
+    }
+
+    /**
+     * getMethodFileParamByAnnotation
+     *
+     * @param method method
+     * @param args   args
+     * @return params
+     */
+    public static Map<String, FileParam> getMethodFileParamByAnnotation(Method method, Object[] args) {
+        Annotation[][] parameterAnnotations = method.getParameterAnnotations();
+        if (parameterAnnotations == null || parameterAnnotations.length == 0) {
+            return null;
+        }
+        Map<String, FileParam> stringMap = new HashMap<String, FileParam>();
+        for (int i = 0; i < parameterAnnotations.length; i++) {
+            for (int j = 0; j < parameterAnnotations[i].length; j++) {
+                Annotation annotation = parameterAnnotations[i][j];
+                if (annotation instanceof File) {
+                    if (args[i] instanceof FileParam) {
+                        File param = (File) annotation;
+                        stringMap.put(param.value(), (FileParam) args[i]);
+                    }
+                }
+            }
+        }
+        return stringMap;
     }
 
     private NetboxUtils() {

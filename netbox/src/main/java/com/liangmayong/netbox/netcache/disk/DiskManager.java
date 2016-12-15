@@ -82,7 +82,7 @@ public final class DiskManager implements ICacheInterface {
 
 	/*
      * ====================================================================
-	 * Public Method
+	 * Public Mod
 	 * ====================================================================
 	 */
 
@@ -234,7 +234,7 @@ public final class DiskManager implements ICacheInterface {
 
 	/*
 	 * =======================================================================
-	 * Private Method
+	 * Private Mod
 	 * =======================================================================
 	 */
 

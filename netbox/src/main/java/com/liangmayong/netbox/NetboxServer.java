@@ -9,6 +9,10 @@ import com.liangmayong.netbox.annotations.BindHeaders;
 import com.liangmayong.netbox.annotations.BindInterceptor;
 import com.liangmayong.netbox.annotations.BindParams;
 import com.liangmayong.netbox.annotations.BindURL;
+import com.liangmayong.netbox.annotations.Header;
+import com.liangmayong.netbox.annotations.Mod;
+import com.liangmayong.netbox.annotations.Param;
+import com.liangmayong.netbox.annotations.Path;
 import com.liangmayong.netbox.interfaces.DefaultNetboxCache;
 import com.liangmayong.netbox.interfaces.DefaultNetboxConverter;
 import com.liangmayong.netbox.interfaces.DefaultNetboxInterceptor;
@@ -16,11 +20,14 @@ import com.liangmayong.netbox.interfaces.Method;
 import com.liangmayong.netbox.interfaces.NetboxCache;
 import com.liangmayong.netbox.interfaces.NetboxConverter;
 import com.liangmayong.netbox.interfaces.NetboxInterceptor;
+import com.liangmayong.netbox.interfaces.OnNetboxListener;
 import com.liangmayong.netbox.params.Parameter;
 import com.liangmayong.netbox.response.Response;
 import com.liangmayong.netbox.throwables.NetboxError;
 import com.liangmayong.netbox.utils.NetboxUtils;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -148,6 +155,69 @@ public class NetboxServer {
                 }
             }
             config().putHeaders(headers);
+        }
+    }
+
+    public <T> T serverInterface(final Context context, Class<T> serverInterface) {
+        if (serverInterface.isInterface()) {
+            T instance = (T) Proxy.newProxyInstance(serverInterface.getClassLoader(), new Class[]{serverInterface}, new InvocationHandler() {
+                @Override
+                public Object invoke(Object proxy, java.lang.reflect.Method method, Object[] args) throws Throwable {
+                    if (args.length < 1 && !(args[args.length - 1] instanceof OnNetboxListener)) {
+                        throw new IllegalArgumentException("The last parameter must be OnNetboxListener or its inheritance class");
+                    }
+                    if (method.getReturnType() != void.class) {
+                        throw new IllegalArgumentException("The return value must be void");
+                    }
+                    Mod modAnnot = method.getAnnotation(Mod.class);
+                    Method met = Method.GET;
+                    if (modAnnot != null) {
+                        met = modAnnot.value();
+                    }
+                    Path pathAnnot = method.getAnnotation(Path.class);
+                    String path = "";
+                    if (pathAnnot != null) {
+                        path = pathAnnot.value();
+                    }
+                    NetboxPath netboxPath = path(path);
+                    String[] paramkeys = new String[0];
+                    String[] paramvalues = new String[0];
+                    Param paramAnnot = method.getAnnotation(Param.class);
+                    if (paramAnnot != null) {
+                        paramkeys = paramAnnot.key();
+                        paramvalues = paramAnnot.value();
+                    }
+                    for (int i = 0; i < paramkeys.length; i++) {
+                        if (i < paramvalues.length) {
+                            netboxPath.param(paramkeys[i], paramvalues[i]);
+                        } else {
+                            netboxPath.param(paramkeys[i], "");
+                        }
+                    }
+                    String[] headerkeys = new String[0];
+                    String[] headervalues = new String[0];
+                    Header headerAnnot = method.getAnnotation(Header.class);
+                    if (headerAnnot != null) {
+                        headerkeys = headerAnnot.key();
+                        headervalues = headerAnnot.value();
+                    }
+                    for (int i = 0; i < headerkeys.length; i++) {
+                        if (i < headervalues.length) {
+                            netboxPath.header(headerkeys[i], headervalues[i]);
+                        } else {
+                            netboxPath.header(headerkeys[i], "");
+                        }
+                    }
+                    netboxPath.params(NetboxUtils.getMethodParametersByAnnotation(method, args));
+                    netboxPath.files(NetboxUtils.getMethodFileParamByAnnotation(method, args));
+                    netboxPath.method(met);
+                    netboxPath.exec(context, (OnNetboxListener) args[args.length - 1]);
+                    return null;
+                }
+            });
+            return instance;
+        } else {
+            throw new IllegalArgumentException("serverInterface must is Interfaces");
         }
     }
 

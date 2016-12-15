@@ -69,7 +69,7 @@ public class MemoryManager<KeyType, ValueType> implements ICacheInterface {
 
 	/*
 	 * ========================================================================
-	 * Public Method
+	 * Public Mod
 	 * ========================================================================
 	 */
 

@@ -19,9 +19,13 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -49,7 +53,7 @@ public class Vo {
      * @param errorListener    errorListener
      */
     public static void string(Context context, VoMethod method, String url, final Map<String, String> params,
-                              final Map<String, String> headers, Response.Listener<String> responseListener,
+                              final Map<String, String> headers, final Map<String, VoFile> files, Response.Listener<String> responseListener,
                               Response.ErrorListener errorListener) {
         RequestQueue mQueue = generateQueue(context);
         VoStringRequest request = new VoStringRequest(method.value(), url, responseListener,
@@ -60,6 +64,11 @@ public class Vo {
                     return params;
                 }
                 return super.getParams();
+            }
+
+            @Override
+            protected Map<String, VoFile> getFiles() {
+                return files;
             }
 
             @Override
@@ -88,7 +97,7 @@ public class Vo {
      * @throws Exception
      */
     public static String stringSync(Context context, VoMethod method, String url, final Map<String, String> params,
-                                    final Map<String, String> headers) throws VolleyError {
+                                    final Map<String, String> headers, final Map<String, VoFile> files) throws VolleyError {
         RequestFuture<String> future = RequestFuture.newFuture();
         RequestQueue mQueue = generateQueue(context);
         VoStringRequest request = new VoStringRequest(method.value(), url, future,
@@ -99,6 +108,11 @@ public class Vo {
                     return params;
                 }
                 return super.getParams();
+            }
+
+            @Override
+            protected Map<String, VoFile> getFiles() {
+                return files;
             }
 
             @Override
@@ -151,10 +165,9 @@ public class Vo {
      * @param context context
      * @param method  method
      * @param url     url
-     * @param map
      * @param json    json  @return json
      */
-    public static JSONObject jsonSync(Context context, VoMethod method, String url, Map<String, String> map, JSONObject json) throws VolleyError {
+    public static JSONObject jsonSync(Context context, VoMethod method, String url, JSONObject json) throws VolleyError {
         RequestFuture<JSONObject> future = RequestFuture.newFuture();
         VoJsonRequest request = new VoJsonRequest(method.value(), url, json, future,
                 future);
@@ -266,6 +279,10 @@ public class Vo {
      */
     private static class VoStringRequest extends StringRequest {
 
+        private static String boundary = UUID.randomUUID().toString();
+        private static String prefix = "--";
+        private static String lineEnd = "\r\n";
+
         public VoStringRequest(int method, String url, Response.Listener<String> listener, Response.ErrorListener errorListener) {
             super(method, url, listener, errorListener);
         }
@@ -284,6 +301,75 @@ public class Vo {
             }
         }
 
+        protected Map<String, VoFile> getFiles() {
+            return null;
+        }
+
+        public byte[] getBody() throws AuthFailureError {
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            try {
+                if ((getParams() != null && getParams().size() > 0)
+                        || (getFiles() != null && getFiles().size() > 0)) {
+                    // post params
+                    if (getParams() != null && getParams().size() > 0) {
+                        for (Map.Entry<String, String> entry : getParams().entrySet()) {
+                            StringBuilder psb = new StringBuilder();
+                            psb.append(prefix);
+                            psb.append(boundary);
+                            psb.append(lineEnd);
+                            psb.append("Content-Disposition:form-data;name=\"" + entry.getKey() + "\"" + lineEnd
+                                    + lineEnd);
+                            psb.append(entry.getValue());
+                            psb.append(lineEnd);
+                            outputStream.write(psb.toString().getBytes());
+                        }
+                    }
+                    // post files
+                    if (getFiles() != null && getFiles().size() > 0) {
+                        for (Map.Entry<String, VoFile> entry : getFiles().entrySet()) {
+                            File item = new File(entry.getValue().getPath());
+                            long totallenght = item.length();
+                            int bufferSize = (int) (totallenght / 10);
+                            StringBuilder sb = new StringBuilder();
+                            sb.append(prefix);
+                            sb.append(boundary);
+                            sb.append(lineEnd);
+                            sb.append("Content-Disposition: form-data;name=\"" + entry.getKey() + "\";filename=\""
+                                    + entry.getValue().getName() + "\"" + lineEnd);
+                            FileInputStream in = new FileInputStream(item);
+                            sb.append("Content-Length:" + in.available() + lineEnd);
+                            sb.append("Content-Type:" + entry.getValue().getContentType() + lineEnd + lineEnd);
+                            outputStream.write(sb.toString().getBytes());
+                            int bytes = 0;
+                            byte[] bufferOut = new byte[Math.max(20 * 1024, Math.min(512 * 1024, bufferSize))];
+                            while ((bytes = in.read(bufferOut)) != -1) {
+                                outputStream.write(bufferOut, 0, bytes);
+                            }
+                            outputStream.write(lineEnd.getBytes());
+                            in.close();
+                        }
+                    }
+                    byte[] end_data = (lineEnd + prefix + boundary + prefix + lineEnd).getBytes();
+                    outputStream.write(end_data);
+                    outputStream.flush();
+                    outputStream.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            byte[] bytes = outputStream.toByteArray();
+            try {
+                outputStream.flush();
+                outputStream.close();
+            } catch (Exception e) {
+            }
+            return bytes;
+        }
+
+        @Override
+        public String getBodyContentType() {
+            return "multipart/form-data; boundary=" + boundary;
+        }
     }
 
     /**

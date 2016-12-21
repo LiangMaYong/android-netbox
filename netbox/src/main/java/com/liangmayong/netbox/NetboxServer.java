@@ -16,12 +16,12 @@ import com.liangmayong.netbox.annotations.Path;
 import com.liangmayong.netbox.interfaces.DefaultNetboxCache;
 import com.liangmayong.netbox.interfaces.DefaultNetboxConverter;
 import com.liangmayong.netbox.interfaces.DefaultNetboxInterceptor;
-import com.liangmayong.netbox.interfaces.Method;
+import com.liangmayong.netbox.params.Method;
 import com.liangmayong.netbox.interfaces.NetboxCache;
 import com.liangmayong.netbox.interfaces.NetboxConverter;
 import com.liangmayong.netbox.interfaces.NetboxInterceptor;
 import com.liangmayong.netbox.interfaces.OnNetboxListener;
-import com.liangmayong.netbox.params.Parameter;
+import com.liangmayong.netbox.params.Request;
 import com.liangmayong.netbox.response.Response;
 import com.liangmayong.netbox.throwables.NetboxError;
 import com.liangmayong.netbox.utils.NetboxUtils;
@@ -163,7 +163,7 @@ public class NetboxServer {
             T instance = (T) Proxy.newProxyInstance(serverInterface.getClassLoader(), new Class[]{serverInterface}, new InvocationHandler() {
                 @Override
                 public Object invoke(Object proxy, java.lang.reflect.Method method, Object[] args) throws Throwable {
-                    if (args.length < 1 && !(args[args.length - 1] instanceof OnNetboxListener)) {
+                    if (args.length < 1 || !(args[args.length - 1] instanceof OnNetboxListener)) {
                         throw new IllegalArgumentException("The last parameter must be OnNetboxListener or its inheritance class");
                     }
                     if (method.getReturnType() != void.class) {
@@ -383,7 +383,7 @@ public class NetboxServer {
      * @param error error
      * @return flag
      */
-    protected boolean handleFailure(Parameter parameter, NetboxError error) {
+    protected boolean handleFailure(Request parameter, NetboxError error) {
         return false;
     }
 

@@ -2,7 +2,7 @@ package com.liangmayong.netbox.interfaces;
 
 import android.content.Context;
 
-import com.liangmayong.netbox.params.Parameter;
+import com.liangmayong.netbox.params.Request;
 
 /**
  * Created by LiangMaYong on 2016/9/13.
@@ -42,11 +42,18 @@ public interface NetboxCache {
     void clearCache(Context context);
 
     /**
+     * cacheSize
+     *
+     * @return size
+     */
+    long cacheSize(Context context);
+
+    /**
      * generateKey
      *
      * @param context   context
      * @param parameter parameter
      * @return key
      */
-    String generateKey(Context context, Parameter parameter);
+    String generateKey(Context context, Request parameter);
 }

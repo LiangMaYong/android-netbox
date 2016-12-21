@@ -9,7 +9,7 @@ import android.util.Log;
 import com.liangmayong.netbox.annotations.File;
 import com.liangmayong.netbox.annotations.Key;
 import com.liangmayong.netbox.params.FileParam;
-import com.liangmayong.netbox.params.Parameter;
+import com.liangmayong.netbox.params.Request;
 
 import java.lang.annotation.Annotation;
 import java.lang.ref.WeakReference;
@@ -42,7 +42,7 @@ public final class NetboxUtils {
      * @param path    url
      * @return newUrl
      */
-    public static String parseUrl(String baseUrl, String path, com.liangmayong.netbox.interfaces.Method method) {
+    public static String parseUrl(String baseUrl, String path, com.liangmayong.netbox.params.Method method) {
         if (baseUrl == null) {
             baseUrl = "";
         }
@@ -229,7 +229,7 @@ public final class NetboxUtils {
      *
      * @return key
      */
-    public static String generateCacheKey(Parameter parameter) {
+    public static String generateCacheKey(Request parameter) {
         StringBuilder builder = new StringBuilder(parameter.getMethod().name() + "@" + parameter.getUrl());
         if (parameter.getParams() != null && !parameter.getParams().isEmpty()) {
             builder.append("@");

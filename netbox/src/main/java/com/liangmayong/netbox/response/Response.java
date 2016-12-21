@@ -2,11 +2,11 @@ package com.liangmayong.netbox.response;
 
 import com.liangmayong.netbox.Netbox;
 import com.liangmayong.netbox.interfaces.DefaultNetboxConverter;
-import com.liangmayong.netbox.interfaces.Method;
+import com.liangmayong.netbox.params.Method;
 import com.liangmayong.netbox.interfaces.NetboxConverter;
 import com.liangmayong.netbox.interfaces.NetboxResponse;
 import com.liangmayong.netbox.params.FileParam;
-import com.liangmayong.netbox.params.Parameter;
+import com.liangmayong.netbox.params.Request;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
@@ -51,7 +51,7 @@ public final class Response implements NetboxResponse {
         setMethod(method);
     }
 
-    public Response(Parameter parameter) {
+    public Response(Request parameter) {
         if (parameter != null) {
             setUrl(parameter.getUrl());
             setParams(parameter.getParams());

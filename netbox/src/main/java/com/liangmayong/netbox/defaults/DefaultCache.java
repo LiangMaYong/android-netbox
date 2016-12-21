@@ -29,4 +29,9 @@ public class DefaultCache extends DefaultNetboxCache {
     public void clearCache(Context context) {
         NetCache.getInstance(context).clear();
     }
+
+    @Override
+    public long cacheSize(Context context) {
+        return NetCache.getInstance(context).size();
+    }
 }

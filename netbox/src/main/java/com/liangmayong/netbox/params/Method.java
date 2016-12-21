@@ -1,4 +1,4 @@
-package com.liangmayong.netbox.interfaces;
+package com.liangmayong.netbox.params;
 
 /**
  * Created by liangmayong on 2016/9/12.

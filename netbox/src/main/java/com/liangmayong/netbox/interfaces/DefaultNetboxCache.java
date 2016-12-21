@@ -2,7 +2,7 @@ package com.liangmayong.netbox.interfaces;
 
 import android.content.Context;
 
-import com.liangmayong.netbox.params.Parameter;
+import com.liangmayong.netbox.params.Request;
 
 /**
  * Created by LiangMaYong on 2016/9/13.
@@ -27,7 +27,12 @@ public class DefaultNetboxCache implements NetboxCache {
     }
 
     @Override
-    public String generateKey(Context context, Parameter parameter) {
+    public long cacheSize(Context context) {
+        return 0;
+    }
+
+    @Override
+    public String generateKey(Context context, Request parameter) {
         return null;
     }
 

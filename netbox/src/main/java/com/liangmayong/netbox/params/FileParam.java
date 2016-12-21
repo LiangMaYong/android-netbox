@@ -1,68 +1,38 @@
 package com.liangmayong.netbox.params;
 
-import android.os.Bundle;
-
-import java.io.File;
-
 /**
  * Created by LiangMaYong on 2016/9/14.
  */
 public class FileParam {
-    // extras
-    private Bundle extras = null;
-    // local path
-    private String localPath = "";
     // name
-    private String name;
+    private String name = "";
+    // path
+    private String path = "";
 
-
-    /**
-     * FileParam
-     *
-     * @param localPath localPath
-     */
-    public FileParam(String localPath) {
-        this.localPath = localPath;
-        this.name = localPath;
+    public FileParam(String name, String path) {
+        this.name = name;
+        this.path = path;
     }
 
     /**
-     * FileParam
+     * getPath
      *
-     * @param file file
+     * @return path
      */
-    public FileParam(File file) {
-        this(file.getPath());
-    }
-
-    /**
-     * setLocalPath
-     *
-     * @param localPath localPath
-     */
-    public void setLocalPath(String localPath) {
-        this.localPath = localPath;
-    }
-
-    /**
-     * getLocalPath
-     *
-     * @return localPath
-     */
-    public String getLocalPath() {
-        if (localPath == null) {
+    public String getPath() {
+        if (path == null) {
             return "";
         }
-        return localPath;
+        return path;
     }
 
     /**
-     * setName
+     * setPath
      *
-     * @param name name
+     * @param path path
      */
-    public void setName(String name) {
-        this.name = name;
+    public void setPath(String path) {
+        this.path = path;
     }
 
     /**
@@ -75,28 +45,19 @@ public class FileParam {
     }
 
     /**
-     * setExtras
+     * setName
      *
-     * @param extras extras
+     * @param name name
      */
-    public void setExtras(Bundle extras) {
-        this.extras = extras;
-    }
-
-    /**
-     * getExtras
-     *
-     * @return extras
-     */
-    public Bundle getExtras() {
-        if (extras == null) {
-            return new Bundle();
-        }
-        return extras;
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override
     public String toString() {
-        return localPath;
+        return "File{" +
+                "path='" + path + '\'' +
+                ", name='" + name + '\'' +
+                '}';
     }
 }

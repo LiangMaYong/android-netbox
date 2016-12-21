@@ -1,6 +1,6 @@
 package com.liangmayong.netbox.annotations;
 
-import com.liangmayong.netbox.interfaces.Method;
+import com.liangmayong.netbox.params.Method;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

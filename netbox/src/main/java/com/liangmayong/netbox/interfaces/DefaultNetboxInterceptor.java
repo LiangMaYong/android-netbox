@@ -2,7 +2,7 @@ package com.liangmayong.netbox.interfaces;
 
 import android.content.Context;
 
-import com.liangmayong.netbox.params.Parameter;
+import com.liangmayong.netbox.params.Request;
 import com.liangmayong.netbox.response.Response;
 import com.liangmayong.netbox.throwables.NetboxError;
 import com.liangmayong.netbox.throwables.UnkownError;
@@ -17,12 +17,12 @@ public class DefaultNetboxInterceptor implements NetboxInterceptor {
     }
 
     @Override
-    public void execRequest(Context context, Parameter parameter, OnNetboxListener listener) {
+    public void execRequest(Context context, Request parameter, OnNetboxListener listener) {
         listener.onFailure(new UnkownError("Interceptor invalid"));
     }
 
     @Override
-    public Response syncRequest(Context context, Parameter parameter) throws NetboxError {
+    public Response syncRequest(Context context, Request parameter) throws NetboxError {
         throw new UnkownError("Interceptor invalid");
     }
 

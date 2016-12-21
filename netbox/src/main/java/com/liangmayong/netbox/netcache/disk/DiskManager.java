@@ -119,7 +119,7 @@ public final class DiskManager implements ICacheInterface {
     }
 
 	/*
-	 * =========================================================================
+     * =========================================================================
 	 * Utilities
 	 * =========================================================================
 	 */
@@ -153,7 +153,7 @@ public final class DiskManager implements ICacheInterface {
     /**
      * Record cache synchronization to the journal file.
      */
-	/*
+    /*
 	 * public void fluchCache() { if (mDiskLruCache != null) { try {
 	 * mDiskLruCache.flush(); } catch (IOException e) { e.printStackTrace(); } }
 	 * }

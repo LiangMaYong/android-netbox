@@ -68,7 +68,7 @@ public class MemoryManager<KeyType, ValueType> implements ICacheInterface {
     }
 
 	/*
-	 * ========================================================================
+     * ========================================================================
 	 * Public Mod
 	 * ========================================================================
 	 */
@@ -114,7 +114,7 @@ public class MemoryManager<KeyType, ValueType> implements ICacheInterface {
     }
 
 	/*
-	 * ========================================================================
+     * ========================================================================
 	 * Override ICache
 	 * ========================================================================
 	 */
@@ -415,6 +415,11 @@ public class MemoryManager<KeyType, ValueType> implements ICacheInterface {
             }
             mMemoryCache = null;
         }
+    }
+
+    @Override
+    public long size() {
+        return mMemoryCache.size();
     }
 
 }

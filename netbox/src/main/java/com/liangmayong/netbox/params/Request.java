@@ -1,13 +1,11 @@
 package com.liangmayong.netbox.params;
 
-import com.liangmayong.netbox.interfaces.Method;
-
 import java.util.Map;
 
 /**
  * Created by liangmayong on 2016/9/14.
  */
-public class Parameter {
+public class Request {
     // method
     private Method mMethod = Method.GET;
     // url
@@ -19,7 +17,7 @@ public class Parameter {
     //files
     private Map<String, FileParam> mFiles = null;
 
-    public Parameter(Method mMethod, String mUrl, Map<String, String> mParams, Map<String, String> mHeaders, Map<String, FileParam> mFiles) {
+    public Request(Method mMethod, String mUrl, Map<String, String> mParams, Map<String, String> mHeaders, Map<String, FileParam> mFiles) {
         this.mMethod = mMethod;
         this.mUrl = mUrl;
         this.mParams = mParams;

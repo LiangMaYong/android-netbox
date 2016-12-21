@@ -2,7 +2,7 @@ package com.liangmayong.netbox.interfaces;
 
 import android.content.Context;
 
-import com.liangmayong.netbox.params.Parameter;
+import com.liangmayong.netbox.params.Request;
 import com.liangmayong.netbox.response.Response;
 import com.liangmayong.netbox.throwables.NetboxError;
 
@@ -18,8 +18,23 @@ public interface NetboxInterceptor {
      */
     void destroyRequest(Context context);
 
-    void execRequest(Context context, Parameter parameter, OnNetboxListener listener);
+    /**
+     * execRequest
+     *
+     * @param context   context
+     * @param parameter parameter
+     * @param listener  listener
+     */
+    void execRequest(Context context, Request parameter, OnNetboxListener listener);
 
-    Response syncRequest(Context context, Parameter parameter) throws NetboxError;
+    /**
+     * syncRequest
+     *
+     * @param context   context
+     * @param parameter parameter
+     * @return response
+     * @throws NetboxError throws
+     */
+    Response syncRequest(Context context, Request parameter) throws NetboxError;
 
 }

@@ -358,4 +358,11 @@ public class NetCache implements ICacheInterface {
         mDdiskCacheManager.clear();
     }
 
+    @Override
+    public long size() {
+        MemoryManager<String, ?> memoryCacheManager = (MemoryManager<String, ?>) MemoryManager
+                .getInstance();
+        long size = memoryCacheManager.size() + mDdiskCacheManager.size();
+        return size;
+    }
 }

@@ -29,7 +29,7 @@ public interface ICacheInterface {
     public String getAsString(String key);
 
 	/*
-	 * ========================================================================
+     * ========================================================================
 	 * JSONObject
 	 * ========================================================================
 	 */
@@ -109,4 +109,6 @@ public interface ICacheInterface {
     public boolean remove(String key);
 
     public void clear();
+
+    public long size();
 }

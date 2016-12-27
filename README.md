@@ -8,7 +8,33 @@ compile 'com.liangmayong.android:netbox:$LatestVersion'
 ```
 ## Get start
 ```
-Netbox.server(GithubService.class).path("list").param("username", "liangmayong").exec(...)
+@BindURL(value = "http://github.com/api/", debug = "http://github.com/debug/api/")
+@BindParams(key = "common_key", value = "common_value")
+@BindDebugable(true)
+public class DemoServer extends DefaultVolleyServer {
+
+}
+```
+use
+```
+Netbox.server(DemoServer.class).path("login").param("username", "liangmayong").exec(...)
+```
+Annottations:
+```
+public interface DemoInterface {
+
+    @Mod(Method.POST)
+    @Path("./uploadFile.php")
+    void uploadFile(@File("data") FileParam file, OnNetboxListener listener);
+
+    @Mod(Method.POST)
+    @Path("./login.php")
+    void login(@Key("username") String username, @Key("password") String password, OnNetboxListener listener);
+}
+```
+use
+```
+Netbox.server(DemoServer.class).interfaceServer(DemoInterface.class).login("liangmayong","***",...);
 ```
 ## LICENSE
 ```

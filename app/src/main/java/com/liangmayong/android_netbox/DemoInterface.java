@@ -1,6 +1,7 @@
 package com.liangmayong.android_netbox;
 
 import com.liangmayong.netbox.annotations.File;
+import com.liangmayong.netbox.annotations.Key;
 import com.liangmayong.netbox.annotations.Mod;
 import com.liangmayong.netbox.annotations.Path;
 import com.liangmayong.netbox.interfaces.OnNetboxListener;
@@ -15,5 +16,9 @@ public interface DemoInterface {
 
     @Mod(Method.POST)
     @Path("./uploadFile.php")
-    void list(@File("data") FileParam file, OnNetboxListener listener);
+    void uploadFile(@File("data") FileParam file, OnNetboxListener listener);
+
+    @Mod(Method.POST)
+    @Path("./login.php")
+    void login(@Key("username") String username, @Key("password") String password, OnNetboxListener listener);
 }

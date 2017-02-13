@@ -237,6 +237,7 @@ public class Vo {
             mQueue = Volley.newRequestQueue(context);
             CONTEXT_REQUEST_QUEUE_MAP.put(key, mQueue);
         }
+        VoHTTPSTrustManager.allowAllSSL();
         return mQueue;
     }
 

@@ -73,7 +73,7 @@ public final class DiskManager implements ICacheInterface {
             try {
                 mDiskLruCache = DiskLruCache.open(cacheDir, getAppVersion(context), DEFAULT_VALUE_COUNT,
                         DEFAULT_MAX_SIZE);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -86,15 +86,15 @@ public final class DiskManager implements ICacheInterface {
 	 * ====================================================================
 	 */
 
-    public void close() throws IOException {
+    public void close() throws Exception {
         mDiskLruCache.close();
     }
 
-    public void delete() throws IOException {
+    public void delete() throws Exception {
         mDiskLruCache.delete();
     }
 
-    public void flush() throws IOException {
+    public void flush() throws Exception {
         mDiskLruCache.flush();
     }
 
@@ -132,7 +132,7 @@ public final class DiskManager implements ICacheInterface {
             }
             return snapshot.getInputStream(0);
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
@@ -144,7 +144,7 @@ public final class DiskManager implements ICacheInterface {
             key = hashKeyForDisk(key);
             DiskLruCache.Editor edit = mDiskLruCache.edit(key);
             return edit;
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
@@ -249,11 +249,11 @@ public final class DiskManager implements ICacheInterface {
             bw = new BufferedWriter(new OutputStreamWriter(os));
             bw.write(value);
             edit.commit();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             try {
                 edit.abort();
-            } catch (IOException e1) {
+            } catch (Exception e1) {
                 e1.printStackTrace();
             }
         } finally {
@@ -310,7 +310,7 @@ public final class DiskManager implements ICacheInterface {
             e.printStackTrace();
             try {
                 editor.abort();
-            } catch (IOException e1) {
+            } catch (Exception e1) {
                 e1.printStackTrace();
             }
 
@@ -614,7 +614,7 @@ public final class DiskManager implements ICacheInterface {
             key = hashKeyForDisk(key);
             boolean isSuccess = mDiskLruCache.remove(key);
             return isSuccess;
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return false;
@@ -624,7 +624,7 @@ public final class DiskManager implements ICacheInterface {
     public void clear() {
         try {
             mDiskLruCache.flush();
-        } catch (IOException e) {
+        } catch (Exception e) {
         }
     }
 

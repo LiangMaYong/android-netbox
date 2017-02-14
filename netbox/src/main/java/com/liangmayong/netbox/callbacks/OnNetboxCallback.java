@@ -29,6 +29,13 @@ public abstract class OnNetboxCallback<T> implements OnNetboxListener {
     public abstract void handleResponseSuccess(T data);
 
     /**
+     * handleResponseHistory
+     *
+     * @param data data
+     */
+    public abstract void handleResponseHistory(T data);
+
+    /**
      * handleResponseError
      *
      * @param code    code
@@ -55,6 +62,18 @@ public abstract class OnNetboxCallback<T> implements OnNetboxListener {
             handleResponseSuccess(data);
         } else {
             handleResponseError(response.getErrorCode(), response.getErrorMessage());
+        }
+    }
+
+    @Override
+    public void onResponseHistory(Response response) {
+        if (response.isSuccess()) {
+            T data = null;
+            try {
+                data = response.getData(generateDefualtKey(), NetboxUtils.getGenericType(this, 0));
+            } catch (Exception e) {
+            }
+            handleResponseHistory(data);
         }
     }
 

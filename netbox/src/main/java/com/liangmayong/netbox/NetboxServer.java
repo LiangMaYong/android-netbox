@@ -211,7 +211,7 @@ public class NetboxServer {
                     netboxPath.params(NetboxUtils.getMethodParametersByAnnotation(method, args));
                     netboxPath.files(NetboxUtils.getMethodFileParamByAnnotation(method, args));
                     netboxPath.method(met);
-                    netboxPath.exec(context, (OnNetboxListener) args[args.length - 1]);
+                    netboxPath.execute(context, (OnNetboxListener) args[args.length - 1]);
                     return null;
                 }
             });

@@ -329,25 +329,27 @@ public class Vo {
                     if (getFiles() != null && getFiles().size() > 0) {
                         for (Map.Entry<String, VoFile> entry : getFiles().entrySet()) {
                             File item = new File(entry.getValue().getPath());
-                            long totallenght = item.length();
-                            int bufferSize = (int) (totallenght / 10);
-                            StringBuilder sb = new StringBuilder();
-                            sb.append(prefix);
-                            sb.append(boundary);
-                            sb.append(lineEnd);
-                            sb.append("Content-Disposition: form-data;name=\"" + entry.getKey() + "\";filename=\""
-                                    + entry.getValue().getName() + "\"" + lineEnd);
-                            FileInputStream in = new FileInputStream(item);
-                            sb.append("Content-Length:" + in.available() + lineEnd);
-                            sb.append("Content-Type:" + entry.getValue().getContentType() + lineEnd + lineEnd);
-                            outputStream.write(sb.toString().getBytes());
-                            int bytes = 0;
-                            byte[] bufferOut = new byte[Math.max(20 * 1024, Math.min(512 * 1024, bufferSize))];
-                            while ((bytes = in.read(bufferOut)) != -1) {
-                                outputStream.write(bufferOut, 0, bytes);
+                            if (item.exists()) {
+                                long totallenght = item.length();
+                                int bufferSize = (int) (totallenght / 10);
+                                StringBuilder sb = new StringBuilder();
+                                sb.append(prefix);
+                                sb.append(boundary);
+                                sb.append(lineEnd);
+                                sb.append("Content-Disposition: form-data;name=\"" + entry.getKey() + "\";filename=\""
+                                        + entry.getValue().getName() + "\"" + lineEnd);
+                                FileInputStream in = new FileInputStream(item);
+                                sb.append("Content-Length:" + in.available() + lineEnd);
+                                sb.append("Content-Type:" + entry.getValue().getContentType() + lineEnd + lineEnd);
+                                outputStream.write(sb.toString().getBytes());
+                                int bytes = 0;
+                                byte[] bufferOut = new byte[Math.max(20 * 1024, Math.min(512 * 1024, bufferSize))];
+                                while ((bytes = in.read(bufferOut)) != -1) {
+                                    outputStream.write(bufferOut, 0, bytes);
+                                }
+                                outputStream.write(lineEnd.getBytes());
+                                in.close();
                             }
-                            outputStream.write(lineEnd.getBytes());
-                            in.close();
                         }
                     }
                     byte[] end_data = (lineEnd + prefix + boundary + prefix + lineEnd).getBytes();
@@ -356,7 +358,6 @@ public class Vo {
                     outputStream.close();
                 }
             } catch (Exception e) {
-                e.printStackTrace();
             }
             byte[] bytes = outputStream.toByteArray();
             try {

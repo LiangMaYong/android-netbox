@@ -2,10 +2,10 @@ package com.liangmayong.netbox;
 
 import android.content.Context;
 
-import com.liangmayong.netbox.params.Method;
 import com.liangmayong.netbox.interfaces.NetboxCache;
 import com.liangmayong.netbox.interfaces.OnNetboxListener;
 import com.liangmayong.netbox.params.FileParam;
+import com.liangmayong.netbox.params.Method;
 import com.liangmayong.netbox.params.Request;
 import com.liangmayong.netbox.response.Response;
 import com.liangmayong.netbox.throwables.NetboxError;
@@ -177,14 +177,14 @@ public final class NetboxPath {
     }
 
     /**
-     * exec
+     * execute
      *
      * @param context  context
      * @param listener listener
      */
-    public void exec(final Context context, final OnNetboxListener listener) {
+    public void execute(final Context context, final OnNetboxListener listener) {
         if (context == null) {
-            throw new IllegalArgumentException("The calling method exec must have context parameters,and context not null");
+            throw new IllegalArgumentException("The calling method execute must have context parameters,and context not null");
         }
         if (checkRequestIng(true)) {
             if (listener != null) {
@@ -195,7 +195,20 @@ public final class NetboxPath {
         final Request parameter = new Request(Method.valueOf(mMethod.value()), getRequestURL(), new HashMap<String, String>(mParams), new HashMap<String, String>(mHeaders), new HashMap<String, FileParam>(mFiles));
         mRequsetIng = true;
         final long requestTime = System.currentTimeMillis();
+        Response response = cache(context);
+        if (response != null) {
+            if (listener != null) {
+                listener.onResponseHistory(response);
+            }
+        }
         Netbox.generateInterceptor(Netbox.server(mServerType).generateInterceptorType()).execRequest(context, parameter, new OnNetboxListener() {
+            @Override
+            public void onResponseHistory(Response response) {
+                if (listener != null) {
+                    listener.onResponseHistory(response);
+                }
+            }
+
             @Override
             public void onResponse(Response response) {
                 if (response == null) {
@@ -216,16 +229,16 @@ public final class NetboxPath {
                 if (listener != null) {
                     listener.onResponse(response);
                 }
-                mRequsetIng = false;
+                resetPath();
             }
 
             @Override
             public void onFailure(NetboxError error) {
-                mRequsetIng = false;
                 handleFailure(parameter, error);
                 if (listener != null) {
                     listener.onFailure(error);
                 }
+                resetPath();
             }
         });
     }
@@ -236,12 +249,12 @@ public final class NetboxPath {
      * @param context context
      * @return response
      */
-    public Response sync(Context context) throws NetboxError {
+    public Response execute(Context context) throws NetboxError {
         if (checkRequestIng(true)) {
             throw new RequestLockError(null, "In the request, the data can not be modified");
         }
         if (context == null) {
-            throw new IllegalArgumentException("The calling method exec must have context parameters,and context not null");
+            throw new IllegalArgumentException("The calling method execute must have context parameters,and context not null");
         }
         mRequsetIng = true;
         Request parameter = new Request(Method.valueOf(mMethod.value()), getRequestURL(), new HashMap<String, String>(mParams), new HashMap<String, String>(mHeaders), new HashMap<String, FileParam>(mFiles));
@@ -262,11 +275,11 @@ public final class NetboxPath {
             }
             cache.setCache(context, cacheKey, response.getBody());
             handleResponse(response);
-            mRequsetIng = false;
+            resetPath();
             return response;
         } catch (NetboxError error) {
             handleFailure(parameter, error);
-            mRequsetIng = false;
+            resetPath();
             throw error;
         }
     }
@@ -293,10 +306,10 @@ public final class NetboxPath {
             NetboxUtils.setField(Response.class, response, "requestTime", requestTime);
             NetboxUtils.setField(Response.class, response, "responseTime", System.currentTimeMillis());
             NetboxUtils.setField(Response.class, response, "isCache", true);
-            mRequsetIng = false;
+            resetPath();
             return response;
         }
-        mRequsetIng = false;
+        resetPath();
         return null;
     }
 
@@ -387,5 +400,13 @@ public final class NetboxPath {
                 NetboxUtils.debugLog("onFailure:", error);
             }
         }
+    }
+
+    private void resetPath() {
+        mFiles.clear();
+        mParams.clear();
+        mHeaders.clear();
+        mMethod = Method.GET;
+        mRequsetIng = false;
     }
 }

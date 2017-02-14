@@ -23,6 +23,11 @@ public class MainActivity extends AppCompatActivity {
         _initView();
         Netbox.server(DemoServer.class).interfaceServer(this, DemoInterface.class).uploadFile(new FileParam("a.jpg", "/storage/emulated/0/android_base/photo_take/temp_B8C37E33DEFDE51CF91E1E03E51657DA"), new OnNetboxListener() {
             @Override
+            public void onResponseHistory(Response response) {
+                Log.e("TAG-onResponseHistory", response.getBody());
+            }
+
+            @Override
             public void onResponse(Response response) {
                 Log.e("TAG", response.getBody());
                 text.setText(response.getBody());

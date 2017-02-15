@@ -45,10 +45,10 @@ public final class NetboxPath {
     public NetboxPath(Class<? extends NetboxServer> actionType, String path) {
         this.mServerType = actionType;
         this.mPath = path;
-        NetboxConfig boxConfig = NetboxConfig.getInstance(actionType);
-        this.mParams = boxConfig.getCommonParams();
-        this.mHeaders = boxConfig.getCommonHeaders();
+        this.mParams = new HashMap<String, String>();
+        this.mHeaders = new HashMap<String, String>();
         this.mFiles = new HashMap<String, ParamFile>();
+        resetPath();
     }
 
     /**
@@ -413,27 +413,39 @@ public final class NetboxPath {
      *
      * @param error error
      */
-    private void handleFailure(Request parameter, NetboxError error) {
-        if (!Netbox.server(mServerType).handleFailure(parameter, error)) {
+    private void handleFailure(Request request, NetboxError error) {
+        if (!Netbox.server(mServerType).handleFailure(request, error)) {
             if (NetboxUtils.isDebugable()) {
                 NetboxUtils.debugLog("+=-------------------------------------------------------=+", null);
                 NetboxUtils.debugLog("+=                 By Netbox onFailure                   =+", null);
                 NetboxUtils.debugLog("+=-------------------------------------------------------=+", null);
-                NetboxUtils.debugLog("+= url = " + parameter.getUrl(), null);
+                NetboxUtils.debugLog("+= url = " + request.getUrl(), null);
+                NetboxUtils.debugLog("+= method = " + request.getMethod().name(), null);
+                if (request.getParams() != null && !request.getParams().isEmpty()) {
+                    NetboxUtils.debugLog("+= params = " + request.getParams(), null);
+                }
+                if (request.getHeaders() != null && !request.getHeaders().isEmpty()) {
+                    NetboxUtils.debugLog("+= headers = " + request.getHeaders(), null);
+                }
+                if (request.getFiles() != null && !request.getFiles().isEmpty()) {
+                    NetboxUtils.debugLog("+= files = " + request.getFiles(), null);
+                }
                 NetboxUtils.debugLog("+=-------------------------------------------------------=+", null);
-                NetboxUtils.debugLog("onFailure:", error);
+                if (error != null) {
+                    NetboxUtils.debugLog("onFailure:", error);
+                }
             }
         }
     }
 
     private void resetPath() {
-        NetboxConfig boxConfig = NetboxConfig.getInstance(mServerType);
         mFiles.clear();
         mParams.clear();
         mHeaders.clear();
+        mMethod = Method.GET;
+        NetboxConfig boxConfig = NetboxConfig.getInstance(mServerType);
         mParams.putAll(boxConfig.getCommonParams());
         mHeaders.putAll(boxConfig.getCommonHeaders());
-        mMethod = Method.GET;
         mRequsetIng = false;
     }
 }

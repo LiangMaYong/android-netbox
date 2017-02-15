@@ -5,7 +5,7 @@ import com.liangmayong.netbox.interfaces.DefaultNetboxConverter;
 import com.liangmayong.netbox.params.Method;
 import com.liangmayong.netbox.interfaces.NetboxConverter;
 import com.liangmayong.netbox.interfaces.NetboxResponse;
-import com.liangmayong.netbox.params.FileParam;
+import com.liangmayong.netbox.params.ParamFile;
 import com.liangmayong.netbox.params.Request;
 
 import java.lang.reflect.Type;
@@ -36,11 +36,9 @@ public final class Response implements NetboxResponse {
     // mHeaders
     private final Map<String, String> mHeaders = new HashMap<String, String>();
     // mFiles
-    private final Map<String, FileParam> mFiles = new HashMap<String, FileParam>();
+    private final Map<String, ParamFile> mFiles = new HashMap<String, ParamFile>();
     // Object
     private Object mExtra = null;
-    // isFormCache
-    private boolean isCache = false;
     // isConverter
     private boolean isConverter = false;
 
@@ -51,13 +49,13 @@ public final class Response implements NetboxResponse {
         setMethod(method);
     }
 
-    public Response(Request parameter) {
-        if (parameter != null) {
-            setUrl(parameter.getUrl());
-            setParams(parameter.getParams());
-            setFiles(parameter.getFiles());
-            setHeaders(parameter.getHeaders());
-            setMethod(parameter.getMethod());
+    public Response(Request request) {
+        if (request != null) {
+            setUrl(request.getUrl());
+            setParams(request.getParams());
+            setFiles(request.getFiles());
+            setHeaders(request.getHeaders());
+            setMethod(request.getMethod());
         }
     }
 
@@ -100,7 +98,7 @@ public final class Response implements NetboxResponse {
      *
      * @return mParams
      */
-    public Map<String, FileParam> getFiles() {
+    public Map<String, ParamFile> getFiles() {
         return mFiles;
     }
 
@@ -182,7 +180,7 @@ public final class Response implements NetboxResponse {
      *
      * @param files files
      */
-    private void setFiles(Map<String, FileParam> files) {
+    private void setFiles(Map<String, ParamFile> files) {
         this.mFiles.clear();
         this.mFiles.putAll(files);
     }
@@ -289,15 +287,6 @@ public final class Response implements NetboxResponse {
         return responseTime - requestTime;
     }
 
-    /**
-     * isCache
-     *
-     * @return isCache
-     */
-    public boolean isCache() {
-        return isCache;
-    }
-
     @Override
     public String toString() {
         return "Response{" +
@@ -308,7 +297,6 @@ public final class Response implements NetboxResponse {
                 ", Params=" + mParams +
                 ", Headers=" + mHeaders +
                 ", Extra=" + mExtra +
-                ", isCache=" + isCache +
                 '}';
     }
 }

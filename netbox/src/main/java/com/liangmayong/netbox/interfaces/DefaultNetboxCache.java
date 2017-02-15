@@ -32,7 +32,7 @@ public class DefaultNetboxCache implements NetboxCache {
     }
 
     @Override
-    public String generateKey(Context context, Request parameter) {
+    public String generateKey(Context context, Request request) {
         return null;
     }
 

@@ -1,7 +1,6 @@
-package com.liangmayong.netbox.netcache.disk;
+package com.liangmayong.netbox.strcache.disk;
 
-import com.liangmayong.netbox.netcache.utils.CacheUtils;
-import com.liangmayong.netbox.netcache.utils.StrictLineReader;
+import com.liangmayong.netbox.strcache.utils.CacheUtils;
 
 import java.io.BufferedWriter;
 import java.io.Closeable;

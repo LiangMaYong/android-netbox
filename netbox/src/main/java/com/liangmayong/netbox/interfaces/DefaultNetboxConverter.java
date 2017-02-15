@@ -1,7 +1,5 @@
 package com.liangmayong.netbox.interfaces;
 
-import com.liangmayong.netbox.interfaces.NetboxConverter;
-
 import java.lang.reflect.Type;
 
 /**
@@ -16,12 +14,12 @@ public class DefaultNetboxConverter implements NetboxConverter {
 
     @Override
     public String converterErrorMessage(String body) {
-        return null;
+        return "unkown";
     }
 
     @Override
     public String converterErrorCode(String response) {
-        return null;
+        return "-1";
     }
 
     @Override

@@ -15,9 +15,9 @@ public class Request {
     // headers
     private Map<String, String> mHeaders = null;
     //files
-    private Map<String, FileParam> mFiles = null;
+    private Map<String, ParamFile> mFiles = null;
 
-    public Request(Method mMethod, String mUrl, Map<String, String> mParams, Map<String, String> mHeaders, Map<String, FileParam> mFiles) {
+    public Request(Method mMethod, String mUrl, Map<String, String> mParams, Map<String, String> mHeaders, Map<String, ParamFile> mFiles) {
         this.mMethod = mMethod;
         this.mUrl = mUrl;
         this.mParams = mParams;
@@ -48,7 +48,7 @@ public class Request {
         return mHeaders;
     }
 
-    public Map<String, FileParam> getFiles() {
+    public Map<String, ParamFile> getFiles() {
         return mFiles;
     }
 

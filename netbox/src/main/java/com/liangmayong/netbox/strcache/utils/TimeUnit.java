@@ -1,4 +1,4 @@
-package com.liangmayong.netbox.netcache.utils;
+package com.liangmayong.netbox.strcache.utils;
 
 /**
  * Created by liangmayong on 2016/9/15.

@@ -9,9 +9,9 @@ import com.liangmayong.netbox.annotations.BindHeaders;
 import com.liangmayong.netbox.annotations.BindInterceptor;
 import com.liangmayong.netbox.annotations.BindParams;
 import com.liangmayong.netbox.annotations.BindURL;
-import com.liangmayong.netbox.annotations.Header;
+import com.liangmayong.netbox.annotations.Headers;
 import com.liangmayong.netbox.annotations.Mod;
-import com.liangmayong.netbox.annotations.Param;
+import com.liangmayong.netbox.annotations.Params;
 import com.liangmayong.netbox.annotations.Path;
 import com.liangmayong.netbox.interfaces.DefaultNetboxCache;
 import com.liangmayong.netbox.interfaces.DefaultNetboxConverter;
@@ -182,7 +182,7 @@ public class NetboxServer {
                     NetboxPath netboxPath = path(path);
                     String[] paramkeys = new String[0];
                     String[] paramvalues = new String[0];
-                    Param paramAnnot = method.getAnnotation(Param.class);
+                    Params paramAnnot = method.getAnnotation(Params.class);
                     if (paramAnnot != null) {
                         paramkeys = paramAnnot.key();
                         paramvalues = paramAnnot.value();
@@ -196,7 +196,7 @@ public class NetboxServer {
                     }
                     String[] headerkeys = new String[0];
                     String[] headervalues = new String[0];
-                    Header headerAnnot = method.getAnnotation(Header.class);
+                    Headers headerAnnot = method.getAnnotation(Headers.class);
                     if (headerAnnot != null) {
                         headerkeys = headerAnnot.key();
                         headervalues = headerAnnot.value();

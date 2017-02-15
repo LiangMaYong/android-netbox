@@ -1,5 +1,7 @@
 package com.liangmayong.netbox;
 
+import android.content.Context;
+
 import com.liangmayong.netbox.interfaces.NetboxCache;
 import com.liangmayong.netbox.interfaces.NetboxConverter;
 import com.liangmayong.netbox.interfaces.NetboxInterceptor;
@@ -63,6 +65,19 @@ public final class Netbox {
         } catch (Exception e) {
             throw new IllegalArgumentException("The action generation failure:" + serverType.getName(), e);
         }
+    }
+
+    /**
+     * serverInterface
+     *
+     * @param context       context
+     * @param serverType    serverType
+     * @param interfaceType interfaceType
+     * @param <T>           interface type
+     * @return interface
+     */
+    public static final <T> T serverInterface(Context context, Class<? extends NetboxServer> serverType, Class<T> interfaceType) {
+        return server(serverType).interfaceServer(context, interfaceType);
     }
 
     /**

@@ -6,25 +6,38 @@ import com.liangmayong.netbox.throwables.NetboxError;
 /**
  * Created by liangmayong on 2016/9/12.
  */
-public interface OnNetboxListener {
+public abstract class OnNetboxListener {
+
     /**
      * onResponseHistory
      *
-     * @param response response
+     * @param historyResponse historyResponse
      */
-    void onResponseHistory(Response response);
+    public void onResponseHistory(Response historyResponse) {
+    }
 
     /**
      * onResponse
      *
      * @param response response
      */
-    void onResponse(Response response);
+    public abstract void onResponse(Response response);
 
     /**
      * onFailure
      *
      * @param error error
      */
-    void onFailure(NetboxError error);
+    public abstract void onFailure(NetboxError error);
+
+    /**
+     * shouldCoverCache
+     *
+     * @param response        response
+     * @param historyResponse historyResponse
+     * @return flag
+     */
+    public boolean shouldCoverCache(Response response, Response historyResponse) {
+        return true;
+    }
 }

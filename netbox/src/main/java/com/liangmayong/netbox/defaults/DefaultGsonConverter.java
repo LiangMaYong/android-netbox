@@ -22,7 +22,7 @@ public class DefaultGsonConverter extends DefaultNetboxConverter {
         if ("1".equals(result_code) || "10000".equals(result_code)) {
             return true;
         }
-        return false;
+        return super.isSuccess(body);
     }
 
     @Override
@@ -32,7 +32,7 @@ public class DefaultGsonConverter extends DefaultNetboxConverter {
             return jsonObject.getString("result_msg");
         } catch (JSONException e) {
         }
-        return "unkown error";
+        return super.converterErrorMessage(body);
     }
 
     @Override
@@ -42,7 +42,7 @@ public class DefaultGsonConverter extends DefaultNetboxConverter {
             return jsonObject.getString("result_code");
         } catch (JSONException e) {
         }
-        return "-1";
+        return super.converterErrorCode(body);
     }
 
     @Override

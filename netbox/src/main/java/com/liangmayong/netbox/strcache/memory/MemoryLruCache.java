@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.liangmayong.netbox.netcache.memory;
+package com.liangmayong.netbox.strcache.memory;
 
 import android.annotation.SuppressLint;
 

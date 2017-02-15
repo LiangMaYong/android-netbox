@@ -17,12 +17,12 @@ public class DefaultNetboxInterceptor implements NetboxInterceptor {
     }
 
     @Override
-    public void execRequest(Context context, Request parameter, OnNetboxListener listener) {
+    public void execRequest(Context context, Request request, OnNetboxListener listener) {
         listener.onFailure(new UnkownError("Interceptor invalid"));
     }
 
     @Override
-    public Response syncRequest(Context context, Request parameter) throws NetboxError {
+    public Response syncRequest(Context context, Request request) throws NetboxError {
         throw new UnkownError("Interceptor invalid");
     }
 

@@ -7,7 +7,7 @@ import android.widget.TextView;
 
 import com.liangmayong.netbox.Netbox;
 import com.liangmayong.netbox.interfaces.OnNetboxListener;
-import com.liangmayong.netbox.params.FileParam;
+import com.liangmayong.netbox.params.ParamFile;
 import com.liangmayong.netbox.response.Response;
 import com.liangmayong.netbox.throwables.NetboxError;
 
@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         _initView();
-        Netbox.server(DemoServer.class).interfaceServer(this, DemoInterface.class).uploadFile(new FileParam("a.jpg", "/storage/emulated/0/android_base/photo_take/temp_B8C37E33DEFDE51CF91E1E03E51657DA"), new OnNetboxListener() {
+        Netbox.server(DemoServer.class).interfaceServer(this, DemoInterface.class).uploadFile(new ParamFile("a.jpg", "/storage/emulated/0/android_base/photo_take/temp_B8C37E33DEFDE51CF91E1E03E51657DA"), new OnNetboxListener() {
             @Override
             public void onResponseHistory(Response response) {
                 Log.e("TAG-onResponseHistory", response.getBody());

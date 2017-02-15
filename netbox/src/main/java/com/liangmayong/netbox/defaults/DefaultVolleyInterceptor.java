@@ -5,7 +5,7 @@ import android.content.Context;
 import com.android.volley.VolleyError;
 import com.liangmayong.netbox.interfaces.DefaultNetboxInterceptor;
 import com.liangmayong.netbox.interfaces.OnNetboxListener;
-import com.liangmayong.netbox.params.FileParam;
+import com.liangmayong.netbox.params.ParamFile;
 import com.liangmayong.netbox.params.Request;
 import com.liangmayong.netbox.response.Response;
 import com.liangmayong.netbox.throwables.AuthFailureError;
@@ -28,18 +28,18 @@ import java.util.Map;
 public class DefaultVolleyInterceptor extends DefaultNetboxInterceptor {
 
     @Override
-    public void execRequest(Context context, final Request parameter, final OnNetboxListener listener) {
-        VoMethod method = VoMethod.valueOf(parameter.getMethod().value());
+    public void execRequest(Context context, final Request request, final OnNetboxListener listener) {
+        VoMethod method = VoMethod.valueOf(request.getMethod().value());
         Map<String, VoFile> files = new HashMap<>();
-        if (parameter.getFiles() != null && !parameter.getFiles().isEmpty()) {
-            for (Map.Entry<String, FileParam> entry : parameter.getFiles().entrySet()) {
+        if (request.getFiles() != null && !request.getFiles().isEmpty()) {
+            for (Map.Entry<String, ParamFile> entry : request.getFiles().entrySet()) {
                 files.put(entry.getKey(), new VoFile(entry.getValue().getName(), entry.getValue().getPath()));
             }
         }
-        Vo.string(context, method, parameter.getUrl(), parameter.getParams(), parameter.getHeaders(), files, new com.android.volley.Response.Listener<String>() {
+        Vo.string(context, method, request.getUrl(), request.getParams(), request.getHeaders(), files, new com.android.volley.Response.Listener<String>() {
             @Override
             public void onResponse(String s) {
-                Response response = new Response(parameter);
+                Response response = new Response(request);
                 response.setBody(s);
                 listener.onResponse(response);
             }
@@ -64,17 +64,17 @@ public class DefaultVolleyInterceptor extends DefaultNetboxInterceptor {
     }
 
     @Override
-    public Response syncRequest(Context context, Request parameter) throws NetboxError {
-        VoMethod method = VoMethod.valueOf(parameter.getMethod().value());
+    public Response syncRequest(Context context, Request request) throws NetboxError {
+        VoMethod method = VoMethod.valueOf(request.getMethod().value());
         try {
             Map<String, VoFile> files = new HashMap<>();
-            if (parameter.getFiles() != null && !parameter.getFiles().isEmpty()) {
-                for (Map.Entry<String, FileParam> entry : parameter.getFiles().entrySet()) {
+            if (request.getFiles() != null && !request.getFiles().isEmpty()) {
+                for (Map.Entry<String, ParamFile> entry : request.getFiles().entrySet()) {
                     files.put(entry.getKey(), new VoFile(entry.getValue().getName(), entry.getValue().getPath()));
                 }
             }
-            String data = Vo.stringSync(context, method, parameter.getUrl(), parameter.getParams(), parameter.getHeaders(), files);
-            Response response = new Response(parameter);
+            String data = Vo.stringSync(context, method, request.getUrl(), request.getParams(), request.getHeaders(), files);
+            Response response = new Response(request);
             response.setBody(data);
             return response;
         } catch (VolleyError error) {

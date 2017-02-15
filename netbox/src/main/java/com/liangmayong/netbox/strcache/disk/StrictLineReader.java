@@ -1,4 +1,6 @@
-package com.liangmayong.netbox.netcache.utils;
+package com.liangmayong.netbox.strcache.disk;
+
+import com.liangmayong.netbox.strcache.utils.CacheUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;

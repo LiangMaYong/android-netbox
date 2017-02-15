@@ -3,13 +3,13 @@ package com.liangmayong.netbox.params;
 /**
  * Created by LiangMaYong on 2016/9/14.
  */
-public class FileParam {
+public class ParamFile {
     // name
     private String name = "";
     // path
     private String path = "";
 
-    public FileParam(String name, String path) {
+    public ParamFile(String name, String path) {
         this.name = name;
         this.path = path;
     }

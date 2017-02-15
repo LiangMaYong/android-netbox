@@ -6,9 +6,9 @@ import android.content.pm.ApplicationInfo;
 import android.os.Build;
 import android.util.Log;
 
-import com.liangmayong.netbox.annotations.File;
 import com.liangmayong.netbox.annotations.Key;
-import com.liangmayong.netbox.params.FileParam;
+import com.liangmayong.netbox.annotations.KeyFile;
+import com.liangmayong.netbox.params.ParamFile;
 import com.liangmayong.netbox.params.Request;
 
 import java.lang.annotation.Annotation;
@@ -81,7 +81,7 @@ public final class NetboxUtils {
      * @param rement rement
      * @return new
      */
-    public static String replaceURL(String string, String regex, String rement) {
+    private static String replaceURL(String string, String regex, String rement) {
         String newUrl = string;
         if (newUrl.contains(regex)) {
             newUrl = newUrl.replace(regex, rement);
@@ -98,7 +98,7 @@ public final class NetboxUtils {
      * @param url url
      * @return hostUrl
      */
-    public static String parseHostURL(String url) {
+    private static String parseHostURL(String url) {
         if (url == null) {
             url = "";
         }
@@ -229,11 +229,11 @@ public final class NetboxUtils {
      *
      * @return key
      */
-    public static String generateCacheKey(Request parameter) {
-        StringBuilder builder = new StringBuilder(parameter.getMethod().name() + "@" + parameter.getUrl());
-        if (parameter.getParams() != null && !parameter.getParams().isEmpty()) {
+    public static String generateCacheKey(Request request) {
+        StringBuilder builder = new StringBuilder(request.getMethod().name() + "@" + request.getUrl());
+        if (request.getParams() != null && !request.getParams().isEmpty()) {
             builder.append("@");
-            for (Map.Entry<String, String> entry : parameter.getParams().entrySet()) {
+            for (Map.Entry<String, String> entry : request.getParams().entrySet()) {
                 builder.append(entry.getKey());
                 builder.append("=");
                 builder.append(entry.getValue());
@@ -241,9 +241,9 @@ public final class NetboxUtils {
             }
             builder.deleteCharAt(builder.length() - 1);
         }
-        if (parameter.getHeaders() != null && !parameter.getHeaders().isEmpty()) {
+        if (request.getHeaders() != null && !request.getHeaders().isEmpty()) {
             builder.append("@");
-            for (Map.Entry<String, String> entry : parameter.getHeaders().entrySet()) {
+            for (Map.Entry<String, String> entry : request.getHeaders().entrySet()) {
                 builder.append(entry.getKey());
                 builder.append("=");
                 builder.append(entry.getValue());
@@ -260,7 +260,7 @@ public final class NetboxUtils {
      * @param str string
      * @return encrypt string
      */
-    public final static String md5(String str) {
+    private final static String md5(String str) {
         char hexDigits[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
         try {
             byte[] strTemp = str.getBytes();
@@ -321,19 +321,19 @@ public final class NetboxUtils {
      * @param args   args
      * @return params
      */
-    public static Map<String, FileParam> getMethodFileParamByAnnotation(Method method, Object[] args) {
+    public static Map<String, ParamFile> getMethodFileParamByAnnotation(Method method, Object[] args) {
         Annotation[][] parameterAnnotations = method.getParameterAnnotations();
         if (parameterAnnotations == null || parameterAnnotations.length == 0) {
             return null;
         }
-        Map<String, FileParam> stringMap = new HashMap<String, FileParam>();
+        Map<String, com.liangmayong.netbox.params.ParamFile> stringMap = new HashMap<String, com.liangmayong.netbox.params.ParamFile>();
         for (int i = 0; i < parameterAnnotations.length; i++) {
             for (int j = 0; j < parameterAnnotations[i].length; j++) {
                 Annotation annotation = parameterAnnotations[i][j];
-                if (annotation instanceof File) {
-                    if (args[i] instanceof FileParam) {
-                        File param = (File) annotation;
-                        stringMap.put(param.value(), (FileParam) args[i]);
+                if (annotation instanceof KeyFile) {
+                    if (args[i] instanceof com.liangmayong.netbox.params.ParamFile) {
+                        KeyFile param = (KeyFile) annotation;
+                        stringMap.put(param.value(), (com.liangmayong.netbox.params.ParamFile) args[i]);
                     }
                 }
             }

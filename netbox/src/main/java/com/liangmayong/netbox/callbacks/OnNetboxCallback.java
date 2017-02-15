@@ -10,17 +10,6 @@ import com.liangmayong.netbox.utils.NetboxUtils;
  */
 public abstract class OnNetboxCallback<T> extends OnNetboxListener {
 
-    private Response response = null;
-
-    /**
-     * getResponse
-     *
-     * @return response
-     */
-    public Response getResponse() {
-        return response;
-    }
-
     /**
      * handleResponseSuccess
      *
@@ -33,7 +22,8 @@ public abstract class OnNetboxCallback<T> extends OnNetboxListener {
      *
      * @param data data
      */
-    public abstract void handleResponseHistory(T data);
+    public void handleResponseHistory(T data) {
+    }
 
     /**
      * handleResponseError
@@ -52,14 +42,8 @@ public abstract class OnNetboxCallback<T> extends OnNetboxListener {
 
     @Override
     public void onResponse(Response response) {
-        this.response = response;
         if (response.isSuccess()) {
-            T data = null;
-            try {
-                data = response.getData(generateDefualtKey(), NetboxUtils.getGenericType(this, 0));
-            } catch (Exception e) {
-            }
-            handleResponseSuccess(data);
+            handleResponseSuccess(responseToT(response));
         } else {
             handleResponseError(response.getErrorCode(), response.getErrorMessage());
         }
@@ -68,13 +52,19 @@ public abstract class OnNetboxCallback<T> extends OnNetboxListener {
     @Override
     public void onResponseHistory(Response response) {
         if (response.isSuccess()) {
-            T data = null;
+            handleResponseHistory(responseToT(response));
+        }
+    }
+
+    private T responseToT(Response response) {
+        T data = null;
+        if (response.isSuccess()) {
             try {
                 data = response.getData(generateDefualtKey(), NetboxUtils.getGenericType(this, 0));
             } catch (Exception e) {
             }
-            handleResponseHistory(data);
         }
+        return data;
     }
 
     @Override

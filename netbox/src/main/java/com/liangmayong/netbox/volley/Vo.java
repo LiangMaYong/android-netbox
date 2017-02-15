@@ -318,8 +318,7 @@ public class Vo {
                             psb.append(prefix);
                             psb.append(boundary);
                             psb.append(lineEnd);
-                            psb.append("Content-Disposition:form-data;name=\"" + entry.getKey() + "\"" + lineEnd
-                                    + lineEnd);
+                            psb.append("Content-Disposition:form-data;name=\"" + entry.getKey() + "\"" + lineEnd + lineEnd);
                             psb.append(entry.getValue());
                             psb.append(lineEnd);
                             outputStream.write(psb.toString().getBytes());
@@ -336,7 +335,7 @@ public class Vo {
                                 sb.append(prefix);
                                 sb.append(boundary);
                                 sb.append(lineEnd);
-                                sb.append("Content-Disposition: form-data;name=\"" + entry.getKey() + "\";filename=\""
+                                sb.append("Content-Disposition:form-data;name=\"" + entry.getKey() + "\";filename=\""
                                         + entry.getValue().getName() + "\"" + lineEnd);
                                 FileInputStream in = new FileInputStream(item);
                                 sb.append("Content-Length:" + in.available() + lineEnd);
@@ -352,7 +351,7 @@ public class Vo {
                             }
                         }
                     }
-                    byte[] end_data = (lineEnd + prefix + boundary + prefix + lineEnd).getBytes();
+                    byte[] end_data = (prefix + boundary + prefix + lineEnd).getBytes();
                     outputStream.write(end_data);
                     outputStream.flush();
                     outputStream.close();

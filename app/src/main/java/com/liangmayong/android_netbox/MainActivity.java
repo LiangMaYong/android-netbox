@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         _initView();
-        NetboxConfig.getDefaultInstance().putParam("KEY2", "VALUE2");
+        NetboxConfig.getDefaultInstance().putParam("event", "User");
         Netbox.server(DemoServer.class).interfaceServer(this, DemoInterface.class).uploadFile(new ParamFile("a.jpg", "/storage/emulated/0/android_base/photo_take/temp_B8C37E33DEFDE51CF91E1E03E51657DA"), new OnNetboxListener() {
             @Override
             public void onResponseHistory(Response response) {

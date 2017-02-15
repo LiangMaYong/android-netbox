@@ -4,8 +4,8 @@ import android.content.Context;
 
 import com.liangmayong.netbox.interfaces.NetboxCache;
 import com.liangmayong.netbox.interfaces.OnNetboxListener;
-import com.liangmayong.netbox.params.ParamFile;
 import com.liangmayong.netbox.params.Method;
+import com.liangmayong.netbox.params.ParamFile;
 import com.liangmayong.netbox.params.Request;
 import com.liangmayong.netbox.response.Response;
 import com.liangmayong.netbox.throwables.NetboxError;
@@ -427,9 +427,12 @@ public final class NetboxPath {
     }
 
     private void resetPath() {
+        NetboxConfig boxConfig = NetboxConfig.getInstance(mServerType);
         mFiles.clear();
         mParams.clear();
         mHeaders.clear();
+        mParams.putAll(boxConfig.getCommonParams());
+        mHeaders.putAll(boxConfig.getCommonHeaders());
         mMethod = Method.GET;
         mRequsetIng = false;
     }

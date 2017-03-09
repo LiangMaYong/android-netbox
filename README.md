@@ -1,12 +1,12 @@
-﻿# Android-netbox
+﻿# Android-NetBox
 this is android netbox library
 
-[![LatestVersion](https://img.shields.io/badge/LatestVersion-1.0.0-brightgreen.svg?style=plastic) ](https://github.com/LiangMaYong/android-netbox/releases/)
 ## Gradle
 ```
 compile 'com.liangmayong.android:netbox:$LatestVersion'
 ```
 ## Get start
+Server
 ```
 @BindURL(value = "http://github.com/api/", debug = "http://github.com/debug/api/")
 @BindParams(key = "common_key", value = "common_value")
@@ -15,11 +15,11 @@ public class DemoServer extends DefaultVolleyServer {
 
 }
 ```
-use
+Exec
 ```
 Netbox.server(DemoServer.class).path("login").param("username", "liangmayong").exec(...)
 ```
-Annottations:
+interfaceServer
 ```
 public interface DemoInterface {
 
@@ -32,7 +32,7 @@ public interface DemoInterface {
     void login(@Key("username") String username, @Key("password") String password, OnNetboxListener listener);
 }
 ```
-use
+Use interfaceServer
 ```
 Netbox.server(DemoServer.class).interfaceServer(DemoInterface.class).login("liangmayong","***",...);
 ```

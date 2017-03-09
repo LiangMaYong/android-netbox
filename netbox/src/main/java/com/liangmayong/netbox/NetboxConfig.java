@@ -53,6 +53,32 @@ public final class NetboxConfig {
     private boolean debugable = false;
     // parent
     private NetboxConfig parent = null;
+    // releaseURL
+    private String debugURL = "";
+    // releaseURL
+    private String releaseURL = "";
+
+    public String getDebugURL() {
+        if (debugURL == null) {
+            return "";
+        }
+        return debugURL;
+    }
+
+    public void setDebugURL(String debugURL) {
+        this.debugURL = debugURL;
+    }
+
+    public String getReleaseURL() {
+        if (releaseURL == null) {
+            return "";
+        }
+        return releaseURL;
+    }
+
+    public void setReleaseURL(String releaseURL) {
+        this.releaseURL = releaseURL;
+    }
 
     /**
      * setParent

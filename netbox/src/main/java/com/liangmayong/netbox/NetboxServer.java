@@ -16,11 +16,11 @@ import com.liangmayong.netbox.annotations.Path;
 import com.liangmayong.netbox.interfaces.DefaultNetboxCache;
 import com.liangmayong.netbox.interfaces.DefaultNetboxConverter;
 import com.liangmayong.netbox.interfaces.DefaultNetboxInterceptor;
-import com.liangmayong.netbox.params.Method;
 import com.liangmayong.netbox.interfaces.NetboxCache;
 import com.liangmayong.netbox.interfaces.NetboxConverter;
 import com.liangmayong.netbox.interfaces.NetboxInterceptor;
 import com.liangmayong.netbox.interfaces.OnNetboxListener;
+import com.liangmayong.netbox.params.Method;
 import com.liangmayong.netbox.params.Request;
 import com.liangmayong.netbox.response.Response;
 import com.liangmayong.netbox.throwables.NetboxError;
@@ -43,10 +43,6 @@ public class NetboxServer {
     private boolean debugable = false;
     // isSetDebugable
     private boolean isSetDebugable = false;
-    // baseURL
-    private String debugURL = "";
-    // baseURL
-    private String baseURL = "";
     // interceptorType
     private Class<? extends NetboxInterceptor> interceptorType = DefaultNetboxInterceptor.class;
     // converterType
@@ -97,7 +93,7 @@ public class NetboxServer {
             this.cacheType = cacheType;
         }
 
-        // baseURL
+        // releaseURL
         BindURL url = null;
         for (clazz = getClass(); clazz != Object.class && url == null; clazz = clazz.getSuperclass()) {
             url = clazz.getAnnotation(BindURL.class);
@@ -111,8 +107,8 @@ public class NetboxServer {
             if (debugURL == null || "".equals(debugURL)) {
                 debugURL = "";
             }
-            this.debugURL = debugURL;
-            this.baseURL = baseURL;
+            config().setDebugURL(debugURL);
+            config().setReleaseURL(baseURL);
         }
 
         // debugable
@@ -222,15 +218,15 @@ public class NetboxServer {
     }
 
     /**
-     * generateBaseUrl
+     * generateURL
      *
      * @return base url
      */
-    protected String generateBaseURL() {
-        if (baseURL == null) {
-            return "";
+    protected String generateURL() {
+        if (isDebugable()) {
+            return config().getDebugURL();
         }
-        return baseURL;
+        return config().getReleaseURL();
     }
 
     /**
@@ -246,30 +242,6 @@ public class NetboxServer {
             return debugable;
         }
         return NetboxUtils.isDebugable();
-    }
-
-    /**
-     * generateURL
-     *
-     * @return base url
-     */
-    protected String generateURL() {
-        if (isDebugable()) {
-            return generateDebugURL();
-        }
-        return generateBaseURL();
-    }
-
-    /**
-     * generateDebugURL
-     *
-     * @return base url
-     */
-    protected String generateDebugURL() {
-        if (debugURL == null) {
-            return "";
-        }
-        return debugURL;
     }
 
     /**

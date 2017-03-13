@@ -7,10 +7,12 @@ import android.widget.TextView;
 
 import com.liangmayong.netbox.Netbox;
 import com.liangmayong.netbox.NetboxConfig;
-import com.liangmayong.netbox.interfaces.OnNetboxListener;
-import com.liangmayong.netbox.params.ParamFile;
+import com.liangmayong.netbox.callbacks.OnNetboxListener;
 import com.liangmayong.netbox.response.Response;
 import com.liangmayong.netbox.throwables.NetboxError;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -23,16 +25,21 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         _initView();
         NetboxConfig.getDefaultInstance().putParam("event", "User");
-        Netbox.server(DemoServer.class).interfaceServer(this, DemoInterface.class).uploadFile(new ParamFile("a.jpg", "/storage/emulated/0/android_base/photo_take/temp_B8C37E33DEFDE51CF91E1E03E51657DA"), new OnNetboxListener() {
+        Map<String, String> pre = new HashMap<>();
+        pre.put("name", "bane");
+        pre.put("age", "1");
+        Netbox.server(DemoServer.class).interfaceServer(this, DemoInterface.class).login("1", "2", pre, new OnNetboxListener() {
+
             @Override
-            public void onResponseHistory(Response response) {
-                Log.e("TAG-onResponseHistory", response.getBody());
+            public void onResponseHistory(Response historyResponse) {
+                super.onResponseHistory(historyResponse);
+                Log.e("TAG", historyResponse + "");
+                text.setText("historyResponse:" + historyResponse + "");
             }
 
             @Override
             public void onResponse(Response response) {
-                Log.e("TAG", response.getBody());
-                text.setText(response.getBody());
+                text.setText(response + "");
             }
 
             @Override

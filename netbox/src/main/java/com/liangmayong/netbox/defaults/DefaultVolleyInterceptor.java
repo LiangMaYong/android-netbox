@@ -3,21 +3,21 @@ package com.liangmayong.netbox.defaults;
 import android.content.Context;
 
 import com.android.volley.VolleyError;
-import com.liangmayong.netbox.interfaces.DefaultNetboxInterceptor;
-import com.liangmayong.netbox.interfaces.OnNetboxListener;
-import com.liangmayong.netbox.params.ParamFile;
+import com.liangmayong.netbox.callbacks.OnNetboxListener;
+import com.liangmayong.netbox.defaults.abstracts.AbstractDefaultNetboxInterceptor;
+import com.liangmayong.netbox.params.FileParam;
 import com.liangmayong.netbox.params.Request;
 import com.liangmayong.netbox.response.Response;
-import com.liangmayong.netbox.throwables.AuthFailureError;
+import com.liangmayong.netbox.throwables.errors.AuthFailureException;
 import com.liangmayong.netbox.throwables.NetboxError;
-import com.liangmayong.netbox.throwables.NetworkError;
-import com.liangmayong.netbox.throwables.ParseError;
-import com.liangmayong.netbox.throwables.ServerError;
-import com.liangmayong.netbox.throwables.UnkownError;
-import com.liangmayong.netbox.volley.Vo;
-import com.liangmayong.netbox.volley.VoError;
-import com.liangmayong.netbox.volley.VoFile;
-import com.liangmayong.netbox.volley.VoMethod;
+import com.liangmayong.netbox.throwables.errors.NetworkException;
+import com.liangmayong.netbox.throwables.errors.ParseException;
+import com.liangmayong.netbox.throwables.errors.ServerException;
+import com.liangmayong.netbox.throwables.errors.UnkownException;
+import com.liangmayong.netbox.defaults.volley.Vo;
+import com.liangmayong.netbox.defaults.volley.VoError;
+import com.liangmayong.netbox.defaults.volley.VoFile;
+import com.liangmayong.netbox.defaults.volley.VoMethod;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,14 +25,14 @@ import java.util.Map;
 /**
  * Created by LiangMaYong on 2016/9/13.
  */
-public class DefaultVolleyInterceptor extends DefaultNetboxInterceptor {
+public class DefaultVolleyInterceptor extends AbstractDefaultNetboxInterceptor {
 
     @Override
     public void execRequest(Context context, final Request request, final OnNetboxListener listener) {
         VoMethod method = VoMethod.valueOf(request.getMethod().value());
         Map<String, VoFile> files = new HashMap<>();
         if (request.getFiles() != null && !request.getFiles().isEmpty()) {
-            for (Map.Entry<String, ParamFile> entry : request.getFiles().entrySet()) {
+            for (Map.Entry<String, FileParam> entry : request.getFiles().entrySet()) {
                 files.put(entry.getKey(), new VoFile(entry.getValue().getName(), entry.getValue().getPath()));
             }
         }
@@ -48,15 +48,15 @@ public class DefaultVolleyInterceptor extends DefaultNetboxInterceptor {
             public void onErrorResponse(VolleyError volleyError) {
                 String errorType = VoError.getErrorType(volleyError);
                 if (VoError.AUTH_FAILURE_ERROR.equals(errorType)) {
-                    listener.onFailure(new AuthFailureError(volleyError));
+                    listener.onFailure(new AuthFailureException(volleyError));
                 } else if (VoError.SERVER_ERROR.equals(errorType)) {
-                    listener.onFailure(new ServerError(volleyError));
+                    listener.onFailure(new ServerException(volleyError));
                 } else if (VoError.PARSE_ERROR.equals(errorType)) {
-                    listener.onFailure(new ParseError(volleyError));
+                    listener.onFailure(new ParseException(volleyError));
                 } else if (VoError.NETWORK_ERROR.equals(errorType)) {
-                    listener.onFailure(new NetworkError(volleyError));
+                    listener.onFailure(new NetworkException(volleyError));
                 } else {
-                    listener.onFailure(new UnkownError(volleyError));
+                    listener.onFailure(new UnkownException(volleyError));
                 }
             }
         });
@@ -69,7 +69,7 @@ public class DefaultVolleyInterceptor extends DefaultNetboxInterceptor {
         try {
             Map<String, VoFile> files = new HashMap<>();
             if (request.getFiles() != null && !request.getFiles().isEmpty()) {
-                for (Map.Entry<String, ParamFile> entry : request.getFiles().entrySet()) {
+                for (Map.Entry<String, FileParam> entry : request.getFiles().entrySet()) {
                     files.put(entry.getKey(), new VoFile(entry.getValue().getName(), entry.getValue().getPath()));
                 }
             }
@@ -80,15 +80,15 @@ public class DefaultVolleyInterceptor extends DefaultNetboxInterceptor {
         } catch (VolleyError error) {
             String errorType = VoError.getErrorType(error);
             if (VoError.AUTH_FAILURE_ERROR.equals(errorType)) {
-                throw new AuthFailureError(error);
+                throw new AuthFailureException(error);
             } else if (VoError.SERVER_ERROR.equals(errorType)) {
-                throw new ServerError(error);
+                throw new ServerException(error);
             } else if (VoError.PARSE_ERROR.equals(errorType)) {
-                throw new ParseError(error);
+                throw new ParseException(error);
             } else if (VoError.NETWORK_ERROR.equals(errorType)) {
-                throw new NetworkError(error);
+                throw new NetworkException(error);
             } else {
-                throw new UnkownError(error);
+                throw new UnkownException(error);
             }
         }
     }

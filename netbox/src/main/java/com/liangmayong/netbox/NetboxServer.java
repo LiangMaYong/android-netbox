@@ -13,14 +13,15 @@ import com.liangmayong.netbox.annotations.Headers;
 import com.liangmayong.netbox.annotations.Mod;
 import com.liangmayong.netbox.annotations.Params;
 import com.liangmayong.netbox.annotations.Path;
-import com.liangmayong.netbox.interfaces.DefaultNetboxCache;
-import com.liangmayong.netbox.interfaces.DefaultNetboxConverter;
-import com.liangmayong.netbox.interfaces.DefaultNetboxInterceptor;
+import com.liangmayong.netbox.defaults.abstracts.AbstractDefaultNetboxCache;
+import com.liangmayong.netbox.defaults.abstracts.AbstractDefaultNetboxConverter;
+import com.liangmayong.netbox.defaults.abstracts.AbstractDefaultNetboxInterceptor;
 import com.liangmayong.netbox.interfaces.NetboxCache;
 import com.liangmayong.netbox.interfaces.NetboxConverter;
 import com.liangmayong.netbox.interfaces.NetboxInterceptor;
-import com.liangmayong.netbox.interfaces.OnNetboxListener;
+import com.liangmayong.netbox.callbacks.OnNetboxListener;
 import com.liangmayong.netbox.params.Method;
+import com.liangmayong.netbox.params.FileParam;
 import com.liangmayong.netbox.params.Request;
 import com.liangmayong.netbox.response.Response;
 import com.liangmayong.netbox.throwables.NetboxError;
@@ -34,9 +35,9 @@ import java.util.Map;
 /**
  * Created by liangmayong on 2016/9/12.
  */
-@BindCache(DefaultNetboxCache.class)
-@BindConverter(DefaultNetboxConverter.class)
-@BindInterceptor(DefaultNetboxInterceptor.class)
+@BindCache(AbstractDefaultNetboxCache.class)
+@BindConverter(AbstractDefaultNetboxConverter.class)
+@BindInterceptor(AbstractDefaultNetboxInterceptor.class)
 public class NetboxServer {
 
     // debugable
@@ -44,11 +45,11 @@ public class NetboxServer {
     // isSetDebugable
     private boolean isSetDebugable = false;
     // interceptorType
-    private Class<? extends NetboxInterceptor> interceptorType = DefaultNetboxInterceptor.class;
+    private Class<? extends NetboxInterceptor> interceptorType = AbstractDefaultNetboxInterceptor.class;
     // converterType
-    private Class<? extends NetboxConverter> converterType = DefaultNetboxConverter.class;
+    private Class<? extends NetboxConverter> converterType = AbstractDefaultNetboxConverter.class;
     // cacheType
-    private Class<? extends NetboxCache> cacheType = DefaultNetboxCache.class;
+    private Class<? extends NetboxCache> cacheType = AbstractDefaultNetboxCache.class;
 
     // generateAction
     protected final void generateAction() {
@@ -62,7 +63,7 @@ public class NetboxServer {
         if (interceptor != null) {
             Class<? extends NetboxInterceptor> interceptorType = interceptor.value();
             if (interceptorType == NetboxInterceptor.class) {
-                interceptorType = DefaultNetboxInterceptor.class;
+                interceptorType = AbstractDefaultNetboxInterceptor.class;
             }
             this.interceptorType = interceptorType;
         }
@@ -75,7 +76,7 @@ public class NetboxServer {
         if (converter != null) {
             Class<? extends NetboxConverter> converterType = converter.value();
             if (converterType == NetboxConverter.class) {
-                converterType = DefaultNetboxConverter.class;
+                converterType = AbstractDefaultNetboxConverter.class;
             }
             this.converterType = converterType;
         }
@@ -88,7 +89,7 @@ public class NetboxServer {
         if (cache != null) {
             Class<? extends NetboxCache> cacheType = cache.value();
             if (cacheType == NetboxCache.class) {
-                cacheType = DefaultNetboxCache.class;
+                cacheType = AbstractDefaultNetboxCache.class;
             }
             this.cacheType = cacheType;
         }
@@ -204,8 +205,9 @@ public class NetboxServer {
                             netboxPath.header(headerkeys[i], "");
                         }
                     }
-                    netboxPath.params(NetboxUtils.getMethodParametersByAnnotation(method, args));
-                    netboxPath.files(NetboxUtils.getMethodFileParamByAnnotation(method, args));
+                    Object[] parameters = NetboxUtils.getMethodParameters(method, args);
+                    netboxPath.params((Map<String, String>) parameters[0]);
+                    netboxPath.files((Map<String, FileParam>) parameters[1]);
                     netboxPath.method(met);
                     netboxPath.execute(context, (OnNetboxListener) args[args.length - 1]);
                     return null;
@@ -251,7 +253,7 @@ public class NetboxServer {
      */
     protected Class<? extends NetboxConverter> generateConverterType() {
         if (converterType == null) {
-            return DefaultNetboxConverter.class;
+            return AbstractDefaultNetboxConverter.class;
         }
         return converterType;
     }
@@ -263,7 +265,7 @@ public class NetboxServer {
      */
     protected Class<? extends NetboxInterceptor> generateInterceptorType() {
         if (interceptorType == null) {
-            return DefaultNetboxInterceptor.class;
+            return AbstractDefaultNetboxInterceptor.class;
         }
         return interceptorType;
     }
@@ -275,7 +277,7 @@ public class NetboxServer {
      */
     protected Class<? extends NetboxCache> generateCacheType() {
         if (cacheType == null) {
-            return DefaultNetboxCache.class;
+            return AbstractDefaultNetboxCache.class;
         }
         return cacheType;
     }
@@ -355,7 +357,7 @@ public class NetboxServer {
      * @param error error
      * @return flag
      */
-    protected boolean handleFailure(Request parameter, NetboxError error) {
+    protected boolean handleFailure(Request request, NetboxError error) {
         return false;
     }
 

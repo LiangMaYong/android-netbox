@@ -15,6 +15,15 @@ public interface NetboxResponse {
     boolean isSuccess();
 
     /**
+     * isExist
+     *
+     * @param key   key
+     * @param value value
+     * @return bool
+     */
+    boolean isExist(String key, String value);
+
+    /**
      * getTimestamp
      *
      * @return timestamp
@@ -42,6 +51,7 @@ public interface NetboxResponse {
      * @param <T>  type
      * @return t
      */
+
     <T> T getData(Type type);
 
     /**

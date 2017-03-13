@@ -8,7 +8,7 @@ import com.liangmayong.netbox.annotations.BindInterceptor;
 /**
  * Created by liangmayong on 2016/9/13.
  */
-@BindCache(DefaultCache.class)
+@BindCache(DefaultDatabaseCache.class)
 @BindConverter(DefaultGsonConverter.class)
 @BindInterceptor(DefaultVolleyInterceptor.class)
 public abstract class DefaultVolleyServer extends NetboxServer {

@@ -45,14 +45,14 @@ public final class NetboxConfig {
         return config;
     }
 
+    // parent
+    private NetboxConfig parent = null;
     // commonParams
     private final Map<String, String> commonParams = new HashMap<String, String>();
     // commonHeaders
     private final Map<String, String> commonHeaders = new HashMap<String, String>();
     // debugable
     private boolean debugable = false;
-    // parent
-    private NetboxConfig parent = null;
     // releaseURL
     private String debugURL = "";
     // releaseURL
@@ -95,6 +95,11 @@ public final class NetboxConfig {
      * @return debugable
      */
     public boolean isDebugable() {
+        if (parent != null) {
+            if (parent.isDebugable()) {
+                return true;
+            }
+        }
         return debugable;
     }
 

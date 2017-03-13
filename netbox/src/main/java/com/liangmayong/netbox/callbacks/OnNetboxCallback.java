@@ -1,6 +1,5 @@
 package com.liangmayong.netbox.callbacks;
 
-import com.liangmayong.netbox.interfaces.OnNetboxListener;
 import com.liangmayong.netbox.response.Response;
 import com.liangmayong.netbox.throwables.NetboxError;
 import com.liangmayong.netbox.utils.NetboxUtils;

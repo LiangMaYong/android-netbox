@@ -4,6 +4,8 @@ import android.content.Context;
 
 import com.liangmayong.netbox.params.Request;
 
+import java.util.Map;
+
 /**
  * Created by LiangMaYong on 2016/9/13.
  */
@@ -27,33 +29,41 @@ public interface NetboxCache {
     String getCache(Context context, String key);
 
     /**
-     * removeCache
+     * deleteCache
      *
      * @param context context
      * @param key     key
      */
-    void removeCache(Context context, String key);
+    void deleteCache(Context context, String key);
 
     /**
-     * clearCache
+     * deleteAll
      *
      * @param context context
      */
-    void clearCache(Context context);
+    void deleteAll(Context context);
 
     /**
-     * cacheSize
+     * getSize
      *
      * @return size
      */
-    long cacheSize(Context context);
+    long getSize(Context context);
+
+    /**
+     * getCaches
+     *
+     * @param context context
+     * @return caches
+     */
+    Map<String, String> getCaches(Context context);
 
     /**
      * generateKey
      *
-     * @param context   context
-     * @param parameter parameter
+     * @param context context
+     * @param request request
      * @return key
      */
-    String generateKey(Context context, Request parameter);
+    String generateKey(Context context, Request request);
 }

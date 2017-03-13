@@ -1,9 +1,8 @@
 package com.liangmayong.netbox.defaults;
 
 import com.google.gson.Gson;
-import com.liangmayong.netbox.interfaces.DefaultNetboxConverter;
+import com.liangmayong.netbox.defaults.abstracts.AbstractDefaultNetboxConverter;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
@@ -11,7 +10,13 @@ import java.lang.reflect.Type;
 /**
  * Created by liangmayong on 2016/9/15.
  */
-public class DefaultGsonConverter extends DefaultNetboxConverter {
+public class DefaultGsonConverter extends AbstractDefaultNetboxConverter {
+
+    private String result_msg = "result_msg";
+    private String result_code = "result_code";
+    private String result_timestamp = "timestamp";
+    private String result_data = "result_data";
+    private String[] result_success = {"1"};
 
     //gson
     private volatile Gson gson = null;
@@ -19,45 +24,47 @@ public class DefaultGsonConverter extends DefaultNetboxConverter {
     @Override
     public boolean isSuccess(String body) {
         String result_code = converterErrorCode(body);
-        if ("1".equals(result_code) || "10000".equals(result_code)) {
-            return true;
+        for (int i = 0; i < result_success.length; i++) {
+            if (result_success[i].equals(result_code)) {
+                return true;
+            }
         }
         return super.isSuccess(body);
     }
 
     @Override
-    public String converterErrorMessage(String body) {
-        try {
-            JSONObject jsonObject = new JSONObject(body);
-            return jsonObject.getString("result_msg");
-        } catch (JSONException e) {
+    public boolean isExist(String key, String value, String body) {
+        String c_value = converterKey(key, body);
+        if (value != null && value.equals(c_value)) {
+            return true;
         }
-        return super.converterErrorMessage(body);
+        return super.isExist(key, value, body);
+    }
+
+    @Override
+    public String converterErrorMessage(String body) {
+        return converterKey(result_msg, body);
     }
 
     @Override
     public String converterErrorCode(String body) {
-        try {
-            JSONObject jsonObject = new JSONObject(body);
-            return jsonObject.getString("result_code");
-        } catch (JSONException e) {
-        }
-        return super.converterErrorCode(body);
+        return converterKey(result_code, body);
     }
 
     @Override
     public long converterTimestamp(String body) {
+        String timestamp = converterKey(result_timestamp, body);
         try {
-            JSONObject jsonObject = new JSONObject(body);
-            return jsonObject.getLong("timestamp");
-        } catch (JSONException e) {
+            long time = Long.parseLong(timestamp);
+            return time;
+        } catch (Exception e) {
         }
         return super.converterTimestamp(body);
     }
 
     @Override
     public String converterDefualtKey() {
-        return "result_data";
+        return result_data;
     }
 
     @Override

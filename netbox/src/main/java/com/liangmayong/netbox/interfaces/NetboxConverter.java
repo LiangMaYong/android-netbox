@@ -15,6 +15,17 @@ public interface NetboxConverter {
      */
     boolean isSuccess(String body);
 
+
+    /**
+     * isExist
+     *
+     * @param key   key
+     * @param value value
+     * @param body  body
+     * @return bool
+     */
+    boolean isExist(String key, String value, String body);
+
     /**
      * converterErrorMessage
      *

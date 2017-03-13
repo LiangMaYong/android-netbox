@@ -2,15 +2,15 @@ package com.liangmayong.netbox;
 
 import android.content.Context;
 
+import com.liangmayong.netbox.callbacks.OnNetboxListener;
 import com.liangmayong.netbox.interfaces.NetboxCache;
-import com.liangmayong.netbox.interfaces.OnNetboxListener;
+import com.liangmayong.netbox.params.FileParam;
 import com.liangmayong.netbox.params.Method;
-import com.liangmayong.netbox.params.ParamFile;
 import com.liangmayong.netbox.params.Request;
 import com.liangmayong.netbox.response.Response;
 import com.liangmayong.netbox.throwables.NetboxError;
-import com.liangmayong.netbox.throwables.RequestLockError;
-import com.liangmayong.netbox.throwables.UnkownError;
+import com.liangmayong.netbox.throwables.errors.RequestLockException;
+import com.liangmayong.netbox.throwables.errors.UnkownException;
 import com.liangmayong.netbox.utils.NetboxUtils;
 
 import java.util.HashMap;
@@ -34,7 +34,7 @@ public final class NetboxPath {
     // headers
     private final Map<String, String> mHeaders;
     // files
-    private final Map<String, ParamFile> mFiles;
+    private final Map<String, FileParam> mFiles;
 
     /**
      * NetboxPath
@@ -47,7 +47,7 @@ public final class NetboxPath {
         this.mPath = path;
         this.mParams = new HashMap<String, String>();
         this.mHeaders = new HashMap<String, String>();
-        this.mFiles = new HashMap<String, ParamFile>();
+        this.mFiles = new HashMap<String, FileParam>();
         resetPath();
     }
 
@@ -109,7 +109,7 @@ public final class NetboxPath {
      * @param param param
      * @return path
      */
-    public NetboxPath file(String key, ParamFile param) {
+    public NetboxPath file(String key, FileParam param) {
         if (checkRequestIng(false)) {
             return this;
         }
@@ -129,7 +129,7 @@ public final class NetboxPath {
      * @param files files
      * @return path
      */
-    public NetboxPath files(Map<String, ParamFile> files) {
+    public NetboxPath files(Map<String, FileParam> files) {
         if (checkRequestIng(false)) {
             return this;
         }
@@ -188,11 +188,11 @@ public final class NetboxPath {
         }
         if (checkRequestIng(true)) {
             if (listener != null) {
-                listener.onFailure(new RequestLockError(null, "In the request, the data can not be modified"));
+                listener.onFailure(new RequestLockException(null, "In the request, the data can not be modified"));
             }
             return;
         }
-        final Request request = new Request(Method.valueOf(mMethod.value()), getRequestURL(), new HashMap<String, String>(mParams), new HashMap<String, String>(mHeaders), new HashMap<String, ParamFile>(mFiles));
+        final Request request = new Request(Method.valueOf(mMethod.value()), getRequestURL(), new HashMap<String, String>(mParams), new HashMap<String, String>(mHeaders), new HashMap<String, FileParam>(mFiles));
         mRequsetIng = true;
         final long requestTime = System.currentTimeMillis();
         OnNetboxListener mNetboxListener = new OnNetboxListener() {
@@ -210,13 +210,12 @@ public final class NetboxPath {
             @Override
             public void onResponse(Response response) {
                 if (response == null) {
-                    onFailure(new UnkownError("response is null"));
+                    onFailure(new UnkownException("response is null"));
                     return;
                 }
                 response.setConverter(Netbox.server(mServerType).generateConverterType());
                 NetboxUtils.setField(Response.class, response, "requestTime", requestTime);
                 NetboxUtils.setField(Response.class, response, "responseTime", System.currentTimeMillis());
-                NetboxUtils.setField(Response.class, response, "isCache", false);
                 if (shouldCoverCache(response, historyResponse)) {
                     onCoverCache(response, historyResponse);
                 }
@@ -242,12 +241,7 @@ public final class NetboxPath {
              * @param historyResponse historyResponse
              */
             private void onCoverCache(Response response, Response historyResponse) {
-                NetboxCache cache = Netbox.server(mServerType).cache();
-                String cacheKey = cache.generateKey(context, request);
-                if (cacheKey == null || "".equals(cacheKey)) {
-                    cacheKey = NetboxUtils.generateCacheKey(request);
-                }
-                cache.setCache(context, cacheKey, response.getBody());
+                setCache(context, request, response);
             }
 
             @Override
@@ -258,7 +252,7 @@ public final class NetboxPath {
                 return super.shouldCoverCache(response, historyResponse);
             }
         };
-        Response response = cache(context);
+        Response response = getCache(context, request);
         if (response != null) {
             if (mNetboxListener != null) {
                 mNetboxListener.onResponseHistory(response);
@@ -275,66 +269,77 @@ public final class NetboxPath {
      */
     public Response execute(Context context) throws NetboxError {
         if (checkRequestIng(true)) {
-            throw new RequestLockError(null, "In the request, the data can not be modified");
+            throw new RequestLockException(null, "In the request, the data can not be modified");
         }
         if (context == null) {
             throw new IllegalArgumentException("The calling method execute must have context parameters,and context not null");
         }
         mRequsetIng = true;
-        Request parameter = new Request(Method.valueOf(mMethod.value()), getRequestURL(), new HashMap<String, String>(mParams), new HashMap<String, String>(mHeaders), new HashMap<String, ParamFile>(mFiles));
+        Request request = new Request(Method.valueOf(mMethod.value()), getRequestURL(), new HashMap<String, String>(mParams), new HashMap<String, String>(mHeaders), new HashMap<String, FileParam>(mFiles));
         try {
             final long requestTime = System.currentTimeMillis();
-            Response response = Netbox.generateInterceptor(Netbox.server(mServerType).generateInterceptorType()).syncRequest(context, parameter);
+            Response response = Netbox.generateInterceptor(Netbox.server(mServerType).generateInterceptorType()).syncRequest(context, request);
             if (response == null) {
-                throw new UnkownError("response is null");
+                throw new UnkownException("response is null");
             }
             response.setConverter(Netbox.server(mServerType).generateConverterType());
             NetboxUtils.setField(Response.class, response, "requestTime", requestTime);
             NetboxUtils.setField(Response.class, response, "responseTime", System.currentTimeMillis());
-            NetboxUtils.setField(Response.class, response, "isCache", false);
-            NetboxCache cache = Netbox.server(mServerType).cache();
-            String cacheKey = cache.generateKey(context, parameter);
-            if (cacheKey == null || "".equals(cacheKey)) {
-                cacheKey = NetboxUtils.generateCacheKey(parameter);
-            }
-            cache.setCache(context, cacheKey, response.getBody());
+            setCache(context, request, response);
             handleResponse(response);
             resetPath();
             return response;
         } catch (NetboxError error) {
-            handleFailure(parameter, error);
+            handleFailure(request, error);
             resetPath();
             throw error;
         }
     }
 
+    /////////////////////////////////////////////////////////////////////////////////
+    //////// Private
+    /////////////////////////////////////////////////////////////////////////////////
+
     /**
-     * cache
+     * getCache
      *
+     * @param context context
+     * @param request request
      * @return response
      */
-    public Response cache(Context context) {
-        mRequsetIng = true;
-        Request parameter = new Request(Method.valueOf(mMethod.value()), getRequestURL(), new HashMap<String, String>(mParams), new HashMap<String, String>(mHeaders), new HashMap<String, ParamFile>(mFiles));
+    private Response getCache(Context context, Request request) {
         NetboxCache cache = Netbox.server(mServerType).cache();
-        String cacheKey = cache.generateKey(context, parameter);
+        String cacheKey = cache.generateKey(context, request);
         if (cacheKey == null || "".equals(cacheKey)) {
-            cacheKey = NetboxUtils.generateCacheKey(parameter);
+            cacheKey = NetboxUtils.getCacheKey(request);
         }
         String body = cache.getCache(context, cacheKey);
         if (body != null && !"".equals(body)) {
             final long requestTime = System.currentTimeMillis();
-            Response response = new Response(parameter);
+            Response response = new Response(request);
             response.setBody(body);
             response.setConverter(Netbox.server(mServerType).generateConverterType());
             NetboxUtils.setField(Response.class, response, "requestTime", requestTime);
             NetboxUtils.setField(Response.class, response, "responseTime", System.currentTimeMillis());
-            NetboxUtils.setField(Response.class, response, "isCache", true);
-            resetPath();
             return response;
         }
-        resetPath();
         return null;
+    }
+
+    /**
+     * setCache
+     *
+     * @param context  context
+     * @param request  request
+     * @param response response
+     */
+    private void setCache(Context context, Request request, Response response) {
+        NetboxCache cache = Netbox.server(mServerType).cache();
+        String cacheKey = cache.generateKey(context, request);
+        if (cacheKey == null || "".equals(cacheKey)) {
+            cacheKey = NetboxUtils.getCacheKey(request);
+        }
+        cache.setCache(context, cacheKey, response.getBody());
     }
 
     /**
@@ -344,9 +349,7 @@ public final class NetboxPath {
      */
     private boolean checkRequestIng(boolean debug) {
         if (mRequsetIng) {
-            if (debug && NetboxUtils.isDebugable()) {
-                NetboxUtils.debugLog("In the request, the data can not be modified", null);
-            }
+            NetboxLoger.getInstance().debugLog("In the request, the data can not be modified", null);
             return true;
         }
         return false;
@@ -372,38 +375,36 @@ public final class NetboxPath {
      */
     private void handleResponse(Response response) {
         if (!Netbox.server(mServerType).handleResponse(response)) {
-            if (NetboxUtils.isDebugable()) {
-                NetboxUtils.debugLog("+=-------------------------------------------------------=+", null);
-                NetboxUtils.debugLog("+=                  By Netbox onResponse                 =+", null);
-                NetboxUtils.debugLog("+=-------------------------------------------------------=+", null);
-                NetboxUtils.debugLog("+= url = " + response.getUrl() + "(" + response.getConsumingTime() + "ms)", null);
-                NetboxUtils.debugLog("+= method = " + response.getMethod().name(), null);
-                String body = response.getBody();
-                if (body.length() > 4000) {
-                    for (int i = 0; i < body.length(); i += 4000) {
-                        if (i == 0) {
-                            NetboxUtils.debugLog("+= body = " + body.substring(i, i + 4000), null);
-                        } else if (i + 4000 < body.length()) {
-                            NetboxUtils.debugLog(body.substring(i, i + 4000), null);
-                        } else {
-                            NetboxUtils.debugLog(body.substring(i, body.length()), null);
-                        }
+            NetboxLoger.getInstance().debugLog("+=-------------------------------------------------------=+", null);
+            NetboxLoger.getInstance().debugLog("+=                  By Netbox onResponse                 =+", null);
+            NetboxLoger.getInstance().debugLog("+=-------------------------------------------------------=+", null);
+            NetboxLoger.getInstance().debugLog("+= url = " + response.getUrl() + "(" + response.getConsumingTime() + "ms)", null);
+            NetboxLoger.getInstance().debugLog("+= method = " + response.getMethod().name(), null);
+            String body = response.getBody();
+            if (body.length() > 4000) {
+                for (int i = 0; i < body.length(); i += 4000) {
+                    if (i == 0) {
+                        NetboxLoger.getInstance().debugLog("+= body = " + body.substring(i, i + 4000), null);
+                    } else if (i + 4000 < body.length()) {
+                        NetboxLoger.getInstance().debugLog(body.substring(i, i + 4000), null);
+                    } else {
+                        NetboxLoger.getInstance().debugLog(body.substring(i, body.length()), null);
                     }
-                } else {
-                    NetboxUtils.debugLog("+= body = " + response.getBody(), null);
                 }
-                if (response.getParams() != null && !response.getParams().isEmpty()) {
-                    NetboxUtils.debugLog("+= params = " + response.getParams(), null);
-                }
-                if (response.getHeaders() != null && !response.getHeaders().isEmpty()) {
-                    NetboxUtils.debugLog("+= headers = " + response.getHeaders(), null);
-                }
-                if (response.getFiles() != null && !response.getFiles().isEmpty()) {
-                    NetboxUtils.debugLog("+= files = " + response.getFiles(), null);
-                }
-                NetboxUtils.debugLog("+= timestamp = " + response.getTimestamp(), null);
-                NetboxUtils.debugLog("+=-------------------------------------------------------=+", null);
+            } else {
+                NetboxLoger.getInstance().debugLog("+= body = " + response.getBody(), null);
             }
+            if (response.getParams() != null && !response.getParams().isEmpty()) {
+                NetboxLoger.getInstance().debugLog("+= params = " + response.getParams(), null);
+            }
+            if (response.getHeaders() != null && !response.getHeaders().isEmpty()) {
+                NetboxLoger.getInstance().debugLog("+= headers = " + response.getHeaders(), null);
+            }
+            if (response.getFiles() != null && !response.getFiles().isEmpty()) {
+                NetboxLoger.getInstance().debugLog("+= files = " + response.getFiles(), null);
+            }
+            NetboxLoger.getInstance().debugLog("+= timestamp = " + response.getTimestamp(), null);
+            NetboxLoger.getInstance().debugLog("+=-------------------------------------------------------=+", null);
         }
 
     }
@@ -415,25 +416,23 @@ public final class NetboxPath {
      */
     private void handleFailure(Request request, NetboxError error) {
         if (!Netbox.server(mServerType).handleFailure(request, error)) {
-            if (NetboxUtils.isDebugable()) {
-                NetboxUtils.debugLog("+=-------------------------------------------------------=+", null);
-                NetboxUtils.debugLog("+=                 By Netbox onFailure                   =+", null);
-                NetboxUtils.debugLog("+=-------------------------------------------------------=+", null);
-                NetboxUtils.debugLog("+= url = " + request.getUrl(), null);
-                NetboxUtils.debugLog("+= method = " + request.getMethod().name(), null);
-                if (request.getParams() != null && !request.getParams().isEmpty()) {
-                    NetboxUtils.debugLog("+= params = " + request.getParams(), null);
-                }
-                if (request.getHeaders() != null && !request.getHeaders().isEmpty()) {
-                    NetboxUtils.debugLog("+= headers = " + request.getHeaders(), null);
-                }
-                if (request.getFiles() != null && !request.getFiles().isEmpty()) {
-                    NetboxUtils.debugLog("+= files = " + request.getFiles(), null);
-                }
-                NetboxUtils.debugLog("+=-------------------------------------------------------=+", null);
-                if (error != null) {
-                    NetboxUtils.debugLog("onFailure:", error);
-                }
+            NetboxLoger.getInstance().debugLog("+=-------------------------------------------------------=+", null);
+            NetboxLoger.getInstance().debugLog("+=                 By Netbox onFailure                   =+", null);
+            NetboxLoger.getInstance().debugLog("+=-------------------------------------------------------=+", null);
+            NetboxLoger.getInstance().debugLog("+= url = " + request.getUrl(), null);
+            NetboxLoger.getInstance().debugLog("+= method = " + request.getMethod().name(), null);
+            if (request.getParams() != null && !request.getParams().isEmpty()) {
+                NetboxLoger.getInstance().debugLog("+= params = " + request.getParams(), null);
+            }
+            if (request.getHeaders() != null && !request.getHeaders().isEmpty()) {
+                NetboxLoger.getInstance().debugLog("+= headers = " + request.getHeaders(), null);
+            }
+            if (request.getFiles() != null && !request.getFiles().isEmpty()) {
+                NetboxLoger.getInstance().debugLog("+= files = " + request.getFiles(), null);
+            }
+            NetboxLoger.getInstance().debugLog("+=-------------------------------------------------------=+", null);
+            if (error != null) {
+                NetboxLoger.getInstance().debugLog("onFailure:", error);
             }
         }
     }

@@ -1,11 +1,11 @@
 package com.liangmayong.netbox.response;
 
 import com.liangmayong.netbox.Netbox;
-import com.liangmayong.netbox.interfaces.DefaultNetboxConverter;
-import com.liangmayong.netbox.params.Method;
+import com.liangmayong.netbox.defaults.abstracts.AbstractDefaultNetboxConverter;
 import com.liangmayong.netbox.interfaces.NetboxConverter;
 import com.liangmayong.netbox.interfaces.NetboxResponse;
-import com.liangmayong.netbox.params.ParamFile;
+import com.liangmayong.netbox.params.FileParam;
+import com.liangmayong.netbox.params.Method;
 import com.liangmayong.netbox.params.Request;
 
 import java.lang.reflect.Type;
@@ -30,15 +30,15 @@ public final class Response implements NetboxResponse {
     // response time
     private long responseTime = 0;
     // converterTypes
-    private Class<? extends NetboxConverter> mConverterType = DefaultNetboxConverter.class;
+    private Class<? extends NetboxConverter> mConverterType = AbstractDefaultNetboxConverter.class;
     // mParams
     private final Map<String, String> mParams = new HashMap<String, String>();
     // mHeaders
     private final Map<String, String> mHeaders = new HashMap<String, String>();
     // mFiles
-    private final Map<String, ParamFile> mFiles = new HashMap<String, ParamFile>();
+    private final Map<String, FileParam> mFiles = new HashMap<String, FileParam>();
     // Object
-    private Object mExtra = null;
+    private Object mTag = null;
     // isConverter
     private boolean isConverter = false;
 
@@ -98,7 +98,7 @@ public final class Response implements NetboxResponse {
      *
      * @return mParams
      */
-    public Map<String, ParamFile> getFiles() {
+    public Map<String, FileParam> getFiles() {
         return mFiles;
     }
 
@@ -112,12 +112,21 @@ public final class Response implements NetboxResponse {
     }
 
     /**
-     * getExtra
+     * getTag
      *
      * @return extra
      */
-    public Object getExtra() {
-        return mExtra;
+    public Object getTag() {
+        return mTag;
+    }
+
+    /**
+     * setTag
+     *
+     * @param tag tag
+     */
+    public void setTag(Object tag) {
+        this.mTag = tag;
     }
 
     /**
@@ -136,15 +145,6 @@ public final class Response implements NetboxResponse {
      */
     public Method getMethod() {
         return mMethod;
-    }
-
-    /**
-     * setExtra
-     *
-     * @param extra extra
-     */
-    public void setExtra(Object extra) {
-        this.mExtra = extra;
     }
 
     /**
@@ -180,7 +180,7 @@ public final class Response implements NetboxResponse {
      *
      * @param files files
      */
-    private void setFiles(Map<String, ParamFile> files) {
+    private void setFiles(Map<String, FileParam> files) {
         this.mFiles.clear();
         this.mFiles.putAll(files);
     }
@@ -232,7 +232,7 @@ public final class Response implements NetboxResponse {
      */
     public void setConverter(Class<? extends NetboxConverter> converterType) {
         if (converterType == null) {
-            converterType = DefaultNetboxConverter.class;
+            converterType = AbstractDefaultNetboxConverter.class;
         }
         this.mConverterType = converterType;
     }
@@ -240,6 +240,11 @@ public final class Response implements NetboxResponse {
     @Override
     public boolean isSuccess() {
         return getConverter().isSuccess(getBody());
+    }
+
+    @Override
+    public boolean isExist(String key, String value) {
+        return getConverter().isExist(key, value, getBody());
     }
 
     @Override
@@ -296,7 +301,8 @@ public final class Response implements NetboxResponse {
                 ", Mod=" + mMethod +
                 ", Params=" + mParams +
                 ", Headers=" + mHeaders +
-                ", Extra=" + mExtra +
+                ", Files=" + mFiles +
+                ", Tag=" + mTag +
                 '}';
     }
 }

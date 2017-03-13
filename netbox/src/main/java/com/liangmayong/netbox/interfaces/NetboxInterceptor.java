@@ -2,6 +2,7 @@ package com.liangmayong.netbox.interfaces;
 
 import android.content.Context;
 
+import com.liangmayong.netbox.callbacks.OnNetboxListener;
 import com.liangmayong.netbox.params.Request;
 import com.liangmayong.netbox.response.Response;
 import com.liangmayong.netbox.throwables.NetboxError;

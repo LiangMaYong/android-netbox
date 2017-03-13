@@ -3,10 +3,11 @@ this is android netbox library
 
 ## Gradle
 ```
-compile 'com.liangmayong.android:netbox:$LatestVersion'
+compile 'com.liangmayong.android:netbox:1.1.0'
 ```
-## Get start
-Server
+
+## Get Start
+server
 ```
 @BindURL(value = "http://github.com/api/", debug = "http://github.com/debug/api/")
 @BindParams(key = "common_key", value = "common_value")
@@ -15,11 +16,11 @@ public class DemoServer extends DefaultVolleyServer {
 
 }
 ```
-Exec
+execute request by server
 ```
-Netbox.server(DemoServer.class).path("login").param("username", "liangmayong").exec(...)
+Netbox.server(DemoServer.class).path("login").param("username", "liangmayong").execute(...)
 ```
-interfaceServer
+server interface
 ```
 public interface DemoInterface {
 
@@ -32,10 +33,11 @@ public interface DemoInterface {
     void login(@Key("username") String username, @Key("password") String password, OnNetboxListener listener);
 }
 ```
-Use interfaceServer
+execute request by server interface
 ```
 Netbox.server(DemoServer.class).interfaceServer(DemoInterface.class).login("liangmayong","***",...);
 ```
+
 ## LICENSE
 ```
 Copyright 2016 LiangMaYong

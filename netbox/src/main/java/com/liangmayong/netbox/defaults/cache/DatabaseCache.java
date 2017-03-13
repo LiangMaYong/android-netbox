@@ -14,10 +14,13 @@ import java.util.Map;
  */
 public class DatabaseCache {
 
+    private static final String DB_NAME = "netbox_database_cache.db";
+    private static final int DB_VERSION = 1;
+    private static final String TABLE_NAME = "netbox_database_cache";
+    private static final String F_BODY = "body";
+    private static final String F_KEY = "key";
+    private static final String F_TIMESTAMP = "timestamp";
     private static volatile DatabaseCache ourInstance = null;
-    private static String table_name = "database_cache_table";
-    private static String db_name = "netbox_database_cache.db";
-    private static int db_version = 1;
 
     public static DatabaseCache getInstance() {
         if (ourInstance == null) {
@@ -28,18 +31,25 @@ public class DatabaseCache {
         return ourInstance;
     }
 
+    ///////////////////////////////////////////////////////////////////////////
+    ///////// Private
+    ///////////////////////////////////////////////////////////////////////////
+
     private DatabaseCache() {
     }
 
+    /**
+     * DatabaseHelper
+     */
     private class DatabaseHelper extends SQLiteOpenHelper {
 
         public DatabaseHelper(Context context) {
-            super(context, db_name, null, db_version);
+            super(context, DB_NAME, null, DB_VERSION);
         }
 
         @Override
         public void onCreate(SQLiteDatabase db) {
-            db.execSQL("CREATE TABLE IF NOT EXISTS " + table_name + " (_id INTEGER PRIMARY KEY AUTOINCREMENT, key TEXT NOT NULL,body TEXT)");
+            db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " + F_KEY + " TEXT NOT NULL," + F_BODY + " TEXT, " + F_TIMESTAMP + " INTEGER);");
         }
 
         @Override
@@ -48,14 +58,19 @@ public class DatabaseCache {
 
     }
 
+    ///////////////////////////////////////////////////////////////////////////
+    ///////// Public
+    ///////////////////////////////////////////////////////////////////////////
+
     public void setCache(Context context, String key, String body) {
         if (hasCache(context, key)) {
             DatabaseHelper databaseHelper = new DatabaseHelper(context);
             SQLiteDatabase db = databaseHelper.getWritableDatabase();
             try {
                 ContentValues contentValues = new ContentValues();
-                contentValues.put("body", body);
-                db.update(table_name, contentValues, "key = '" + key + "'", null);
+                contentValues.put(F_BODY, body);
+                contentValues.put(F_TIMESTAMP, System.currentTimeMillis());
+                db.update(TABLE_NAME, contentValues, F_KEY + " = '" + key + "'", null);
             } finally {
                 db.close();
                 db = null;
@@ -67,9 +82,10 @@ public class DatabaseCache {
             SQLiteDatabase db = databaseHelper.getWritableDatabase();
             try {
                 ContentValues values = new ContentValues();
-                values.put("key", key);
-                values.put("body", body);
-                db.insert(table_name, null, values);
+                values.put(F_KEY, key);
+                values.put(F_BODY, body);
+                values.put(F_TIMESTAMP, System.currentTimeMillis());
+                db.insert(TABLE_NAME, null, values);
             } finally {
                 db.close();
                 db = null;
@@ -87,24 +103,27 @@ public class DatabaseCache {
      */
     public String getCache(Context context, String key) {
         String body = "";
-        DatabaseHelper databaseHelper = new DatabaseHelper(context);
-        SQLiteDatabase db = databaseHelper.getWritableDatabase();
-        Cursor cursor = db.query(false, table_name, null, "key = '" + key + "'", null, null, null,
-                null, null);
         try {
-            if (cursor.moveToNext()) {
-                try {
-                    int columnIndex = cursor.getColumnIndex("body");
-                    body = cursor.getString(columnIndex);
-                } catch (Exception e) {
+            DatabaseHelper databaseHelper = new DatabaseHelper(context);
+            SQLiteDatabase db = databaseHelper.getWritableDatabase();
+            Cursor cursor = db.query(false, TABLE_NAME, null, F_KEY + " = '" + key + "'", null, null, null,
+                    null, null);
+            try {
+                if (cursor.moveToNext()) {
+                    try {
+                        int columnIndex = cursor.getColumnIndex(F_BODY);
+                        body = cursor.getString(columnIndex);
+                    } catch (Exception e) {
+                    }
                 }
+            } finally {
+                if (!cursor.isClosed()) {
+                    cursor.close();
+                }
+                db.close();
+                db = null;
             }
-        } finally {
-            if (!cursor.isClosed()) {
-                cursor.close();
-            }
-            db.close();
-            db = null;
+        } catch (Exception e) {
         }
         return body;
     }
@@ -121,7 +140,7 @@ public class DatabaseCache {
             DatabaseHelper databaseHelper = new DatabaseHelper(context);
             SQLiteDatabase db = databaseHelper.getWritableDatabase();
             try {
-                db.delete(table_name, "key = '" + key + "'", null);
+                db.delete(TABLE_NAME, F_KEY + " = '" + key + "'", null);
             } finally {
                 db.close();
                 db = null;
@@ -140,7 +159,7 @@ public class DatabaseCache {
             DatabaseHelper databaseHelper = new DatabaseHelper(context);
             SQLiteDatabase db = databaseHelper.getWritableDatabase();
             try {
-                db.delete(table_name, null, null);
+                db.delete(TABLE_NAME, null, null);
             } finally {
                 db.close();
                 db = null;
@@ -161,7 +180,7 @@ public class DatabaseCache {
         try {
             DatabaseHelper databaseHelper = new DatabaseHelper(context);
             SQLiteDatabase db = databaseHelper.getWritableDatabase();
-            Cursor cursor = db.query(false, table_name, null, "key = '" + key + "'", null, null, null, null, null);
+            Cursor cursor = db.query(false, TABLE_NAME, null, F_KEY + " = '" + key + "'", null, null, null, null, null);
             try {
                 count = cursor.getCount();
             } finally {
@@ -176,7 +195,6 @@ public class DatabaseCache {
         return count > 0;
     }
 
-
     /**
      * getCaches
      *
@@ -188,22 +206,28 @@ public class DatabaseCache {
         try {
             DatabaseHelper databaseHelper = new DatabaseHelper(context);
             SQLiteDatabase db = databaseHelper.getReadableDatabase();
-            Cursor cursor = db.query(false, table_name, null, null, null, null, null, null, null);
+            Cursor cursor = db.query(false, TABLE_NAME, null, null, null, null, null, null, null);
             try {
                 while (cursor.moveToNext()) {
                     String key = "";
                     String body = "";
+                    long timestamp = System.currentTimeMillis();
                     try {
-                        int columnIndex = cursor.getColumnIndex("key");
+                        int columnIndex = cursor.getColumnIndex(F_KEY);
                         key = cursor.getString(columnIndex);
                     } catch (Exception e) {
                     }
                     try {
-                        int columnIndex = cursor.getColumnIndex("body");
+                        int columnIndex = cursor.getColumnIndex(F_TIMESTAMP);
+                        timestamp = cursor.getLong(columnIndex);
+                    } catch (Exception e) {
+                    }
+                    try {
+                        int columnIndex = cursor.getColumnIndex(F_BODY);
                         body = cursor.getString(columnIndex);
                     } catch (Exception e) {
                     }
-                    map.put(key, body);
+                    map.put(key + "@" + timestamp, body);
                 }
             } finally {
                 if (!cursor.isClosed()) {
@@ -228,7 +252,7 @@ public class DatabaseCache {
         try {
             DatabaseHelper databaseHelper = new DatabaseHelper(context);
             SQLiteDatabase db = databaseHelper.getReadableDatabase();
-            Cursor cursor = db.query(false, table_name, null, null, null, null, null, null, null);
+            Cursor cursor = db.query(false, TABLE_NAME, null, null, null, null, null, null, null);
             try {
                 count = cursor.getCount();
             } finally {

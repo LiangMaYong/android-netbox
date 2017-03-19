@@ -12,11 +12,11 @@ import java.lang.reflect.Type;
  */
 public class DefaultGsonConverter extends AbstractDefaultNetboxConverter {
 
-    private String result_msg = "result_msg";
-    private String result_code = "result_code";
-    private String result_timestamp = "timestamp";
-    private String result_data = "result_data";
-    private String[] result_success = {"1"};
+    protected String result_msg = "result_msg";
+    protected String result_code = "result_code";
+    protected String result_timestamp = "timestamp";
+    protected String result_data = "result_data";
+    protected String[] result_success = {"1"};
 
     //gson
     private volatile Gson gson = null;

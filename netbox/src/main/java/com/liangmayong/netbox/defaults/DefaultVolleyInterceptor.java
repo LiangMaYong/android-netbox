@@ -2,22 +2,25 @@ package com.liangmayong.netbox.defaults;
 
 import android.content.Context;
 
+import com.android.volley.NetworkResponse;
 import com.android.volley.VolleyError;
+import com.liangmayong.netbox.NetboxLoger;
 import com.liangmayong.netbox.callbacks.OnNetboxListener;
 import com.liangmayong.netbox.defaults.abstracts.AbstractDefaultNetboxInterceptor;
-import com.liangmayong.netbox.params.FileParam;
-import com.liangmayong.netbox.params.Request;
-import com.liangmayong.netbox.response.Response;
-import com.liangmayong.netbox.throwables.errors.AuthFailureException;
-import com.liangmayong.netbox.throwables.NetboxError;
-import com.liangmayong.netbox.throwables.errors.NetworkException;
-import com.liangmayong.netbox.throwables.errors.ParseException;
-import com.liangmayong.netbox.throwables.errors.ServerException;
-import com.liangmayong.netbox.throwables.errors.UnkownException;
 import com.liangmayong.netbox.defaults.volley.Vo;
 import com.liangmayong.netbox.defaults.volley.VoError;
 import com.liangmayong.netbox.defaults.volley.VoFile;
 import com.liangmayong.netbox.defaults.volley.VoMethod;
+import com.liangmayong.netbox.params.FileParam;
+import com.liangmayong.netbox.params.Request;
+import com.liangmayong.netbox.response.Response;
+import com.liangmayong.netbox.throwables.NetboxError;
+import com.liangmayong.netbox.throwables.errors.AuthFailureException;
+import com.liangmayong.netbox.throwables.errors.NetworkException;
+import com.liangmayong.netbox.throwables.errors.ParseException;
+import com.liangmayong.netbox.throwables.errors.ServerException;
+import com.liangmayong.netbox.throwables.errors.TimeoutException;
+import com.liangmayong.netbox.throwables.errors.UnkownException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -55,8 +58,26 @@ public class DefaultVolleyInterceptor extends AbstractDefaultNetboxInterceptor {
                     listener.onFailure(new ParseException(volleyError));
                 } else if (VoError.NETWORK_ERROR.equals(errorType)) {
                     listener.onFailure(new NetworkException(volleyError));
+                } else if (VoError.TIMEOUT_ERROR.equals(errorType)) {
+                    listener.onFailure(new TimeoutException(volleyError));
                 } else {
                     listener.onFailure(new UnkownException(volleyError));
+                }
+                try {
+                    NetworkResponse networkResponse = volleyError.networkResponse;
+                    if (networkResponse != null) {
+                        NetboxLoger.getInstance().debugLog("+=-------------------------------------------------------=+", null);
+                        NetboxLoger.getInstance().debugLog("+=            By Netbox Volley onErrorResponse           =+", null);
+                        NetboxLoger.getInstance().debugLog("+=-------------------------------------------------------=+", null);
+                        NetboxLoger.getInstance().debugLog("+= response code : " + networkResponse.statusCode, null);
+                        NetboxLoger.getInstance().debugLog("+= response body : " + new String(networkResponse.data), null);
+                        NetboxLoger.getInstance().debugLog("+= response headers : " + networkResponse.headers, null);
+                        NetboxLoger.getInstance().debugLog("+= response networkTimeMs : " + networkResponse.networkTimeMs, null);
+                        NetboxLoger.getInstance().debugLog("+=-------------------------------------------------------=+", null);
+                        NetboxLoger.getInstance().debugLog(volleyError.getMessage() + "", volleyError.getCause());
+                        NetboxLoger.getInstance().debugLog("+=-------------------------------------------------------=+", null);
+                    }
+                } catch (Exception e) {
                 }
             }
         });

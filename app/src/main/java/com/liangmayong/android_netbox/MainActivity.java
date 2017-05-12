@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         _initView();
-        NetboxConfig.getDefaultInstance().putParam("Default_key", "Default_value");
+        Netbox.getCommonConfig().putParam("Default_key", "Default_value");
         Map<String, String> profiles = new HashMap<>();
         profiles.put("name", "Ni hao");
         profiles.put("age", "20");
@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(NetboxError error) {
-
+                text.setText(error.getErrorType() + "");
             }
         });
     }

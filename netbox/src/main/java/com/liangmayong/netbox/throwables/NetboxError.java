@@ -17,6 +17,7 @@ public class NetboxError extends Exception {
     private ErrorType errorType = ErrorType.UNKOWN_ERROR;
     private Object data = null;
     private Exception exception = null;
+    private int code = 0;
 
     public NetboxError(ErrorType errorType, String message) {
         super(message);

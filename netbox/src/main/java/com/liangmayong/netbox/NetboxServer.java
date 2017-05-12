@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.liangmayong.netbox.annotations.BindCache;
 import com.liangmayong.netbox.annotations.BindConverter;
-import com.liangmayong.netbox.annotations.BindDebugable;
 import com.liangmayong.netbox.annotations.BindHeaders;
 import com.liangmayong.netbox.annotations.BindInterceptor;
 import com.liangmayong.netbox.annotations.BindParams;
@@ -40,10 +39,6 @@ import java.util.Map;
 @BindInterceptor(AbstractDefaultNetboxInterceptor.class)
 public class NetboxServer {
 
-    // debugable
-    private boolean debugable = false;
-    // isSetDebugable
-    private boolean isSetDebugable = false;
     // interceptorType
     private Class<? extends NetboxInterceptor> interceptorType = AbstractDefaultNetboxInterceptor.class;
     // converterType
@@ -101,25 +96,10 @@ public class NetboxServer {
         }
         if (url != null) {
             String baseURL = url.value();
-            String debugURL = url.debug();
             if (baseURL == null || "".equals(baseURL)) {
                 baseURL = "";
             }
-            if (debugURL == null || "".equals(debugURL)) {
-                debugURL = "";
-            }
-            config().setDebugURL(debugURL);
-            config().setReleaseURL(baseURL);
-        }
-
-        // debugable
-        BindDebugable debug = null;
-        for (clazz = getClass(); clazz != Object.class && debug == null; clazz = clazz.getSuperclass()) {
-            debug = clazz.getAnnotation(BindDebugable.class);
-        }
-        if (debug != null) {
-            this.debugable = debug.value();
-            isSetDebugable = true;
+            config().setBaseURL(baseURL);
         }
 
         BindParams bindParam = null;
@@ -166,43 +146,43 @@ public class NetboxServer {
                     if (method.getReturnType() != void.class) {
                         throw new IllegalArgumentException("The return value must be void");
                     }
-                    Mod modAnnot = method.getAnnotation(Mod.class);
+                    Mod modAnnotation = method.getAnnotation(Mod.class);
                     Method met = Method.GET;
-                    if (modAnnot != null) {
-                        met = modAnnot.value();
+                    if (modAnnotation != null) {
+                        met = modAnnotation.value();
                     }
-                    Path pathAnnot = method.getAnnotation(Path.class);
+                    Path pathAnnotation = method.getAnnotation(Path.class);
                     String path = "";
-                    if (pathAnnot != null) {
-                        path = pathAnnot.value();
+                    if (pathAnnotation != null) {
+                        path = pathAnnotation.value();
                     }
                     NetboxPath netboxPath = path(path);
-                    String[] paramkeys = new String[0];
-                    String[] paramvalues = new String[0];
-                    Params paramAnnot = method.getAnnotation(Params.class);
-                    if (paramAnnot != null) {
-                        paramkeys = paramAnnot.key();
-                        paramvalues = paramAnnot.value();
+                    String[] paramKeys = new String[0];
+                    String[] paramValues = new String[0];
+                    Params paramAnnotation = method.getAnnotation(Params.class);
+                    if (paramAnnotation != null) {
+                        paramKeys = paramAnnotation.key();
+                        paramValues = paramAnnotation.value();
                     }
-                    for (int i = 0; i < paramkeys.length; i++) {
-                        if (i < paramvalues.length) {
-                            netboxPath.param(paramkeys[i], paramvalues[i]);
+                    for (int i = 0; i < paramKeys.length; i++) {
+                        if (i < paramValues.length) {
+                            netboxPath.param(paramKeys[i], paramValues[i]);
                         } else {
-                            netboxPath.param(paramkeys[i], "");
+                            netboxPath.param(paramKeys[i], "");
                         }
                     }
-                    String[] headerkeys = new String[0];
-                    String[] headervalues = new String[0];
-                    Headers headerAnnot = method.getAnnotation(Headers.class);
-                    if (headerAnnot != null) {
-                        headerkeys = headerAnnot.key();
-                        headervalues = headerAnnot.value();
+                    String[] headerKeys = new String[0];
+                    String[] headerValues = new String[0];
+                    Headers headerAnnotation = method.getAnnotation(Headers.class);
+                    if (headerAnnotation != null) {
+                        headerKeys = headerAnnotation.key();
+                        headerValues = headerAnnotation.value();
                     }
-                    for (int i = 0; i < headerkeys.length; i++) {
-                        if (i < headervalues.length) {
-                            netboxPath.header(headerkeys[i], headervalues[i]);
+                    for (int i = 0; i < headerKeys.length; i++) {
+                        if (i < headerValues.length) {
+                            netboxPath.header(headerKeys[i], headerValues[i]);
                         } else {
-                            netboxPath.header(headerkeys[i], "");
+                            netboxPath.header(headerKeys[i], "");
                         }
                     }
                     Object[] parameters = NetboxUtils.getMethodParameters(method, args);
@@ -225,25 +205,7 @@ public class NetboxServer {
      * @return base url
      */
     protected String generateURL() {
-        if (isDebugable()) {
-            return config().getDebugURL();
-        }
-        return config().getReleaseURL();
-    }
-
-    /**
-     * isDebugable
-     *
-     * @return debugable
-     */
-    public boolean isDebugable() {
-        if (config().isDebugable()) {
-            return true;
-        }
-        if (isSetDebugable) {
-            return debugable;
-        }
-        return NetboxUtils.isDebugable();
+        return config().getBaseURL();
     }
 
     /**

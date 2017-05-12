@@ -6,52 +6,26 @@ import java.util.Map;
 /**
  * Created by LiangMaYong on 2016/9/13.
  */
-public final class NetboxConfig {
+public final class NetboxCommonConfig {
 
-    private NetboxConfig() {
+    private NetboxCommonConfig() {
     }
 
-    // NET_BOX_CONFIG_MAP
-    private static final Map<String, NetboxConfig> NET_BOX_CONFIG_MAP = new HashMap<String, NetboxConfig>();
+    private static volatile NetboxCommonConfig defaultInstance = null;
 
-    /**
-     * getInstance
-     *
-     * @param serverType serverType
-     * @return config
-     */
-    public static NetboxConfig getInstance(Class<? extends NetboxServer> serverType) {
-        String key = serverType.getName();
-        if (NET_BOX_CONFIG_MAP.containsKey(key)) {
-            return NET_BOX_CONFIG_MAP.get(key);
+    public static NetboxCommonConfig getDefaultInstance() {
+        if (defaultInstance == null) {
+            synchronized (NetboxCommonConfig.class) {
+                defaultInstance = new NetboxCommonConfig();
+            }
         }
-        NetboxConfig config = null;
-        synchronized (NetboxConfig.class) {
-            config = new NetboxConfig();
-            NET_BOX_CONFIG_MAP.put(key, config);
-        }
-        return config;
+        return defaultInstance;
     }
 
-    // parent
-    private NetboxCommonConfig parent = NetboxCommonConfig.getDefaultInstance();
     // commonParams
     private final Map<String, String> commonParams = new HashMap<String, String>();
     // commonHeaders
     private final Map<String, String> commonHeaders = new HashMap<String, String>();
-    // baseURL
-    private String baseURL = "";
-
-    public String getBaseURL() {
-        if (baseURL == null) {
-            return "";
-        }
-        return baseURL;
-    }
-
-    public void setBaseURL(String baseURL) {
-        this.baseURL = baseURL;
-    }
 
     /**
      * getCommonHeaders
@@ -60,9 +34,6 @@ public final class NetboxConfig {
      */
     public Map<String, String> getCommonHeaders() {
         Map<String, String> headers = new HashMap<String, String>();
-        if (parent != null) {
-            headers.putAll(parent.getCommonHeaders());
-        }
         headers.putAll(commonHeaders);
         return headers;
     }
@@ -74,9 +45,6 @@ public final class NetboxConfig {
      */
     public Map<String, String> getCommonParams() {
         Map<String, String> params = new HashMap<String, String>();
-        if (parent != null) {
-            params.putAll(parent.getCommonParams());
-        }
         params.putAll(commonParams);
         return params;
     }
@@ -88,7 +56,7 @@ public final class NetboxConfig {
      * @param header header
      * @return config
      */
-    public NetboxConfig putHeader(String key, String header) {
+    public NetboxCommonConfig putHeader(String key, String header) {
         if (key != null) {
             if (header == null || "".equals(header)) {
                 commonHeaders.remove(key);
@@ -105,7 +73,7 @@ public final class NetboxConfig {
      * @param headers headers
      * @return config
      */
-    public NetboxConfig putHeaders(Map<String, String> headers) {
+    public NetboxCommonConfig putHeaders(Map<String, String> headers) {
         if (headers != null && !headers.isEmpty()) {
             commonHeaders.putAll(headers);
         }
@@ -118,7 +86,7 @@ public final class NetboxConfig {
      * @param key key
      * @return config config
      */
-    public NetboxConfig removeHeader(String key) {
+    public NetboxCommonConfig removeHeader(String key) {
         if (key != null) {
             commonHeaders.remove(key);
         }
@@ -130,7 +98,7 @@ public final class NetboxConfig {
      *
      * @return config
      */
-    public NetboxConfig clearHeaders() {
+    public NetboxCommonConfig clearHeaders() {
         commonHeaders.clear();
         return this;
     }
@@ -142,7 +110,7 @@ public final class NetboxConfig {
      * @param param param
      * @return config
      */
-    public NetboxConfig putParam(String key, String param) {
+    public NetboxCommonConfig putParam(String key, String param) {
         if (key != null) {
             if (param == null || "".equals(param)) {
                 commonParams.remove(key);
@@ -159,7 +127,7 @@ public final class NetboxConfig {
      * @param params params
      * @return config
      */
-    public NetboxConfig putParams(Map<String, String> params) {
+    public NetboxCommonConfig putParams(Map<String, String> params) {
         if (params != null && !params.isEmpty()) {
             commonParams.putAll(params);
         }
@@ -172,7 +140,7 @@ public final class NetboxConfig {
      * @param key key
      * @return config
      */
-    public NetboxConfig removeParam(String key) {
+    public NetboxCommonConfig removeParam(String key) {
         if (key != null) {
             commonParams.remove(key);
         }
@@ -184,7 +152,7 @@ public final class NetboxConfig {
      *
      * @return config
      */
-    public NetboxConfig clearParams() {
+    public NetboxCommonConfig clearParams() {
         commonParams.clear();
         return this;
     }

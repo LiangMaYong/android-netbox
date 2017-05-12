@@ -27,15 +27,16 @@ public abstract class OnNetboxCallback<T> extends OnNetboxListener {
     /**
      * handleResponseError
      *
-     * @param code    code
-     * @param message message
+     * @param code     code
+     * @param message  message
+     * @param response response
      */
-    public abstract void handleResponseError(String code, String message);
+    public abstract void handleResponseError(String code, String message, Response response);
 
     /**
-     * generateDefualtKey
+     * generateDefaultKey
      */
-    public String generateDefualtKey() {
+    public String generateDefaultKey() {
         return null;
     }
 
@@ -44,7 +45,7 @@ public abstract class OnNetboxCallback<T> extends OnNetboxListener {
         if (response.isSuccess()) {
             handleResponseSuccess(responseToT(response));
         } else {
-            handleResponseError(response.getErrorCode(), response.getErrorMessage());
+            handleResponseError(response.getErrorCode(), response.getErrorMessage(), response);
         }
     }
 
@@ -59,7 +60,7 @@ public abstract class OnNetboxCallback<T> extends OnNetboxListener {
         T data = null;
         if (response.isSuccess()) {
             try {
-                data = response.getData(generateDefualtKey(), NetboxUtils.getGenericType(this, 0));
+                data = response.getData(generateDefaultKey(), NetboxUtils.getGenericType(this, 0));
             } catch (Exception e) {
             }
         }
@@ -68,4 +69,5 @@ public abstract class OnNetboxCallback<T> extends OnNetboxListener {
 
     @Override
     public abstract void onFailure(NetboxError error);
+
 }

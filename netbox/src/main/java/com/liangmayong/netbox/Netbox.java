@@ -1,7 +1,5 @@
 package com.liangmayong.netbox;
 
-import android.content.Context;
-
 import com.liangmayong.netbox.interfaces.NetboxCache;
 import com.liangmayong.netbox.interfaces.NetboxConverter;
 import com.liangmayong.netbox.interfaces.NetboxInterceptor;
@@ -37,7 +35,7 @@ public final class Netbox {
      *
      * @param serverType serverType
      * @param <T>        serverType
-     * @return newbox server
+     * @return net box server
      */
     @SuppressWarnings("unchecked")
     public static final <T extends NetboxServer> T server(Class<T> serverType) {
@@ -68,26 +66,12 @@ public final class Netbox {
     }
 
     /**
-     * serverInterface
-     *
-     * @param context       context
-     * @param serverType    serverType
-     * @param interfaceType interfaceType
-     * @param <T>           interface type
-     * @return interface
-     */
-    public static final <T> T serverInterface(Context context, Class<? extends NetboxServer> serverType, Class<T> interfaceType) {
-        return server(serverType).interfaceServer(context, interfaceType);
-    }
-
-    /**
      * generateConverter
      *
      * @param converterType converterType
      * @param <T>           converterType
-     * @return newbox converter
+     * @return net box converter
      */
-    @SuppressWarnings("unchecked")
     public static final <T extends NetboxConverter> T generateConverter(Class<T> converterType) {
         if (converterType == null) {
             throw new IllegalArgumentException("The converter class must not null");
@@ -112,9 +96,8 @@ public final class Netbox {
      *
      * @param interceptorType interceptorType
      * @param <T>             interceptorType
-     * @return newbox interceptor
+     * @return net box interceptor
      */
-    @SuppressWarnings("unchecked")
     public static final <T extends NetboxInterceptor> T generateInterceptor(Class<T> interceptorType) {
         if (interceptorType == null) {
             throw new IllegalArgumentException("The interceptor class must not null");
@@ -139,7 +122,7 @@ public final class Netbox {
      *
      * @param cacheType cacheType
      * @param <T>       cacheType
-     * @return newbox interceptor
+     * @return net box interceptor
      */
     @SuppressWarnings("unchecked")
     public static final <T extends NetboxCache> T generateCache(Class<T> cacheType) {
@@ -160,4 +143,14 @@ public final class Netbox {
             throw new IllegalArgumentException("The cache generation failure:" + cacheType.getName(), e);
         }
     }
+
+    /**
+     * getCommonConfig
+     *
+     * @return net box config
+     */
+    public static final NetboxCommonConfig getCommonConfig() {
+        return NetboxCommonConfig.getDefaultInstance();
+    }
+
 }

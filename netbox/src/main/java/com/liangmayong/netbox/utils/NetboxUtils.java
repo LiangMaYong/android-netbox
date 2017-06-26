@@ -171,30 +171,32 @@ public final class NetboxUtils {
         Map<String, String> stringMap = new HashMap<String, String>();
         Map<String, FileParam> fileMap = new HashMap<String, FileParam>();
         for (int i = 0; i < parameterAnnotations.length; i++) {
-            for (int j = 0; j < parameterAnnotations[i].length; j++) {
-                Annotation annotation = parameterAnnotations[i][j];
-                if (annotation instanceof Key) {
-                    Key param = (Key) annotation;
-                    stringMap.put(param.value(), args[i] + "");
-                } else if (annotation instanceof KeyMap) {
-                    if (args[i] instanceof Map<?, ?>) {
-                        KeyMap param = (KeyMap) annotation;
-                        Map<?, ?> argsMap = (Map<?, ?>) args[i];
-                        String key = param.value();
-                        for (Map.Entry<?, ?> entry : argsMap.entrySet()) {
-                            if (key.equals("")) {
-                                stringMap.put(entry.getKey() + "", entry.getValue() + "");
-                            } else {
-                                stringMap.put(key + "[" + entry.getKey() + "]", entry.getValue() + "");
+            if (args[i] != null) {
+                for (int j = 0; j < parameterAnnotations[i].length; j++) {
+                    Annotation annotation = parameterAnnotations[i][j];
+                    if (annotation instanceof Key) {
+                        Key param = (Key) annotation;
+                        stringMap.put(param.value(), args[i] + "");
+                    } else if (annotation instanceof KeyMap) {
+                        if (args[i] instanceof Map<?, ?>) {
+                            KeyMap param = (KeyMap) annotation;
+                            Map<?, ?> argsMap = (Map<?, ?>) args[i];
+                            String key = param.value();
+                            for (Map.Entry<?, ?> entry : argsMap.entrySet()) {
+                                if (key.equals("")) {
+                                    stringMap.put(entry.getKey() + "", entry.getValue() + "");
+                                } else {
+                                    stringMap.put(key + "[" + entry.getKey() + "]", entry.getValue() + "");
+                                }
                             }
                         }
-                    }
-                } else if (annotation instanceof KeyFile) {
-                    KeyFile param = (KeyFile) annotation;
-                    if (args[i] instanceof FileParam) {
-                        fileMap.put(param.value(), (FileParam) args[i]);
-                    } else if (args[i] instanceof File) {
-                        fileMap.put(param.value(), new FileParam((File) args[i]));
+                    } else if (annotation instanceof KeyFile) {
+                        KeyFile param = (KeyFile) annotation;
+                        if (args[i] instanceof FileParam) {
+                            fileMap.put(param.value(), (FileParam) args[i]);
+                        } else if (args[i] instanceof File) {
+                            fileMap.put(param.value(), new FileParam((File) args[i]));
+                        }
                     }
                 }
             }

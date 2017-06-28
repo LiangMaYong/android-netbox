@@ -35,7 +35,8 @@ import java.util.concurrent.TimeoutException;
  */
 public class Vo {
 
-    private static final int REQUEST_OUTTIME = 5000;
+    private static final int MAX_BODY_LENGTH = 10 * 1024 * 1024;
+    private static final int REQUEST_TIME_OUT = 5000;
     private static final String TAG = "VOLLEY_UTILS_REQUEST_QUEUE";
     private static final Map<String, RequestQueue> CONTEXT_REQUEST_QUEUE_MAP = new HashMap<String, RequestQueue>();
     private static final String ENCODE = "UTF-8";
@@ -128,7 +129,7 @@ public class Vo {
         request.setRetryPolicy(generatePolicy());
         mQueue.add(request);
         try {
-            return future.get(REQUEST_OUTTIME, TimeUnit.MILLISECONDS);
+            return future.get(REQUEST_TIME_OUT, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             throw new VolleyError(e);
         } catch (ExecutionException e) {
@@ -176,7 +177,7 @@ public class Vo {
         request.setRetryPolicy(generatePolicy());
         generateQueue(context).add(request);
         try {
-            return future.get(REQUEST_OUTTIME, TimeUnit.MILLISECONDS);
+            return future.get(REQUEST_TIME_OUT, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             throw new VolleyError(e);
         } catch (ExecutionException e) {
@@ -214,7 +215,7 @@ public class Vo {
      */
     protected static RetryPolicy generatePolicy() {
         if (mRetryPolicy == null) {
-            mRetryPolicy = new com.android.volley.DefaultRetryPolicy(REQUEST_OUTTIME, 0, 0);
+            mRetryPolicy = new com.android.volley.DefaultRetryPolicy(REQUEST_TIME_OUT, 0, 0);
         }
         return mRetryPolicy;
     }
@@ -307,6 +308,18 @@ public class Vo {
         }
 
         public byte[] getBody() throws AuthFailureError {
+            if (getFiles() != null && getFiles().size() > 0) {
+                int file_length = 0;
+                for (Map.Entry<String, VoFile> entry : getFiles().entrySet()) {
+                    File item = new File(entry.getValue().getPath());
+                    if (item.exists()) {
+                        file_length += item.length();
+                    }
+                }
+                if (file_length > MAX_BODY_LENGTH) {
+                    throw new AuthFailureError("The request body is too large");
+                }
+            }
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             try {
                 if ((getParams() != null && getParams().size() > 0)
@@ -329,8 +342,8 @@ public class Vo {
                         for (Map.Entry<String, VoFile> entry : getFiles().entrySet()) {
                             File item = new File(entry.getValue().getPath());
                             if (item.exists()) {
-                                long totallenght = item.length();
-                                int bufferSize = (int) (totallenght / 10);
+                                long total_len = item.length();
+                                int bufferSize = (int) (total_len / 10);
                                 StringBuilder sb = new StringBuilder();
                                 sb.append(prefix);
                                 sb.append(boundary);
@@ -341,7 +354,7 @@ public class Vo {
                                 sb.append("Content-Length:" + in.available() + lineEnd);
                                 sb.append("Content-Type:" + entry.getValue().getContentType() + lineEnd + lineEnd);
                                 outputStream.write(sb.toString().getBytes());
-                                int bytes = 0;
+                                int bytes;
                                 byte[] bufferOut = new byte[Math.max(20 * 1024, Math.min(512 * 1024, bufferSize))];
                                 while ((bytes = in.read(bufferOut)) != -1) {
                                     outputStream.write(bufferOut, 0, bytes);
